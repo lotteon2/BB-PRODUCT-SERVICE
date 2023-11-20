@@ -1,0 +1,16 @@
+server:
+  port: 8800
+spring:
+  application:
+    name: product-service
+  config:
+    activate:
+      on-profile: local, dev, local
+    import: optional:configserver:http://localhost:8888
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "refresh"
+          - "bus-refresh"
