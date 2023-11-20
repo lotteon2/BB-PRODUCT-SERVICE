@@ -1,11 +1,12 @@
-name: PR Test
+name: PR build
+
 
 on:
   pull_request:
     branches: [ develop ] # develop branch에 PR을 보낼 때 실행
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,4 +22,4 @@ jobs:
 
       # Gradle test를 실행한다
       - name: build gradle
-        run: ./gradlew clean bootJar
+        run: ./gradlew clean build
