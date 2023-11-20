@@ -6,7 +6,7 @@ on:
     branches: [ develop ] # develop branch에 PR을 보낼 때 실행
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
