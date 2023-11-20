@@ -22,4 +22,4 @@ jobs:
 
       # Gradle test를 실행한다
       - name: build gradle
-        run: ./gradlew clean bootJar
+        run: ./gradlew clean build
