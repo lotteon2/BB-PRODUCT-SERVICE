@@ -1,6 +1,9 @@
 server:
   port: 8800
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   application:
     name: product-service
   config:
@@ -14,3 +17,10 @@ management:
         include:
           - "refresh"
           - "bus-refresh"
+
+aws:
+  dynamodb:
+    endpoint: http://localhost:9000
+  region: ap-northease-2
+  accessKey: accessKey
+  secretKey: secretKey
