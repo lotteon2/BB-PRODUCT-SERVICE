@@ -34,7 +34,7 @@ public class ReviewImages extends BaseEntity {
   @ManyToOne(
       fetch = FetchType.LAZY,
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-  @JoinColumn(name = "review_id")
+  @JoinColumn(name = "id")
   private Review review;
 
 }
