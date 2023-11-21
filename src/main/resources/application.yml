@@ -17,10 +17,3 @@ management:
         include:
           - "refresh"
           - "bus-refresh"
-
-aws:
-  dynamodb:
-    endpoint: http://localhost:9000
-  region: ap-northease-2
-  accessKey: accessKey
-  secretKey: secretKey
