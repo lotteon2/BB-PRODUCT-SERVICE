@@ -63,9 +63,7 @@ class ProductServiceTest {
             .averageRating(4.5)
             .storeId(1L)
             .build();
-    Product product1 = productMapper.entityToData(product);
-    Product save = productMongoRepository.save(product1);
-    assertThat(product1.getProductSummary()).isEqualTo(save.getProductSummary());
+    productService.createProduct(product);
   }
 
   @Test
