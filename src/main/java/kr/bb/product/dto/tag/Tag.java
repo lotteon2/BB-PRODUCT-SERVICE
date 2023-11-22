@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Tag extends BaseEntity {
-  private Long id;
+  private Long tagId;
   private String tagName;
 }

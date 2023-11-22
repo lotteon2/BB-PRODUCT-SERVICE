@@ -26,12 +26,12 @@ class ProductMongoRepositoryTest {
     Product product =
         Product.builder()
             .productId("123")
-            .category(Category.builder().categoryName("category").id(1L).build())
+            .category(Category.builder().categoryName("category").categoryId(1L).build())
             .productName("Example Product")
             .productSummary("Product Summary")
             .productPrice(100L)
             .productSaleStatus(ProductSaleStatus.SALE)
-            .tag(Tag.builder().tagName("tagname").id(1L).build())
+            .tag(Tag.builder().tagName("tagname").tagId(1L).build())
             .productFlowers(Flowers.builder().flowerName("flower1").stock(3L).flowerId(1L).build())
             .productDescriptionImage("image_url")
             .reviewCount(5L)
@@ -40,7 +40,6 @@ class ProductMongoRepositoryTest {
             .storeId(1L)
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
-            .isDeleted(false)
             .build();
     Product save = productMongoRepository.save(product);
     assertThat(save.getProductId()).isNotNull();
