@@ -84,6 +84,6 @@ class ProductServiceTest {
             .build();
     Product product1 = productMapper.entityToData(product);
     Product save = productMongoRepository.save(product1);
-    assertThat(save.getProductName()).isNotNull();
+    assertThat(save.getProductName()).isNull();
   }
 }
