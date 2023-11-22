@@ -1,6 +1,5 @@
-package kr.bb.product.dto.tag;
+package kr.bb.product.dto.request;
 
-import kr.bb.product.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Tag extends BaseEntity {
-  private Long id;
-  private String tagName;
+public class ProductRequestDto {
+  private String name;
 }

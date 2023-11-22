@@ -10,9 +10,6 @@ spring:
   h2:
     console:
       enabled: true
-aws:
-  dynamodb:
-    endpoint: http://localhost:9000
-  region: ap-northease-2
-  accessKey: accessKey
-  secretKey: secretKey
+  mongodb:
+    embedded:
+      version: 3.5.5
