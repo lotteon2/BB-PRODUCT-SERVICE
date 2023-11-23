@@ -1,5 +1,9 @@
-package kr.bb.product.dto.category;
+package kr.bb.product.entity.product;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import kr.bb.product.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,7 +17,11 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString
+@Entity
+@Table(name = "category")
 public class Category extends BaseEntity {
-  private Long categoryId;
+  @Id private Long categoryId;
+
+  @Column(name = "category_name")
   private String categoryName;
 }

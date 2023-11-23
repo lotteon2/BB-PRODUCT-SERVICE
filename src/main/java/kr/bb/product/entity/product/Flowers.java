@@ -1,6 +1,5 @@
-package kr.bb.product.dto.tag;
+package kr.bb.product.entity.product;
 
-import kr.bb.product.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Tag extends BaseEntity {
-  private Long tagId;
-  private String tagName;
+public class Flowers {
+  private Long flowerId;
+  private Long flowerCount;
+  private Boolean isRepresentative;
 }

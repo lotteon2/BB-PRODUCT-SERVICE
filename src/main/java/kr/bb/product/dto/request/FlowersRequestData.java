@@ -1,4 +1,4 @@
-package kr.bb.product.entity;
+package kr.bb.product.dto.request;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Flowers {
+public class FlowersRequestData {
   private Long flowerId;
-  private String flowerName;
-  private Long stock;
+  private Long flowerCount;
 }
