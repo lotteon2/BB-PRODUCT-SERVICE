@@ -8,13 +8,11 @@ import javax.transaction.Transactional;
 import kr.bb.product.entity.Tag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @Transactional
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TagRepositoryTest {
   @Autowired TagRepository tagRepository;
   @Autowired DataSource dataSource;

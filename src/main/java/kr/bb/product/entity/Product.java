@@ -24,7 +24,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString
-@Document(collation = "product")
+@Document("product")
 public class Product {
   @Id
   @NotBlank

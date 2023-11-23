@@ -17,14 +17,14 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(basePackages = "kr.bb.product.repository.mongo")
 @RequiredArgsConstructor
 public class MongoDBConfiguration {
-  private final MongoMappingContext mongoMappingContext;
-
-  @Bean
-  public MappingMongoConverter mappingMongoConverter(
-      MongoDatabaseFactory mongoDatabaseFactory, MongoMappingContext mongoMappingContext) {
-    DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDatabaseFactory);
-    MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, mongoMappingContext);
-    converter.setTypeMapper(new DefaultMongoTypeMapper(null));
-    return converter;
-  }
+//  private final MongoMappingContext mongoMappingContext;
+//
+//  @Bean
+//  public MappingMongoConverter mappingMongoConverter(
+//      MongoDatabaseFactory mongoDatabaseFactory, MongoMappingContext mongoMappingContext) {
+//    DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDatabaseFactory);
+//    MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, mongoMappingContext);
+//    converter.setTypeMapper(new DefaultMongoTypeMapper(null));
+//    return converter;
+//  }
 }

@@ -13,6 +13,7 @@ import kr.bb.product.repository.jpa.CategoryRepository;
 import kr.bb.product.repository.jpa.TagRepository;
 import kr.bb.product.repository.mongo.ProductMongoRepository;
 import kr.bb.product.vo.Flowers;
+import kr.bb.product.vo.FlowersRequestData;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,8 +30,8 @@ class ProductServiceTest {
   @Autowired ProductService productService;
 
   @Test
-  @DisplayName("상품 등록 service")
-  void createProduct() {
+  @DisplayName("상품 등록 service logic")
+  void createProductServiceLogic() {
     // given
     // category, tag를 따로 조회해야 함
 
@@ -61,5 +62,36 @@ class ProductServiceTest {
     Product save = productMongoRepository.save(product1);
     System.out.println(save.toString());
     Assertions.assertThat(save).isNotNull();
+  }
+
+  @Test
+  @DisplayName("상품 등록 service")
+  void createProductService() {
+    List<Long> tagList = new ArrayList<>();
+    tagList.add(1L);
+    tagList.add(2L);
+
+    List<FlowersRequestData> list = new ArrayList<>();
+    list.add(FlowersRequestData.builder().flowerId(1L).flowerCount(2L).build());
+    list.add(FlowersRequestData.builder().flowerId(3L).flowerCount(3L).build());
+    list.add(FlowersRequestData.builder().flowerId(2L).flowerCount(2L).build());
+
+    ProductRequestData product =
+        ProductRequestData.builder()
+            .categoryId(1L)
+            .productTag(tagList)
+            .representativeFlower(FlowersRequestData.builder().flowerCount(3L).flowerId(1L).build())
+            .flowers(list)
+            .productName("Example Product")
+            .productSummary("Product Summary")
+            .productDescriptionImage("image")
+            .productThumbnail("thumbnail")
+            .productPrice(100L)
+            .productDescriptionImage("image_url")
+            .build();
+    productService.createProduct(product);
+    List<Product> all = productMongoRepository.findAll();
+    System.out.println(all.toString());
+    Assertions.assertThat(all.size()).isEqualTo(1);
   }
 }
