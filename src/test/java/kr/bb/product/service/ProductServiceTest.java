@@ -5,6 +5,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import kr.bb.product.dto.request.ProductRequestData;
 import kr.bb.product.entity.Category;
+import kr.bb.product.entity.Product;
 import kr.bb.product.entity.Tag;
 import kr.bb.product.errors.CategoryNotFoundException;
 import kr.bb.product.mapper.ProductMapper;
@@ -12,6 +13,7 @@ import kr.bb.product.repository.jpa.CategoryRepository;
 import kr.bb.product.repository.jpa.TagRepository;
 import kr.bb.product.repository.mongo.ProductMongoRepository;
 import kr.bb.product.vo.Flowers;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +45,7 @@ class ProductServiceTest {
     tagList.add(2L);
 
     List<Tag> allById = tagRepository.findAllById(tagList);
-    List<Category> all = categoryRepository.findAll();
-    System.out.println(all.toString());
+    Category category = categoryRepository.findById(1L).orElseThrow(CategoryNotFoundException::new);
 
     ProductRequestData product =
         ProductRequestData.builder()
@@ -56,6 +57,9 @@ class ProductServiceTest {
             .productDescriptionImage("image_url")
             .build();
     product.setStoreId(1L);
-//    productMapper.entityToData(product, category, allById, list);
+    Product product1 = productMapper.entityToData(product, category, allById, list);
+    Product save = productMongoRepository.save(product1);
+    System.out.println(save.toString());
+    Assertions.assertThat(save).isNotNull();
   }
 }
