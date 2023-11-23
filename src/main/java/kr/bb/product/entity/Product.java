@@ -1,10 +1,13 @@
 package kr.bb.product.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
-import kr.bb.product.dto.category.Category;
-import kr.bb.product.dto.tag.Tag;
+import kr.bb.product.entity.Category;
+import kr.bb.product.entity.ProductSaleStatus;
+import kr.bb.product.entity.Tag;
+import kr.bb.product.vo.Flowers;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,35 +24,59 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString
-@Document(collation = "product")
+@Document("product")
 public class Product {
-  @Id @NotBlank private String productId;
+  @Id
+  @NotBlank
+  @Field(name = "product_id")
+  private String productId;
 
-  private Category category;
+  private @Field(name = "category") Category category;
 
-  @NotBlank private String productName;
+  @NotBlank
+  private @Field(name = "product_name") String productName;
 
-  @NotBlank private String productSummary;
+  @NotBlank
+  private @Field(name = "product_summary") String productSummary;
 
-  @NotBlank private Long productPrice;
+  @NotBlank
+  private @Field(name = "product_price") Long productPrice;
 
-  @NotBlank private ProductSaleStatus productSaleStatus;
+  @Builder.Default
+  @NotBlank
+  private @Field(name = "product_sale_status") ProductSaleStatus productSaleStatus =
+      ProductSaleStatus.SALE;
 
-  private Tag tag;
+  private @Field(name = "tag") List<Tag> tag;
+  private @Field(name = "product_flowers") List<Flowers> productFlowers;
 
-  private Flowers productFlowers;
+  @NotBlank
+  private @Field(name = "product_description_image") String productDescriptionImage;
 
-  @NotBlank private String productDescriptionImage;
-  @NotBlank private Long reviewCount;
-  @Builder.Default @NotBlank private Long productSaleAmount = 0L;
+  @NotBlank
+  private @Field(name = "review_count") Long reviewCount;
 
-  @NotBlank private Double averageRating;
+  @Builder.Default
+  @NotBlank
+  @Field(name = "product_sale_amount")
+  private Long productSaleAmount = 0L;
 
-  @NotBlank private Long storeId;
+  @Builder.Default
+  @NotBlank
+  private @Field(name = "average_rating") Double averageRating = 0.0;
 
-  @NotBlank @CreatedDate private LocalDateTime createdAt;
+  @NotBlank
+  private @Field(name = "store_id") Long storeId;
 
-  @NotBlank @LastModifiedDate private LocalDateTime updatedAt;
+  @NotBlank
+  @CreatedDate
+  @Field(name = "created_at")
+  private LocalDateTime createdAt;
+
+  @NotBlank
+  @LastModifiedDate
+  @Field(name = "updated_at")
+  private LocalDateTime updatedAt;
 
   @NotBlank
   @Builder.Default

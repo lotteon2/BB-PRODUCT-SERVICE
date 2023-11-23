@@ -1,4 +1,4 @@
-package kr.bb.product.repository;
+package kr.bb.product.repository.mongo;
 
 import kr.bb.product.entity.Product;
 import org.springframework.data.mongodb.repository.MongoRepository;

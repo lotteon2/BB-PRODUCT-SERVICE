@@ -1,15 +1,17 @@
 package kr.bb.product.repository;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javax.transaction.Transactional;
-import kr.bb.product.dto.category.Category;
-import kr.bb.product.dto.tag.Tag;
-import kr.bb.product.entity.Flowers;
-import kr.bb.product.entity.Product;
 import kr.bb.product.entity.ProductSaleStatus;
+import kr.bb.product.entity.Category;
+import kr.bb.product.vo.Flowers;
+import kr.bb.product.entity.Product;
+import kr.bb.product.entity.Tag;
+import kr.bb.product.repository.mongo.ProductMongoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,13 @@ class ProductMongoRepositoryTest {
   @Test
   @DisplayName("상품 등록")
   void createProduct() {
+    List<Tag> tagList = new ArrayList<>();
+    tagList.add(Tag.builder().tagId(1L).tagName("tagname").build());
+
+    List<Flowers> list = new ArrayList<>();
+    list.add(Flowers.builder().isRepresentative(true).flowerId(2L).flowerCount(2L).build());
+    list.add(Flowers.builder().flowerId(3L).flowerCount(2L).build());
+    list.add(Flowers.builder().flowerId(4L).flowerCount(2L).build());
     Product product =
         Product.builder()
             .productId("123")
@@ -31,8 +40,8 @@ class ProductMongoRepositoryTest {
             .productSummary("Product Summary")
             .productPrice(100L)
             .productSaleStatus(ProductSaleStatus.SALE)
-            .tag(Tag.builder().tagName("tagname").tagId(1L).build())
-            .productFlowers(Flowers.builder().flowerName("flower1").stock(3L).flowerId(1L).build())
+            .tag(tagList)
+            .productFlowers(list)
             .productDescriptionImage("image_url")
             .reviewCount(5L)
             .productSaleAmount(50L)

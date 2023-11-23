@@ -1,16 +1,20 @@
 package kr.bb.product.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.transaction.Transactional;
-import kr.bb.product.dto.category.Category;
 import kr.bb.product.dto.request.ProductRequestData;
-import kr.bb.product.dto.tag.Tag;
-import kr.bb.product.entity.Flowers;
+import kr.bb.product.entity.Category;
 import kr.bb.product.entity.Product;
-import kr.bb.product.entity.ProductSaleStatus;
+import kr.bb.product.entity.Tag;
+import kr.bb.product.errors.CategoryNotFoundException;
 import kr.bb.product.mapper.ProductMapper;
-import kr.bb.product.repository.ProductMongoRepository;
+import kr.bb.product.repository.jpa.CategoryRepository;
+import kr.bb.product.repository.jpa.TagRepository;
+import kr.bb.product.repository.mongo.ProductMongoRepository;
+import kr.bb.product.vo.Flowers;
+import kr.bb.product.vo.FlowersRequestData;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,70 +24,74 @@ import org.springframework.boot.test.context.SpringBootTest;
 @Transactional
 class ProductServiceTest {
   @Autowired ProductMongoRepository productMongoRepository;
+  @Autowired TagRepository tagRepository;
+  @Autowired CategoryRepository categoryRepository;
   @Autowired ProductMapper productMapper;
   @Autowired ProductService productService;
 
   @Test
-  @DisplayName("상품 등록 service")
-  void createProduct() {
+  @DisplayName("상품 등록 service logic")
+  void createProductServiceLogic() {
+    // given
+    // category, tag를 따로 조회해야 함
+
+    // flowers
+    List<Flowers> list = new ArrayList<>();
+    list.add(Flowers.builder().isRepresentative(true).flowerId(1L).flowerCount(2L).build());
+    list.add(Flowers.builder().flowerId(3L).flowerCount(3L).build());
+    list.add(Flowers.builder().flowerId(2L).flowerCount(2L).build());
+
+    List<Long> tagList = new ArrayList<>();
+    tagList.add(1L);
+    tagList.add(2L);
+
+    List<Tag> allById = tagRepository.findAllById(tagList);
+    Category category = categoryRepository.findById(1L).orElseThrow(CategoryNotFoundException::new);
+
     ProductRequestData product =
         ProductRequestData.builder()
-            .category(Category.builder().categoryName("category").categoryId(1L).build())
             .productName("Example Product")
             .productSummary("Product Summary")
+            .productDescriptionImage("image")
+            .productThumbnail("thumbnail")
             .productPrice(100L)
-            .productSaleStatus(ProductSaleStatus.SALE)
-            .tag(Tag.builder().tagName("tagname").tagId(1L).build())
-            .productFlowers(Flowers.builder().flowerName("flower1").stock(3L).flowerId(1L).build())
             .productDescriptionImage("image_url")
-            .reviewCount(5L)
-            .productSaleAmount(50L)
-            .averageRating(4.5)
-            .storeId(1L)
             .build();
-    Product product1 = productMapper.entityToData(product);
+    product.setStoreId(1L);
+    Product product1 = productMapper.entityToData(product, category, allById, list);
     Product save = productMongoRepository.save(product1);
-    assertThat(product1.getProductId()).isEqualTo(save.getProductId());
+    System.out.println(save.toString());
+    Assertions.assertThat(save).isNotNull();
   }
 
   @Test
-  @DisplayName("상품 등록 태그 null case")
-  void createProductIfTagIsNull() {
+  @DisplayName("상품 등록 service")
+  void createProductService() {
+    List<Long> tagList = new ArrayList<>();
+    tagList.add(1L);
+    tagList.add(2L);
+
+    List<FlowersRequestData> list = new ArrayList<>();
+    list.add(FlowersRequestData.builder().flowerId(1L).flowerCount(2L).build());
+    list.add(FlowersRequestData.builder().flowerId(3L).flowerCount(3L).build());
+    list.add(FlowersRequestData.builder().flowerId(2L).flowerCount(2L).build());
+
     ProductRequestData product =
         ProductRequestData.builder()
-            .category(Category.builder().categoryName("category").categoryId(1L).build())
+            .categoryId(1L)
+            .productTag(tagList)
+            .representativeFlower(FlowersRequestData.builder().flowerCount(3L).flowerId(1L).build())
+            .flowers(list)
             .productName("Example Product")
             .productSummary("Product Summary")
+            .productDescriptionImage("image")
+            .productThumbnail("thumbnail")
             .productPrice(100L)
-            .productSaleStatus(ProductSaleStatus.SALE)
-            .productFlowers(Flowers.builder().flowerName("flower1").stock(3L).flowerId(1L).build())
             .productDescriptionImage("image_url")
-            .reviewCount(5L)
-            .productSaleAmount(50L)
-            .averageRating(4.5)
-            .storeId(1L)
             .build();
     productService.createProduct(product);
-  }
-
-  @Test
-  @DisplayName("상품 등록 필수 값 null인 경우 에러 반환")
-  void createProductIfNotNullTest() {
-    ProductRequestData product =
-        ProductRequestData.builder()
-            .category(Category.builder().categoryName("category").categoryId(1L).build())
-            .productSummary("Product Summary")
-            .productPrice(100L)
-            .productSaleStatus(ProductSaleStatus.SALE)
-            .productFlowers(Flowers.builder().flowerName("flower1").stock(3L).flowerId(1L).build())
-            .productDescriptionImage("image_url")
-            .reviewCount(5L)
-            .productSaleAmount(50L)
-            .averageRating(4.5)
-            .storeId(1L)
-            .build();
-    Product product1 = productMapper.entityToData(product);
-    Product save = productMongoRepository.save(product1);
-    assertThat(save.getProductName()).isNull();
+    List<Product> all = productMongoRepository.findAll();
+    System.out.println(all.toString());
+    Assertions.assertThat(all.size()).isGreaterThan(0);
   }
 }

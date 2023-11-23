@@ -1,5 +1,11 @@
-package kr.bb.product.dto.category;
+package kr.bb.product.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import kr.bb.product.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,7 +19,15 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString
+@Entity
+@Table(name = "category")
 public class Category extends BaseEntity {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "category_id")
   private Long categoryId;
+
+  @Column(name = "category_name")
   private String categoryName;
 }
