@@ -7,8 +7,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @Configuration
 @EnableReactiveMongoAuditing
-@EnableMongoRepositories(basePackages = "kr.bb.product.repository.mongo")
+@EnableMongoRepositories(basePackages = "kr.bb.product.domain.*.repository.mongo")
 @RequiredArgsConstructor
-public class MongoDBConfiguration {
-
-}
+public class MongoDBConfiguration {}

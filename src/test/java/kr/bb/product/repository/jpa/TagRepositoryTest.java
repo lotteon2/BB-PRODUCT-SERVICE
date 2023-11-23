@@ -5,7 +5,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import java.util.List;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
-import kr.bb.product.entity.Tag;
+import kr.bb.product.domain.tag.entity.Tag;
+import kr.bb.product.domain.tag.repository.jpa.TagRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 @Transactional
 class TagRepositoryTest {
-  @Autowired TagRepository tagRepository;
+  @Autowired
+  TagRepository tagRepository;
   @Autowired DataSource dataSource;
 
   @Test
