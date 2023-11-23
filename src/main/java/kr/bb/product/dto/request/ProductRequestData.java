@@ -1,6 +1,7 @@
 package kr.bb.product.dto.request;
 
 import java.util.List;
+import kr.bb.product.vo.FlowersRequestData;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

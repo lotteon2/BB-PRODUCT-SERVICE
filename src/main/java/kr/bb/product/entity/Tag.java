@@ -1,24 +1,30 @@
-package kr.bb.product.entity.product;
+package kr.bb.product.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kr.bb.product.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString
 @Entity
-@Table(name = "category")
+@Table(name = "tag")
 public class Tag extends BaseEntity {
-  @Id private Long tagId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "tag_id")
+  private Long tagId;
 
   @Column(name = "tag_name")
   private String tagName;

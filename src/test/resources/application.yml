@@ -10,6 +10,18 @@ spring:
   h2:
     console:
       enabled: true
+  sql:
+    init:
+      mode: always
   mongodb:
     embedded:
       version: 3.5.5
+  jpa:
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+    # Bean이 생성되기 전에 ddl 실행
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true

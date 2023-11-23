@@ -1,4 +1,4 @@
-package kr.bb.product.entity.product;
+package kr.bb.product.vo;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Flowers {
+public class FlowersRequestData {
   private Long flowerId;
   private Long flowerCount;
-  private Boolean isRepresentative;
 }

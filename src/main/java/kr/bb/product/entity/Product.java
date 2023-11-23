@@ -1,10 +1,13 @@
-package kr.bb.product.entity.product;
+package kr.bb.product.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import kr.bb.product.entity.Category;
 import kr.bb.product.entity.ProductSaleStatus;
+import kr.bb.product.entity.Tag;
+import kr.bb.product.vo.Flowers;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
