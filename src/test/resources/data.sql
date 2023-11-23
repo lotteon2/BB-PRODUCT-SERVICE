@@ -29,25 +29,25 @@ create table if not exists flower
     language_of_flower varchar(255) null
 );
 
-INSERT INTO category (category_id, category_name)
-VALUES (1, 'Electronics'),
-       (2, 'Clothing'),
-       (3, 'Home and Garden'),
-       (4, 'Books'),
-       (5, 'Sports and Outdoors'),
-       (6, 'Toys and Games'),
-       (7, 'Beauty and Personal Care'),
-       (8, 'Automotive'),
-       (9, 'Health and Household'),
-       (10, 'Office Products');
+INSERT INTO category ( category_name)
+VALUES ('Electronics'),
+       ( 'Clothing'),
+       ( 'Home and Garden'),
+       ( 'Books'),
+       ( 'Sports and Outdoors'),
+       ( 'Toys and Games'),
+       ( 'Beauty and Personal Care'),
+       ( 'Automotive'),
+       ('Health and Household'),
+       ('Office Products');
 
 INSERT INTO tag ( tag_name)
 VALUES ('친구'),
        ('연인'),
        ('가족');
 
-insert into flower(flower_id, flower_name, language_of_flower)
-values (1, '장미', '장미 꽃말'),
-       (2, '빨간 장미', '빨간 장미 꽃말'),
-       (3, '파란 장미', '파란 장미 꽃말'),
-       (4, '노란 장미', '노란 장미 꽃말');
+insert into flower( flower_name, language_of_flower)
+values ('장미', '장미 꽃말'),
+       ('빨간 장미', '빨간 장미 꽃말'),
+       ('파란 장미', '파란 장미 꽃말'),
+       ( '노란 장미', '노란 장미 꽃말');

@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
-  VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "Validation failed for args");
+  VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "Validation failed for args"),
+  CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "no match category");
 
   private final HttpStatus code;
   private final String message;
