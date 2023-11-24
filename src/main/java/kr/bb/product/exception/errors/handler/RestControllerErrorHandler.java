@@ -2,6 +2,7 @@ package kr.bb.product.exception.errors.handler;
 
 import bloomingblooms.response.ErrorResponse;
 import kr.bb.product.exception.errors.CategoryNotFoundException;
+import kr.bb.product.exception.errors.ProductNotFoundException;
 import kr.bb.product.exception.errors.common.ErrorCode;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +35,17 @@ public class RestControllerErrorHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(CategoryNotFoundException.class)
   protected ResponseEntity<ErrorResponse> categoryNotFound(
       CategoryNotFoundException categoryNotFoundException) {
+    return ResponseEntity.ok()
+        .body(
+            ErrorResponse.builder()
+                .code(categoryNotFoundException.getMessage())
+                .message(categoryNotFoundException.getMessage())
+                .build());
+  }
+
+  @ExceptionHandler(ProductNotFoundException.class)
+  protected ResponseEntity<ErrorResponse> categoryNotFound(
+      ProductNotFoundException categoryNotFoundException) {
     return ResponseEntity.ok()
         .body(
             ErrorResponse.builder()

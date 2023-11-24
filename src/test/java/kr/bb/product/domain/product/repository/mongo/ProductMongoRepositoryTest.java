@@ -1,70 +1,34 @@
-package kr.bb.product.repository;
+package kr.bb.product.domain.product.repository.mongo;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.mongodb.client.MongoClients;
-import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.ImmutableMongodConfig;
-import de.flapdoodle.embed.mongo.config.MongodConfig;
-import de.flapdoodle.embed.mongo.config.Net;
-import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.runtime.Network;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.transaction.Transactional;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.repository.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.salesresume.entity.ProductSaleStatus;
 import kr.bb.product.domain.tag.entity.Tag;
-import org.bson.types.ObjectId;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import kr.bb.product.exception.errors.ProductNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
 class ProductMongoRepositoryTest {
-
   private static final String CONNECTION_STRING = "mongodb://%s:%d";
   @Autowired ProductMongoRepository productMongoRepository;
-  private MongodExecutable mongodExecutable;
-  private MongoTemplate mongoTemplate;
-
-  @AfterEach
-  void clean() {
-    mongodExecutable.stop();
-  }
-
-  @BeforeEach
-  void setup() throws Exception {
-    String ip = "localhost";
-    int port = 27017;
-
-    ImmutableMongodConfig mongodConfig =
-        MongodConfig.builder()
-            .version(Version.Main.PRODUCTION)
-            .net(new Net(ip, port, Network.localhostIsIPv6()))
-            .build();
-
-    MongodStarter starter = MongodStarter.getDefaultInstance();
-    mongodExecutable = starter.prepare(mongodConfig);
-    mongodExecutable.start();
-    mongoTemplate =
-        new MongoTemplate(
-            MongoClients.create(String.format(CONNECTION_STRING, ip, port)), "local");
-  }
+  @Autowired MongoTemplate mongoTemplate;
 
   @Test
-  @DisplayName("상품 등록")
-  void createProduct() {
+  @DisplayName("상품 판매 상태를 DISCONTINUED로 변경")
+  void updateSaleStatus() {
     List<Tag> tagList = new ArrayList<>();
     tagList.add(Tag.builder().tagId(1L).tagName("tagname").build());
 
@@ -74,7 +38,6 @@ class ProductMongoRepositoryTest {
     list.add(ProductFlowers.builder().flowerId(4L).flowerCount(2L).build());
     Product product =
         Product.builder()
-            .productId("111")
             .category(Category.builder().categoryName("category").categoryId(1L).build())
             .productName("Example Product")
             .productSummary("Product Summary")
@@ -90,9 +53,23 @@ class ProductMongoRepositoryTest {
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
             .build();
-    Product save = productMongoRepository.save(product);
-    assertThat(save.getProductId()).isNotNull();
 
-    System.out.println(save);
+    Product save = productMongoRepository.save(product);
+
+    productMongoRepository.updateProductSaleStatus(save);
+
+    Product product1 =
+        productMongoRepository
+            .findByProductId(save.getProductId())
+            .orElseThrow(ProductNotFoundException::new);
+
+    System.out.println("FIND " + product1);
+
+    Product updatedProduct =
+        productMongoRepository
+            .findByProductId(save.getProductId())
+            .orElseThrow(ProductNotFoundException::new);
+
+    assertThat(updatedProduct.getProductSaleStatus()).isEqualTo(ProductSaleStatus.DISCONTINUED);
   }
 }

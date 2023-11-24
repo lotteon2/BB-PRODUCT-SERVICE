@@ -2,7 +2,6 @@ package kr.bb.product.domain.product.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.vo.ProductFlowers;
@@ -18,6 +17,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 @Getter
 @Builder
@@ -26,7 +27,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @ToString
 @Document
 public class Product {
-  @Id
+  @MongoId(value = FieldType.DECIMAL128)
   @NotBlank
   @Field(name = "product_id")
   private String productId;
@@ -82,4 +83,8 @@ public class Product {
   @Builder.Default
   @Field(name = "is_deleted")
   private Boolean isDeleted = false;
+
+  public void updateSaleStatus(ProductSaleStatus productSaleStatus) {
+    this.productSaleStatus = productSaleStatus;
+  }
 }
