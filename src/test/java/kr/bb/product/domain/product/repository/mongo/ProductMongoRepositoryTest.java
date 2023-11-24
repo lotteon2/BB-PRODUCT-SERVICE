@@ -1,7 +1,6 @@
 package kr.bb.product.domain.product.repository.mongo;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,7 +8,7 @@ import java.util.List;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.vo.ProductFlowers;
-import kr.bb.product.domain.salesresume.entity.ProductSaleStatus;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.exception.errors.ProductNotFoundException;
 import org.junit.jupiter.api.DisplayName;

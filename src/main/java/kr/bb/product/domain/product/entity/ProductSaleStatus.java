@@ -1,4 +1,4 @@
-package kr.bb.product.domain.salesresume.entity;
+package kr.bb.product.domain.product.entity;
 
 import lombok.Getter;
 

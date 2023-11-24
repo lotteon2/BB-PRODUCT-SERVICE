@@ -6,15 +6,15 @@ import javax.annotation.processing.Generated;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.api.request.ProductRequestData;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
-import kr.bb.product.domain.salesresume.entity.ProductSaleStatus;
 import kr.bb.product.domain.tag.entity.Tag;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-11-24T23:38:59+0900",
+    date = "2023-11-25T00:47:50+0900",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 11.0.18 (Azul Systems, Inc.)"
 )
 @Component

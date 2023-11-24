@@ -3,7 +3,7 @@ package kr.bb.product.domain.product.api.request;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
-import kr.bb.product.domain.salesresume.entity.ProductSaleStatus;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

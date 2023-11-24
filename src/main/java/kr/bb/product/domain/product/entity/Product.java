@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.vo.ProductFlowers;
-import kr.bb.product.domain.salesresume.entity.ProductSaleStatus;
 import kr.bb.product.domain.tag.entity.Tag;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

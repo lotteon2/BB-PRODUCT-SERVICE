@@ -6,7 +6,7 @@ import kr.bb.product.domain.product.api.request.ProductRequestData;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
-import kr.bb.product.domain.salesresume.entity.ProductSaleStatus;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.tag.entity.Tag;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
