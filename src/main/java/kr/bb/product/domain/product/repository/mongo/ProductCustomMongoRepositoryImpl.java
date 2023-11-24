@@ -13,10 +13,10 @@ public class ProductCustomMongoRepositoryImpl implements ProductCustomMongoRepos
   private final MongoTemplate mongoTemplate;
 
   @Override
-  public void updateProductSaleStatus(Product product) {
+  public void updateProductSaleStatus(Product product, ProductSaleStatus productSaleStatus) {
     mongoTemplate.updateFirst(
         Query.query(Criteria.where("_id").is(product.getProductId())),
-        Update.update("product_sale_status", ProductSaleStatus.DISCONTINUED),
+        Update.update("product_sale_status", productSaleStatus),
         Product.class);
   }
 }

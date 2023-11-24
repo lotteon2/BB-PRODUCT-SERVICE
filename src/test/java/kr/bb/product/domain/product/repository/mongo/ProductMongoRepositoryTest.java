@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 class ProductMongoRepositoryTest {
-  private static final String CONNECTION_STRING = "mongodb://%s:%d";
   @Autowired ProductMongoRepository productMongoRepository;
   @Autowired MongoTemplate mongoTemplate;
 
@@ -56,7 +55,7 @@ class ProductMongoRepositoryTest {
 
     Product save = productMongoRepository.save(product);
 
-    productMongoRepository.updateProductSaleStatus(save);
+    productMongoRepository.updateProductSaleStatus(save, ProductSaleStatus.DISCONTINUED);
 
     Product product1 =
         productMongoRepository

@@ -14,14 +14,14 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-11-24T14:25:59+0900",
+    date = "2023-11-24T23:38:59+0900",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 11.0.18 (Azul Systems, Inc.)"
 )
 @Component
 public class ProductMapperImpl implements ProductMapper {
 
     @Override
-    public Product entityToData(ProductRequestData productRequestData, Category category, List<Tag> tag, List<ProductFlowers> flowers) {
+    public Product createProductRequestToEntity(ProductRequestData productRequestData, Category category, List<Tag> tag, List<ProductFlowers> flowers) {
         if ( productRequestData == null && category == null && tag == null && flowers == null ) {
             return null;
         }

@@ -4,6 +4,7 @@ import java.util.List;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.category.repository.jpa.CategoryRepository;
 import kr.bb.product.domain.product.api.request.ProductRequestData;
+import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.mapper.ProductMapper;
 import kr.bb.product.domain.product.repository.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.vo.ProductFlowers;
@@ -11,6 +12,7 @@ import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.domain.tag.repository.jpa.TagRepository;
 import kr.bb.product.exception.errors.CategoryNotFoundException;
+import kr.bb.product.exception.errors.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,16 @@ public class ProductService {
   private final ProductMapper productMapper;
 
   @Transactional
+  public void updateProductSaleStatus(String productId, ProductRequestData productRequestData) {
+    Product product =
+        productMongoRepository
+            .findByProductId(productId)
+            .orElseThrow(ProductNotFoundException::new);
+    productMongoRepository.updateProductSaleStatus(
+        product, productRequestData.getProductSaleStatus());
+  }
+
+  @Transactional
   public void createProduct(ProductRequestData productRequestData) {
     Category category = getCategory(productRequestData);
     List<Tag> tags = getTags(productRequestData);
@@ -34,7 +46,7 @@ public class ProductService {
     List<ProductFlowers> flowers = getFlowers(productRequestData, representativeFlower);
 
     productMongoRepository.save(
-        productMapper.entityToData(productRequestData, category, tags, flowers));
+        productMapper.createProductRequestToEntity(productRequestData, category, tags, flowers));
   }
 
   @NotNull

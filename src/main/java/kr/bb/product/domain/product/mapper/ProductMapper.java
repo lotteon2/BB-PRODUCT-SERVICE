@@ -31,7 +31,7 @@ public interface ProductMapper {
     @Mapping(target = "updatedAt", ignore = true),
     @Mapping(target = "isDeleted", ignore = true)
   })
-  Product entityToData(
+  Product createProductRequestToEntity(
       ProductRequestData productRequestData,
       Category category,
       List<Tag> tag,
