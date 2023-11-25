@@ -1,7 +1,6 @@
 package kr.bb.product.domain.review.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +8,7 @@ import javax.persistence.EntityManager;
 import kr.bb.product.domain.review.adapter.in.ReviewCommand;
 import kr.bb.product.domain.review.adapter.in.ReviewCommand.Register;
 import kr.bb.product.domain.review.adapter.in.ReviewCommand.ReviewImage;
-import kr.bb.product.domain.review.adapter.out.ReviewRepository;
+import kr.bb.product.domain.review.adapter.out.jpa.ReviewRepository;
 import kr.bb.product.domain.review.application.port.out.ReviewOutPort;
 import kr.bb.product.domain.review.entity.Review;
 import kr.bb.product.domain.review.entity.ReviewImages;

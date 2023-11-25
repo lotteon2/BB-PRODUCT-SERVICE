@@ -3,6 +3,7 @@ package kr.bb.product.domain.review.adapter.out;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.List;
+import kr.bb.product.domain.review.adapter.out.jpa.ReviewJpaRepository;
 import kr.bb.product.domain.review.entity.Review;
 import kr.bb.product.domain.review.entity.ReviewImages;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +13,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
 class ReviewJpaRepositoryTest {
-  @Autowired ReviewJpaRepository reviewJpaRepository;
+  @Autowired
+  ReviewJpaRepository reviewJpaRepository;
 
   @Test
   @DisplayName("리뷰 작성 repository 테스트")

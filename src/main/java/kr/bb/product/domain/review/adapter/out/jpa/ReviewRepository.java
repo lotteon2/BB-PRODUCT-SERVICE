@@ -1,6 +1,7 @@
-package kr.bb.product.domain.review.adapter.out;
+package kr.bb.product.domain.review.adapter.out.jpa;
 
 import java.util.List;
+import kr.bb.product.domain.review.adapter.out.jpa.ReviewJpaRepository;
 import kr.bb.product.domain.review.application.port.out.ReviewOutPort;
 import kr.bb.product.domain.review.entity.Review;
 import org.springframework.stereotype.Repository;
