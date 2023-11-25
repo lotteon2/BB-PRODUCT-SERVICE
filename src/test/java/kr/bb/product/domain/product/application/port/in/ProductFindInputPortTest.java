@@ -1,4 +1,4 @@
-package kr.bb.product.domain.product.adapter.out.mongo;
+package kr.bb.product.domain.product.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -9,24 +9,28 @@ import kr.bb.product.domain.product.api.request.ProductRequestData;
 import kr.bb.product.domain.product.application.ProductService;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductByCategory;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductsByCategory;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class ProductRepositoryTest {
+class ProductFindInputPortTest {
   @Autowired private ProductOutPort productOutPort;
   @Autowired private ProductService productService;
 
   @Test
-  @DisplayName("상품 리스트 조회: 카테고리별")
-  void productByCategory() {
+  @DisplayName("상품 카테고리 조회 페이징")
+  void getProductsByCategory() {
+    // given
     for (int i = 0; i < 10; i++) {
       List<Long> tagList = new ArrayList<>();
       tagList.add(1L);
@@ -54,9 +58,18 @@ class ProductRepositoryTest {
       productService.createProduct(product);
     }
 
+    // when
     PageRequest pageRequest = PageRequest.of(0, 2);
-    Slice<Product> byCategory = productOutPort.findByCategory(1L, pageRequest);
-    List<Product> content = byCategory.getContent();
-    assertThat(content.size()).isEqualTo(2);
+    Page<Product> byCategory = productOutPort.findByCategory(1L, pageRequest);
+
+    // 반환 객체로 변환
+    List<ProductByCategory> productByCategories =
+        ProductsByCategory.fromEntity(byCategory.getContent());
+    ProductsByCategory data = ProductsByCategory.getData(
+            productByCategories, byCategory.getTotalPages());
+
+    assertThat(data.getTotalCnt()).isEqualTo(5);
+    // 찜 생략
+
   }
 }
