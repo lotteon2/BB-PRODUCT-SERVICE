@@ -2,7 +2,6 @@ package kr.bb.product.domain.review.application.port.in;
 
 import java.util.List;
 import kr.bb.product.domain.review.adapter.in.ReviewCommand;
-import kr.bb.product.domain.review.adapter.in.ReviewCommand.Register;
 import kr.bb.product.domain.review.application.port.out.ReviewOutPort;
 import kr.bb.product.domain.review.application.usecase.ReviewStoreUseCase;
 import kr.bb.product.domain.review.entity.Review;
@@ -26,7 +25,11 @@ public class ReviewStoreInputPort implements ReviewStoreUseCase {
   public void writeReview(ReviewCommand.Register review, Long userId, String productId) {
     Review reviewEntity = ReviewCommand.Register.toEntity(review, userId, productId);
     List<ReviewImages> images = ReviewCommand.ReviewImage.toEntityList(review.getReviewImage());
-    reviewEntity.setReviewImages(images);
+
+    images.stream()
+        .peek(img -> img.setReview(reviewEntity))
+        .forEach(reviewEntity.getReviewImages()::add);
+
     reviewOutPort.createReview(reviewEntity);
   }
 }
