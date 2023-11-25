@@ -79,10 +79,7 @@ class ReviewStoreInputPortTest {
     Register review =
         Register.builder().reviewContent("content").reviewImage(images).rating(4.5).build();
     reviewStoreInputPort.writeReview(review, 1L, "osf98");
-    em.flush();
-    em.clear();
     Review reviews = reviewRepository.findAll().get(0);
-    System.out.println(reviews.toString());
     assertThat(reviews.getReviewRating()).isEqualTo(4.5);
   }
 }
