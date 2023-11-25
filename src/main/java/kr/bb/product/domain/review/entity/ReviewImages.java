@@ -16,9 +16,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Builder
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
@@ -27,7 +29,7 @@ public class ReviewImages extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "review_images_id")
-  private Long id;
+  private Long reviewImageId;
 
   @Column(name = "review_image_url")
   private String reviewImageUrl;
@@ -37,5 +39,4 @@ public class ReviewImages extends BaseEntity {
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
   @JoinColumn(name = "reviewId")
   private Review review;
-
 }

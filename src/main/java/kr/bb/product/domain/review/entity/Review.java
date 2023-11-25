@@ -20,6 +20,7 @@ import lombok.ToString;
 
 @Getter
 @Builder
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
@@ -47,4 +48,8 @@ public class Review extends BaseEntity {
       mappedBy = "review",
       cascade = {CascadeType.PERSIST})
   private List<ReviewImages> reviewImages = new ArrayList<>();
+
+  public void setReviewImages(List<ReviewImages> reviewImages) {
+    this.reviewImages = reviewImages;
+  }
 }
