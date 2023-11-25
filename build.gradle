@@ -86,10 +86,12 @@ jacocoTestCoverageVerification {
 test {
     jacoco {
         destinationFile = file("$buildDir/jacoco/jacoco.exec")
-        excludes += ["kr/bb/product/controller/**",
-                     "kr/bb/product/errors/**",
-                     "kr/bb/product/mapper/**",
-                     "kr/bb/product/handler/**",
+        excludes += ["**/controller/**",
+                     "**/errors/**",
+                     "**/mapper/**",
+                     "**/handler/**",
+                     "**/common/**",
+                     "**/api/**",
         ]
     }
     useJUnitPlatform()
@@ -111,10 +113,12 @@ jacocoTestReport {
                             excludes: [
                                     "**/*Application*",
                                     "**/*generated*",
-                                    "kr/bb/product/controller/**",
-                                    "kr/bb/product/errors/**",
-                                    "kr/bb/product/mapper/**",
-                                    "kr/bb/product/handler/**"
+                                    "**/controller/**",
+                                    "**/errors/**",
+                                    "**/mapper/**",
+                                    "**/handler/**",
+                                    "**/common/**",
+                                    "**/api/**",
                             ] + Qdomains)
                 })
         )
