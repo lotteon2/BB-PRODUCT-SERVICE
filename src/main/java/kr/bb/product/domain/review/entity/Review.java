@@ -32,8 +32,8 @@ public class Review extends BaseEntity {
   private String content;
 
   @Column(name = "rating")
-  private Integer rating;
+  private Double rating;
 
   @Column(name = "product_id")
-  private Long productId;
+  private String productId;
 }
