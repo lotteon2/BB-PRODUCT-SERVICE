@@ -4,10 +4,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.api.request.ProductRequestData;
+import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
-import kr.bb.product.domain.product.repository.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.exception.errors.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 class ProductServiceTest {
+  @Autowired ProductOutPort productOutPort;
   @Autowired ProductMongoRepository productMongoRepository;
   @Autowired ProductService productService;
 
@@ -61,7 +63,7 @@ class ProductServiceTest {
     ProductRequestData product = getProductRequestData();
     productService.createProduct(product);
     Product product1 = productMongoRepository.findAll().get(0);
-    productMongoRepository.updateProductSaleStatus(product1, ProductSaleStatus.DELETED);
+    productOutPort.updateProductSaleStatus(product1, ProductSaleStatus.DELETED);
 
     Product product2 =
         productMongoRepository

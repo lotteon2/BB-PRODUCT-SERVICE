@@ -6,9 +6,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import kr.bb.product.domain.category.entity.Category;
+import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
+import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
+import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.exception.errors.ProductNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 class ProductMongoRepositoryTest {
   @Autowired ProductMongoRepository productMongoRepository;
   @Autowired MongoTemplate mongoTemplate;
+  @Autowired ProductOutPort productOutPort;
 
   @Test
   @DisplayName("상품 판매 상태를 DISCONTINUED로 변경")
@@ -54,7 +57,7 @@ class ProductMongoRepositoryTest {
 
     Product save = productMongoRepository.save(product);
 
-    productMongoRepository.updateProductSaleStatus(save, ProductSaleStatus.DISCONTINUED);
+    productOutPort.updateProductSaleStatus(save, ProductSaleStatus.DISCONTINUED);
 
     Product product1 =
         productMongoRepository

@@ -16,7 +16,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.repository.mongo.ProductMongoRepository;
+import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.tag.entity.Tag;

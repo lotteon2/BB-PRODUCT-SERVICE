@@ -1,4 +1,4 @@
-package kr.bb.product.domain.product.mapper;
+package kr.bb.product.domain.product.entity.mapper;
 
 import java.util.List;
 import kr.bb.product.domain.category.entity.Category;
