@@ -18,7 +18,7 @@ class ReviewRepositoryTest {
   @DisplayName("review repository adapter test")
   void adapterReviewSave() {
     reviewRepositoryImpl.createReview(
-        Review.builder().content("content").rating(4.5).userId(1L).build());
+        Review.builder().reviewContent("content").reviewRating(4.5).userId(1L).build());
     List<Review> all = reviewRepositoryImpl.findAll();
     System.out.println(all.size());
   }
