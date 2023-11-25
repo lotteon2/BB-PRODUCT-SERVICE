@@ -20,9 +20,6 @@ public class ReviewRestController {
       @PathVariable String productId,
       @RequestHeader Long userId,
       @RequestBody ReviewCommand.Register review) {
-    System.out.println(userId);
-    System.out.println(productId);
-    System.out.println(review);
     reviewStoreUseCase.writeReview(review, userId, productId);
   }
 }
