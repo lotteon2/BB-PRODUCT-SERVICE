@@ -1,6 +1,7 @@
 package kr.bb.product.domain.product.adapter.in.api;
 
 import bloomingblooms.response.CommonResponse;
+import java.util.Optional;
 import javax.validation.Valid;
 import kr.bb.product.domain.product.application.port.in.ProductFindInputPort;
 import kr.bb.product.domain.product.application.port.in.ProductStoreInputPort;
@@ -24,10 +25,10 @@ public class ProductRestController {
 
   @GetMapping("tag/{tagId}")
   public CommonResponse<ProductList> getProductListByTag(
-      @PathVariable Long tagId, Pageable pageable, @RequestHeader Long userId) {
+      @PathVariable Long tagId, Pageable pageable, @RequestHeader Optional<Long> userId) {
     ProductList productByTag;
-    if (userId != null) {
-      productByTag = productFindInputPort.getProductsByTag(userId, tagId, pageable);
+    if (userId.isPresent()) {
+      productByTag = productFindInputPort.getProductsByTag(userId.get(), tagId, pageable);
     } else {
       productByTag = productFindInputPort.getProductsByTag(tagId, pageable);
     }
@@ -39,10 +40,11 @@ public class ProductRestController {
 
   @GetMapping("category/{categoryId}")
   public CommonResponse<ProductList> getProductListByCategory(
-      @PathVariable Long categoryId, Pageable pageable, @RequestHeader Long userId) {
+      @PathVariable Long categoryId, Pageable pageable, @RequestHeader Optional<Long> userId) {
     ProductList productsByCategory;
-    if (userId != null) {
-      productsByCategory = productFindInputPort.getProductsByCategory(userId, categoryId, pageable);
+    if (userId.isPresent()) {
+      productsByCategory =
+          productFindInputPort.getProductsByCategory(userId.get(), categoryId, pageable);
     } else {
       productsByCategory = productFindInputPort.getProductsByCategory(categoryId, pageable);
     }
