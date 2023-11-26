@@ -22,6 +22,21 @@ public class ProductRestController {
   private final ProductFindInputPort productFindInputPort;
   private final ProductStoreInputPort productStoreInputPort;
 
+  @GetMapping("tag/{tagId}")
+  public CommonResponse<ProductList> getProductListByTag(
+      @PathVariable Long tagId, Pageable pageable, @RequestHeader Long userId) {
+    ProductList productByTag;
+    if (userId != null) {
+      productByTag = productFindInputPort.getProductsByTag(userId, tagId, pageable);
+    } else {
+      productByTag = productFindInputPort.getProductsByTag(tagId, pageable);
+    }
+    return CommonResponse.<ProductList>builder()
+        .data(productByTag)
+        .message("select success")
+        .build();
+  }
+
   @GetMapping("category/{categoryId}")
   public CommonResponse<ProductList> getProductListByCategory(
       @PathVariable Long categoryId, Pageable pageable, @RequestHeader Long userId) {

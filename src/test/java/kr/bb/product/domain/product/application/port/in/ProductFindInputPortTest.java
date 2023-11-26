@@ -7,8 +7,8 @@ import java.util.List;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.infrastructure.client.WishlistServiceClient;
 import org.junit.jupiter.api.DisplayName;
@@ -82,6 +82,7 @@ class ProductFindInputPortTest {
   @Test
   @DisplayName("태그별 상품 리스트 조회")
   void getProductListByTagId(){
+    productOutPort.deleteAll();
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 3);
     Page<Product> productsByTagId = productOutPort.findProductsByTagId(1L, pageRequest);
