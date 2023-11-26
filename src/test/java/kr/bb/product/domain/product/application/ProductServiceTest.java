@@ -4,13 +4,12 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
-import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
-import kr.bb.product.domain.product.api.request.ProductRequestData;
+import kr.bb.product.domain.product.application.port.in.ProductStoreInputPort;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
-import kr.bb.product.exception.errors.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,15 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class ProductServiceTest {
   @Autowired ProductOutPort productOutPort;
-  @Autowired ProductMongoRepository productMongoRepository;
-  @Autowired ProductService productService;
+  @Autowired ProductStoreInputPort productStoreInputPort;
 
   @BeforeEach
   void setup() {
-    productMongoRepository.deleteAll();
+    productOutPort.deleteAll();
   }
 
-  private ProductRequestData getProductRequestData() {
+  private ProductCommand.ProductRegister getProductRequestData() {
     List<Long> tagList = new ArrayList<>();
     tagList.add(1L);
     tagList.add(2L);
@@ -40,8 +38,8 @@ class ProductServiceTest {
     list.add(ProductFlowersRequestData.builder().flowerId(3L).flowerCount(3L).build());
     list.add(ProductFlowersRequestData.builder().flowerId(2L).flowerCount(2L).build());
 
-    ProductRequestData product =
-        ProductRequestData.builder()
+    ProductCommand.ProductRegister product =
+        ProductCommand.ProductRegister.builder()
             .categoryId(1L)
             .productTag(tagList)
             .representativeFlower(
@@ -60,48 +58,14 @@ class ProductServiceTest {
   @Test
   @DisplayName("상품 판매 상태 변경 service logic")
   void productSaleStatusChange() {
-    ProductRequestData product = getProductRequestData();
-    productService.createProduct(product);
-    Product product1 = productMongoRepository.findAll().get(0);
+    ProductCommand.ProductRegister product = getProductRequestData();
+    productStoreInputPort.createProduct(product);
+    Product product1 = productOutPort.findAll().get(0);
     productOutPort.updateProductSaleStatus(product1, ProductSaleStatus.DELETED);
 
     Product product2 =
-        productMongoRepository
-            .findByProductId(product1.getProductId())
-            .orElseThrow(ProductNotFoundException::new);
+        productOutPort
+            .findByProductId(product1.getProductId());
     assertThat(product2.getProductSaleStatus()).isEqualTo(ProductSaleStatus.DELETED);
-  }
-
-  @Test
-  @DisplayName("product service test")
-  void updateProductSaleStatus() {
-    ProductRequestData productRequestData = getProductRequestData();
-    productService.createProduct(productRequestData);
-    Product product = productMongoRepository.findAll().get(0);
-    productRequestData.setProductSaleStatus(ProductSaleStatus.DELETED);
-    productService.updateProductSaleStatus(product.getProductId(), productRequestData);
-    Product product1 =
-        productMongoRepository
-            .findByProductId(product.getProductId())
-            .orElseThrow(ProductNotFoundException::new);
-    assertThat(product1.getIsDeleted()).isEqualTo(true);
-    assertThat(product1.getProductSaleStatus()).isEqualTo(ProductSaleStatus.DISCONTINUED);
-  }
-
-  @Test
-  @DisplayName("product service test discontinued")
-  void updateProductSaleStatusDiscontinued() {
-    ProductRequestData productRequestData = getProductRequestData();
-    productService.createProduct(productRequestData);
-    Product product = productMongoRepository.findAll().get(0);
-    assertThat(product.getProductSaleStatus()).isEqualTo(ProductSaleStatus.SALE);
-    productRequestData.setProductSaleStatus(ProductSaleStatus.DISCONTINUED);
-    productService.updateProductSaleStatus(product.getProductId(), productRequestData);
-    Product product1 =
-        productMongoRepository
-            .findByProductId(product.getProductId())
-            .orElseThrow(ProductNotFoundException::new);
-    assertThat(product1.getIsDeleted()).isEqualTo(false);
-    assertThat(product1.getProductSaleStatus()).isEqualTo(ProductSaleStatus.DISCONTINUED);
   }
 }

@@ -1,13 +1,14 @@
 package kr.bb.product.domain.product.adapter.out.mongo;
 
+import java.util.List;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.exception.errors.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -22,6 +23,7 @@ public class ProductRepository implements ProductOutPort {
 
   @Override
   public Page<Product> findByCategory(Long categoryId, Pageable pageable) {
+    pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
     return productMongoRepository.findByCategoryId(categoryId, pageable);
   }
 
@@ -52,5 +54,21 @@ public class ProductRepository implements ProductOutPort {
   @Override
   public void createProduct(Product productRequestToEntity) {
     productMongoRepository.save(productRequestToEntity);
+  }
+
+  @Override
+  public void deleteAll() {
+    productMongoRepository.deleteAll();
+  }
+
+  @Override
+  public Product save(Product product) {
+    mongoTemplate.save(product);
+    return product;
+  }
+
+  @Override
+  public List<Product> findAll() {
+    return mongoTemplate.findAll(Product.class);
   }
 }

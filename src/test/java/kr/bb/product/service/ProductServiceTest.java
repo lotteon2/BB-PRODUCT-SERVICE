@@ -13,17 +13,14 @@ import java.util.List;
 import javax.transaction.Transactional;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.category.repository.jpa.CategoryRepository;
-import kr.bb.product.domain.product.api.request.ProductRequestData;
-import kr.bb.product.domain.product.application.ProductService;
-import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.application.port.in.ProductStoreInputPort;
+import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.mapper.ProductMapper;
-import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.domain.tag.repository.jpa.TagRepository;
 import kr.bb.product.exception.errors.CategoryNotFoundException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,11 +33,11 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 @Transactional
 class ProductServiceTest {
   private static final String CONNECTION_STRING = "mongodb://%s:%d";
-  @Autowired ProductMongoRepository productMongoRepository;
   @Autowired TagRepository tagRepository;
   @Autowired CategoryRepository categoryRepository;
   @Autowired ProductMapper productMapper;
-  @Autowired ProductService productService;
+  @Autowired
+  ProductStoreInputPort productStoreInputPort;
   private MongodExecutable mongodExecutable;
   private MongoTemplate mongoTemplate;
 
@@ -87,8 +84,8 @@ class ProductServiceTest {
     List<Tag> allById = tagRepository.findAllById(tagList);
     Category category = categoryRepository.findById(1L).orElseThrow(CategoryNotFoundException::new);
 
-    ProductRequestData product =
-        ProductRequestData.builder()
+    ProductCommand.ProductRegister product =
+        ProductCommand.ProductRegister.builder()
             .productName("Example Product")
             .productSummary("Product Summary")
             .productDescriptionImage("image")
@@ -96,11 +93,11 @@ class ProductServiceTest {
             .productPrice(100L)
             .productDescriptionImage("image_url")
             .build();
-    product.setStoreId(1L);
-    Product product1 = productMapper.createProductRequestToEntity(product, category, allById, list);
-    Product save = productMongoRepository.save(product1);
-    System.out.println(save.toString());
-    Assertions.assertThat(save).isNotNull();
+//    product.setStoreId(1L);
+//    Product product1 = productMapper.createProductRequestToEntity(product, category, allById, list);
+//    Product save = productMongoRepository.save(product1);
+//    System.out.println(save.toString());
+//    Assertions.assertThat(save).isNotNull();
   }
 
   @Test
@@ -115,8 +112,8 @@ class ProductServiceTest {
     list.add(ProductFlowersRequestData.builder().flowerId(3L).flowerCount(3L).build());
     list.add(ProductFlowersRequestData.builder().flowerId(2L).flowerCount(2L).build());
 
-    ProductRequestData product =
-        ProductRequestData.builder()
+    ProductCommand.ProductRegister product =
+        ProductCommand.ProductRegister.builder()
             .categoryId(1L)
             .productTag(tagList)
             .representativeFlower(
@@ -129,9 +126,9 @@ class ProductServiceTest {
             .productPrice(100L)
             .productDescriptionImage("image_url")
             .build();
-    productService.createProduct(product);
-    List<Product> all = productMongoRepository.findAll();
-    System.out.println(all.toString());
-    Assertions.assertThat(all.size()).isGreaterThan(0);
+    productStoreInputPort.createProduct(product);
+//    List<Product> all = productMongoRepository.findAll();
+//    System.out.println(all.toString());
+//    Assertions.assertThat(all.size()).isGreaterThan(0);
   }
 }

@@ -1,15 +1,12 @@
 package kr.bb.product.domain.product.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-import bloomingblooms.response.CommonResponse;
 import java.util.ArrayList;
 import java.util.List;
-import kr.bb.product.domain.product.api.request.ProductRequestData;
-import kr.bb.product.domain.product.application.ProductService;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductByCategory;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductsByCategory;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
@@ -27,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 class ProductFindInputPortTest {
   @Autowired WishlistServiceClient wishlistServiceClient;
   @Autowired private ProductOutPort productOutPort;
-  @Autowired private ProductService productService;
+  @Autowired private ProductStoreInputPort productStoreInputPort;
 
   @Test
   @DisplayName("상품 카테고리 조회 페이징")
@@ -43,8 +40,8 @@ class ProductFindInputPortTest {
       list.add(ProductFlowersRequestData.builder().flowerId(3L).flowerCount(3L).build());
       list.add(ProductFlowersRequestData.builder().flowerId(2L).flowerCount(2L).build());
 
-      ProductRequestData product =
-          ProductRequestData.builder()
+      ProductCommand.ProductRegister product =
+          ProductCommand.ProductRegister.builder()
               .categoryId(1L)
               .productTag(tagList)
               .representativeFlower(
@@ -57,7 +54,7 @@ class ProductFindInputPortTest {
               .productPrice(100L)
               .productDescriptionImage("image_url")
               .build();
-      productService.createProduct(product);
+      productStoreInputPort.createProduct(product);
     }
 
     // when
@@ -72,8 +69,8 @@ class ProductFindInputPortTest {
 
     assertThat(data.getTotalCnt()).isEqualTo(5);
     // 찜 생략
-//    List<ProductByCategory> data1 =
-//        wishlistServiceClient.getProductsMemberLikes(1L, productByCategories).getData();
-//    System.out.println(data1.toString());
+    //    List<ProductByCategory> data1 =
+    //        wishlistServiceClient.getProductsMemberLikes(1L, productByCategories).getData();
+    //    System.out.println(data1.toString());
   }
 }

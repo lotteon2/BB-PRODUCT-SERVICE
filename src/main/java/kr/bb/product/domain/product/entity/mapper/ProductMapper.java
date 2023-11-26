@@ -2,7 +2,6 @@ package kr.bb.product.domain.product.entity.mapper;
 
 import java.util.List;
 import kr.bb.product.domain.category.entity.Category;
-import kr.bb.product.domain.product.api.request.ProductRequestData;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
@@ -36,7 +35,7 @@ public interface ProductMapper {
     @Mapping(target = "isDeleted", ignore = true)
   })
   Product createProductRequestToEntity(
-      ProductRequestData productRequestData,
+      ProductCommand.ProductRegister productRequestData,
       Category category,
       List<Tag> tag,
       List<ProductFlowers> flowers);

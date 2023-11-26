@@ -1,7 +1,7 @@
 package kr.bb.product.domain.product.application.port.in;
 
 import java.util.List;
-import kr.bb.product.domain.product.application.ProductFindUseCase;
+import kr.bb.product.domain.product.application.usecase.ProductFindUseCase;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
@@ -12,9 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProductFindInputPort implements ProductFindUseCase {
   private final ProductOutPort productOutPort;
   private final WishlistServiceClient wishlistServiceClient;

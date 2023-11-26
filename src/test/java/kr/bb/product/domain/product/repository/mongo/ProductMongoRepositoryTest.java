@@ -6,13 +6,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import kr.bb.product.domain.category.entity.Category;
-import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.tag.entity.Tag;
-import kr.bb.product.exception.errors.ProductNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 class ProductMongoRepositoryTest {
-  @Autowired ProductMongoRepository productMongoRepository;
   @Autowired MongoTemplate mongoTemplate;
   @Autowired ProductOutPort productOutPort;
 
@@ -55,21 +52,17 @@ class ProductMongoRepositoryTest {
             .updatedAt(LocalDateTime.now())
             .build();
 
-    Product save = productMongoRepository.save(product);
+    Product save = productOutPort.save(product);
 
     productOutPort.updateProductSaleStatus(save, ProductSaleStatus.DISCONTINUED);
 
     Product product1 =
-        productMongoRepository
-            .findByProductId(save.getProductId())
-            .orElseThrow(ProductNotFoundException::new);
+        productOutPort
+            .findByProductId(save.getProductId());
 
     System.out.println("FIND " + product1);
 
-    Product updatedProduct =
-        productMongoRepository
-            .findByProductId(save.getProductId())
-            .orElseThrow(ProductNotFoundException::new);
+    Product updatedProduct = productOutPort.findByProductId(save.getProductId());
 
     assertThat(updatedProduct.getProductSaleStatus()).isEqualTo(ProductSaleStatus.DISCONTINUED);
   }

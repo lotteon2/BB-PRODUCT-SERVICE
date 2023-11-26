@@ -10,18 +10,18 @@ import lombok.Getter;
 public class ProductCommand {
   @Getter
   public enum SortOption {
-    SALE("productSaleAmount"),
-    NEW("createdAt"),
-    LOW("productPrice"),
-    HIGH("productPrice"),
-    REVIEW("reviewCount"),
-    RATING("averageRating");
+    SALE("product_sale_amount"),
+    NEW("created_at"),
+    PRICE("product_price"),
+    REVIEW("review_count"),
+    RATING("average_rating");
 
     private final String sortOption;
 
     SortOption(String sortOption) {
       this.sortOption = sortOption;
     }
+
   }
 
   @Builder

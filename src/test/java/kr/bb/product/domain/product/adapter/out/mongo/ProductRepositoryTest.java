@@ -1,14 +1,13 @@
 package kr.bb.product.domain.product.adapter.out.mongo;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import kr.bb.product.domain.product.api.request.ProductRequestData;
-import kr.bb.product.domain.product.application.ProductService;
+import kr.bb.product.domain.product.application.port.in.ProductStoreInputPort;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class ProductRepositoryTest {
   @Autowired private ProductOutPort productOutPort;
-  @Autowired private ProductService productService;
+  @Autowired private ProductStoreInputPort productStoreInputPort;
 
   @Test
   @DisplayName("상품 리스트 조회: 카테고리별")
@@ -37,8 +36,8 @@ class ProductRepositoryTest {
       list.add(ProductFlowersRequestData.builder().flowerId(3L).flowerCount(3L).build());
       list.add(ProductFlowersRequestData.builder().flowerId(2L).flowerCount(2L).build());
 
-      ProductRequestData product =
-          ProductRequestData.builder()
+      ProductCommand.ProductRegister product =
+          ProductCommand.ProductRegister.builder()
               .categoryId(1L)
               .productTag(tagList)
               .representativeFlower(
@@ -51,7 +50,7 @@ class ProductRepositoryTest {
               .productPrice(100L)
               .productDescriptionImage("image_url")
               .build();
-      productService.createProduct(product);
+      productStoreInputPort.createProduct(product);
     }
 
     PageRequest pageRequest = PageRequest.of(0, 2);
