@@ -6,7 +6,6 @@ import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import org.jetbrains.annotations.TestOnly;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 
 public interface ProductOutPort {
   void updateProductSaleStatus(Product product, ProductSaleStatus productSaleStatus);
@@ -18,10 +17,15 @@ public interface ProductOutPort {
   void createProduct(Product productRequestToEntity);
 
   Page<Product> findByCategory(Long categoryId, Pageable pageable);
-@TestOnly
+
+  Page<Product> findProductsByTagId(Long tagId, Pageable pageable);
+
+  @TestOnly
   void deleteAll();
-@TestOnly
+
+  @TestOnly
   Product save(Product product);
-@TestOnly
+
+  @TestOnly
   List<Product> findAll();
 }

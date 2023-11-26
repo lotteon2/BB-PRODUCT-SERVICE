@@ -23,8 +23,16 @@ public class ProductRepository implements ProductOutPort {
 
   @Override
   public Page<Product> findByCategory(Long categoryId, Pageable pageable) {
+    // TODO: sort
     pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
     return productMongoRepository.findByCategoryId(categoryId, pageable);
+  }
+
+  @Override
+  public Page<Product> findProductsByTagId(Long tagId, Pageable pageable) {
+    // TODO: sort
+    pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+    return productMongoRepository.findProductsByTagId(tagId, pageable);
   }
 
   @Override

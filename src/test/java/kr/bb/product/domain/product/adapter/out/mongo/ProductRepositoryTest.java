@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,5 +58,38 @@ class ProductRepositoryTest {
     Slice<Product> byCategory = productOutPort.findByCategory(1L, pageRequest);
     List<Product> content = byCategory.getContent();
     assertThat(content.size()).isEqualTo(2);
+  }
+
+  @Test
+  @DisplayName("태그별 상품 리스트 조회")
+  void findProductByTagId() {
+    List<Long> tagList = new ArrayList<>();
+    tagList.add(1L);
+    tagList.add(2L);
+
+    List<ProductFlowersRequestData> list = new ArrayList<>();
+    list.add(ProductFlowersRequestData.builder().flowerId(1L).flowerCount(2L).build());
+    list.add(ProductFlowersRequestData.builder().flowerId(3L).flowerCount(3L).build());
+    list.add(ProductFlowersRequestData.builder().flowerId(2L).flowerCount(2L).build());
+
+    ProductCommand.ProductRegister product =
+        ProductCommand.ProductRegister.builder()
+            .categoryId(1L)
+            .productTag(tagList)
+            .representativeFlower(
+                ProductFlowersRequestData.builder().flowerCount(3L).flowerId(1L).build())
+            .flowers(list)
+            .productName("Example Product")
+            .productSummary("Product Summary")
+            .productDescriptionImage("image")
+            .productThumbnail("thumbnail")
+            .productPrice(100L)
+            .productDescriptionImage("image_url")
+            .build();
+    productStoreInputPort.createProduct(product);
+    PageRequest pageRequest = PageRequest.of(0, 2);
+    Page<Product> productsByTagId = productOutPort.findProductsByTagId(2L, pageRequest);
+    List<Product> content = productsByTagId.getContent();
+    assertThat(content.get(0).getProductSummary()).isEqualTo(product.getProductSummary());
   }
 }

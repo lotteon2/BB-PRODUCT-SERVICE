@@ -5,7 +5,7 @@ import javax.validation.Valid;
 import kr.bb.product.domain.product.application.port.in.ProductFindInputPort;
 import kr.bb.product.domain.product.application.port.in.ProductStoreInputPort;
 import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductsByCategory;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,15 +23,15 @@ public class ProductRestController {
   private final ProductStoreInputPort productStoreInputPort;
 
   @GetMapping("category/{categoryId}")
-  public CommonResponse<ProductCommand.ProductsByCategory> getProductListByCategory(
+  public CommonResponse<ProductList> getProductListByCategory(
       @PathVariable Long categoryId, Pageable pageable, @RequestHeader Long userId) {
-    ProductsByCategory productsByCategory;
+    ProductList productsByCategory;
     if (userId != null) {
       productsByCategory = productFindInputPort.getProductsByCategory(userId, categoryId, pageable);
     } else {
       productsByCategory = productFindInputPort.getProductsByCategory(categoryId, pageable);
     }
-    return CommonResponse.<ProductsByCategory>builder()
+    return CommonResponse.<ProductList>builder()
         .data(productsByCategory)
         .message("select success")
         .build();

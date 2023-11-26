@@ -60,7 +60,7 @@ public class ProductCommand {
 
   @Getter
   @Builder
-  public static class ProductByCategory {
+  public static class ProductListItem {
     @Builder.Default private Boolean isLiked = false;
     private String productId;
     private String productName;
@@ -73,16 +73,16 @@ public class ProductCommand {
 
   @Builder
   @Getter
-  public static class ProductsByCategory {
-    private List<ProductByCategory> products;
+  public static class ProductList {
+    private List<ProductListItem> products;
     private int totalCnt;
 
-    public static List<ProductByCategory> fromEntity(List<Product> products) {
+    public static List<ProductListItem> fromEntity(List<Product> products) {
       return ProductMapper.INSTANCE.entityToProductsByCategory(products);
     }
 
-    public static ProductsByCategory getData(List<ProductByCategory> products, int totalCnt) {
-      return ProductsByCategory.builder().products(products).totalCnt(totalCnt).build();
+    public static ProductList getData(List<ProductListItem> products, int totalCnt) {
+      return ProductList.builder().products(products).totalCnt(totalCnt).build();
     }
   }
 }

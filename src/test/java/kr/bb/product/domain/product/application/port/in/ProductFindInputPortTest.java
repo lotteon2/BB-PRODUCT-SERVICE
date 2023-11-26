@@ -7,8 +7,8 @@ import java.util.List;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductByCategory;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductsByCategory;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.infrastructure.client.WishlistServiceClient;
 import org.junit.jupiter.api.DisplayName;
@@ -25,11 +25,32 @@ class ProductFindInputPortTest {
   @Autowired WishlistServiceClient wishlistServiceClient;
   @Autowired private ProductOutPort productOutPort;
   @Autowired private ProductStoreInputPort productStoreInputPort;
+  @Autowired private ProductFindInputPort productFindInputPort;
 
   @Test
   @DisplayName("상품 카테고리 조회 페이징")
   void getProductsByCategory() {
     // given
+    extracted();
+
+    // when
+    PageRequest pageRequest = PageRequest.of(0, 2);
+    Page<Product> byCategory = productOutPort.findByCategory(1L, pageRequest);
+
+    // 반환 객체로 변환
+    List<ProductListItem> productByCategories =
+        ProductList.fromEntity(byCategory.getContent());
+    ProductList data =
+        ProductList.getData(productByCategories, byCategory.getTotalPages());
+
+    assertThat(data.getTotalCnt()).isEqualTo(5);
+    // 찜 생략
+    //    List<ProductByCategory> data1 =
+    //        wishlistServiceClient.getProductsMemberLikes(1L, productByCategories).getData();
+    //    System.out.println(data1.toString());
+  }
+
+  private void extracted() {
     for (int i = 0; i < 10; i++) {
       List<Long> tagList = new ArrayList<>();
       tagList.add(1L);
@@ -56,21 +77,16 @@ class ProductFindInputPortTest {
               .build();
       productStoreInputPort.createProduct(product);
     }
+  }
 
-    // when
-    PageRequest pageRequest = PageRequest.of(0, 2);
-    Page<Product> byCategory = productOutPort.findByCategory(1L, pageRequest);
-
-    // 반환 객체로 변환
-    List<ProductByCategory> productByCategories =
-        ProductsByCategory.fromEntity(byCategory.getContent());
-    ProductsByCategory data =
-        ProductsByCategory.getData(productByCategories, byCategory.getTotalPages());
-
-    assertThat(data.getTotalCnt()).isEqualTo(5);
-    // 찜 생략
-    //    List<ProductByCategory> data1 =
-    //        wishlistServiceClient.getProductsMemberLikes(1L, productByCategories).getData();
-    //    System.out.println(data1.toString());
+  @Test
+  @DisplayName("태그별 상품 리스트 조회")
+  void getProductListByTagId(){
+    extracted();
+    PageRequest pageRequest = PageRequest.of(0, 3);
+    Page<Product> productsByTagId = productOutPort.findProductsByTagId(1L, pageRequest);
+    ProductList productsByTag = productFindInputPort.getProductsByTag(1L, pageRequest);
+    assertThat(productsByTag.getProducts().size()).isEqualTo(3);
+    assertThat(productsByTag.getTotalCnt()).isEqualTo(4);
   }
 }

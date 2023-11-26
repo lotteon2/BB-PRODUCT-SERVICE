@@ -4,6 +4,7 @@ import java.util.List;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
@@ -58,8 +59,8 @@ public interface ProductMapper {
     @Mapping(target = "productPrice", source = "product.productPrice"),
     @Mapping(target = "reviewCount", source = "product.reviewCount"),
   })
-  ProductCommand.ProductByCategory entityToProductByCategory(Product product);
+  ProductListItem entityToProductByCategory(Product product);
 
   @IterableMapping(qualifiedByName = "CATEGORY")
-  List<ProductCommand.ProductByCategory> entityToProductsByCategory(List<Product> products);
+  List<ProductListItem> entityToProductsByCategory(List<Product> products);
 }
