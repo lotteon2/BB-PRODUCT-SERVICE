@@ -3,6 +3,7 @@ package kr.bb.product.domain.product.application.port.in;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import bloomingblooms.response.CommonResponse;
 import java.util.ArrayList;
 import java.util.List;
 import kr.bb.product.domain.product.api.request.ProductRequestData;
@@ -12,18 +13,19 @@ import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductByCategory;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductsByCategory;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
+import kr.bb.product.infrastructure.client.WishlistServiceClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
 class ProductFindInputPortTest {
+  @Autowired WishlistServiceClient wishlistServiceClient;
   @Autowired private ProductOutPort productOutPort;
   @Autowired private ProductService productService;
 
@@ -65,11 +67,13 @@ class ProductFindInputPortTest {
     // 반환 객체로 변환
     List<ProductByCategory> productByCategories =
         ProductsByCategory.fromEntity(byCategory.getContent());
-    ProductsByCategory data = ProductsByCategory.getData(
-            productByCategories, byCategory.getTotalPages());
+    ProductsByCategory data =
+        ProductsByCategory.getData(productByCategories, byCategory.getTotalPages());
 
     assertThat(data.getTotalCnt()).isEqualTo(5);
     // 찜 생략
-
+//    List<ProductByCategory> data1 =
+//        wishlistServiceClient.getProductsMemberLikes(1L, productByCategories).getData();
+//    System.out.println(data1.toString());
   }
 }

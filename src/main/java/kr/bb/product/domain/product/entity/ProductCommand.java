@@ -61,7 +61,7 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class ProductByCategory {
-    private Boolean isLiked;
+    @Builder.Default private Boolean isLiked = false;
     private String productId;
     private String productName;
     private String productSummary;
