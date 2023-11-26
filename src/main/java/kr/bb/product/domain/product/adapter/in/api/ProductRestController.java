@@ -8,7 +8,6 @@ import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductsByCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +23,7 @@ public class ProductRestController {
   private final ProductStoreInputPort productStoreInputPort;
 
   @GetMapping("category/{categoryId}")
-  public CommonResponse<ProductCommand.ProductsByCategory> getProductListByCategoryLogin(
+  public CommonResponse<ProductCommand.ProductsByCategory> getProductListByCategory(
       @PathVariable Long categoryId, Pageable pageable, @RequestHeader Long userId) {
     ProductsByCategory productsByCategory;
     if (userId != null) {
