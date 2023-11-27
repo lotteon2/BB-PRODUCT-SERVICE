@@ -128,4 +128,14 @@ public class ProductCommand {
   public static class ProductDetailLike {
     private Boolean isLiked;
   }
+
+  @Getter
+  @Builder
+  public static class SubscriptionProduct {
+    private String productName;
+    private String productSummary;
+    private String productPrice;
+    private String productDescriptionImage;
+    private String productThumbnail;
+  }
 }
