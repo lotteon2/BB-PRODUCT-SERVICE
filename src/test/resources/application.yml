@@ -1,4 +1,7 @@
 spring:
+  config:
+    active:
+      on-profile: local
   cloud:
     config:
       enabled: false
@@ -25,3 +28,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  application:
+    name: books-service
+endpoint:
+  wishlist-service: "https://4c237c9c-89f1-487a-9401-9b02f965bcd5.mock.pstmn.io"

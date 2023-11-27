@@ -3,6 +3,7 @@ package kr.bb.product.domain.product.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.tag.entity.Tag;
@@ -31,27 +32,39 @@ public class Product {
   @Field(name = "product_id")
   private String productId;
 
-  private @Field(name = "category") Category category;
+  @Field(name = "category")
+  private Category category;
 
   @NotBlank
-  private @Field(name = "product_name") String productName;
+  @Field(name = "product_name")
+  private String productName;
 
   @NotBlank
-  private @Field(name = "product_summary") String productSummary;
+  @Field(name = "product_summary")
+  private String productSummary;
 
   @NotBlank
-  private @Field(name = "product_price") Long productPrice;
+  @Field(name = "product_price")
+  private Long productPrice;
 
   @Builder.Default
   @NotBlank
-  private @Field(name = "product_sale_status") ProductSaleStatus productSaleStatus =
-      ProductSaleStatus.SALE;
+  @Field(name = "product_sale_status")
+  private ProductSaleStatus productSaleStatus = ProductSaleStatus.SALE;
 
-  private @Field(name = "tag") List<Tag> tag;
-  private @Field(name = "product_flowers") List<ProductFlowers> productFlowers;
+  @Field(name = "tag")
+  private List<Tag> tag;
+
+  @Field(name = "product_flowers")
+  private List<ProductFlowers> productFlowers;
+
+  @NotNull
+  @Field(name = "product_thumbnail")
+  private String productThumbnail;
 
   @NotBlank
-  private @Field(name = "product_description_image") String productDescriptionImage;
+  @Field(name = "product_description_image")
+  private String productDescriptionImage;
 
   @NotBlank
   private @Field(name = "review_count") Long reviewCount;
@@ -63,10 +76,12 @@ public class Product {
 
   @Builder.Default
   @NotBlank
-  private @Field(name = "average_rating") Double averageRating = 0.0;
+  @Field(name = "average_rating")
+  private Double averageRating = 0.0;
 
   @NotBlank
-  private @Field(name = "store_id") Long storeId;
+  @Field(name = "store_id")
+  private Long storeId;
 
   @NotBlank
   @CreatedDate

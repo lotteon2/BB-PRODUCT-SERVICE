@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import kr.bb.product.domain.category.entity.Category;
+import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.repository.mongo.ProductMongoRepository;
-import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
+import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.tag.entity.Tag;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,9 +33,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 class ProductMongoRepositoryTest {
 
   private static final String CONNECTION_STRING = "mongodb://%s:%d";
-  @Autowired ProductMongoRepository productMongoRepository;
   private MongodExecutable mongodExecutable;
   private MongoTemplate mongoTemplate;
+  @Autowired private  ProductOutPort productOutPort;
 
   @AfterEach
   void clean() {
@@ -89,7 +89,7 @@ class ProductMongoRepositoryTest {
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
             .build();
-    Product save = productMongoRepository.save(product);
+    Product save = productOutPort.save(product);
     assertThat(save.getProductId()).isNotNull();
 
     System.out.println(save);
