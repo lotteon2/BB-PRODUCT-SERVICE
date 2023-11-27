@@ -14,4 +14,6 @@ public interface ProductFindUseCase {
   ProductList getProductsByTag(Long userId, Long tagId, Pageable pageable);
 
   ProductCommand.ProductDetail getProductDetail(Long userId, String productId);
+
+  ProductCommand.ProductDetail getProductDetail(String productId);
 }

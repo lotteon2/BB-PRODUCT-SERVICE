@@ -1,4 +1,7 @@
 spring:
+  config:
+    active:
+      on-profile: local
   cloud:
     config:
       enabled: false

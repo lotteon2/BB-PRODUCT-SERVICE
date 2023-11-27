@@ -7,7 +7,7 @@ public class CategoryCommand {
   @Builder
   @Getter
   public static class CategoryForProductList {
-    private Long key;
+    private Long categoryId;
     private String categoryName;
   }
 }

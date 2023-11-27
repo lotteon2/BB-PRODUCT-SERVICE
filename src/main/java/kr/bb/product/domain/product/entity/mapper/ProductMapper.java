@@ -62,10 +62,10 @@ public interface ProductMapper {
     @Mapping(target = "productPrice", source = "product.productPrice"),
     @Mapping(target = "reviewCount", source = "product.reviewCount"),
   })
-  ProductListItem entityToProductByCategory(Product product);
+  ProductListItem entityToListItem(Product product);
 
   @IterableMapping(qualifiedByName = "CATEGORY")
-  List<ProductListItem> entityToProductsByCategory(List<Product> products);
+  List<ProductListItem> entityToList(List<Product> products);
 
   @Mapping(source = "product.productId", target = "productId")
   @Mapping(source = "product.productName", target = "productName")
@@ -77,12 +77,13 @@ public interface ProductMapper {
   @Mapping(source = "product.productSaleAmount", target = "salesCount")
   @Mapping(source = "product.averageRating", target = "averageRating")
   @Mapping(target = "storeName", ignore = true)
+  @Mapping(target = "isLiked", ignore = true)
   @Mapping(source = "product.category", target = "category", qualifiedByName = "mapCategory")
   @Mapping(source = "product.tag", target = "tag", qualifiedByName = "mapTag")
   ProductDetail entityToDetail(Product product);
 
   @Named("mapCategory")
-  @Mapping(source = "category.categoryId", target = "key")
+  @Mapping(source = "category.categoryId", target = "categoryId")
   @Mapping(source = "category.categoryName", target = "categoryName")
   CategoryForProductList mapCategory(Category category);
 

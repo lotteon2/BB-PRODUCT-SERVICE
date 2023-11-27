@@ -3,8 +3,7 @@ package kr.bb.product.domain.product.application.port.in;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import bloomingblooms.response.CommonResponse;
-import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
+import kr.bb.product.domain.product.entity.ProductCommand.StoreName;
 import kr.bb.product.infrastructure.client.StoreServiceClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,20 +29,14 @@ public class productDetailMockito {
   @Test
   @DisplayName("상품 상세 조회 service")
   void productDetail() {
-    String productId = "";
-    ProductDetail build = ProductDetail.builder().build();
-    CommonResponse<ProductDetail> expectData =
-        CommonResponse.<ProductDetail>builder()
-            .data(
-                ProductDetail.builder()
-                    .storeName("store1")
-                    .category(
-                        CategoryForProductList.builder().categoryName("category1").key(1L).build())
-                    .build())
+    Long storeId = 1L;
+
+    CommonResponse<StoreName> expectData =
+        CommonResponse.<StoreName>builder()
+            .data(StoreName.builder().storeName("storename1").build())
             .build();
-    Mockito.when(storeServiceClient.getStoreNameOfProductDetail(productId, build))
-        .thenReturn(expectData);
-    ProductDetail data = storeServiceClient.getStoreNameOfProductDetail(productId, build).getData();
+    Mockito.when(storeServiceClient.getStoreNameOfProductDetail(storeId)).thenReturn(expectData);
+    StoreName data = storeServiceClient.getStoreNameOfProductDetail(storeId).getData();
     assertThat(data.getStoreName()).isEqualTo(expectData.getData().getStoreName());
   }
 }

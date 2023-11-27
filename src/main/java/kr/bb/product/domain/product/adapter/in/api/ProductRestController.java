@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import kr.bb.product.domain.product.application.port.in.ProductFindInputPort;
 import kr.bb.product.domain.product.application.port.in.ProductStoreInputPort;
 import kr.bb.product.domain.product.entity.ProductCommand;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -23,19 +24,36 @@ public class ProductRestController {
   private final ProductFindInputPort productFindInputPort;
   private final ProductStoreInputPort productStoreInputPort;
 
+  @GetMapping("{productId}")
+  public CommonResponse<ProductCommand.ProductDetail> getProductDetail(
+      @PathVariable String productId, @RequestHeader Optional<Long> userId) {
+    if (userId.isPresent()) {
+      return CommonResponse.<ProductDetail>builder()
+          .data(productFindInputPort.getProductDetail(userId.get(), productId))
+          .message("상품 상세 정보 조회")
+          .build();
+    } else {
+      return CommonResponse.<ProductDetail>builder()
+          .data(productFindInputPort.getProductDetail(productId))
+          .message("상품 상세 정보 조회")
+          .build();
+    }
+  }
+
   @GetMapping("tag/{tagId}")
   public CommonResponse<ProductList> getProductListByTag(
       @PathVariable Long tagId, Pageable pageable, @RequestHeader Optional<Long> userId) {
-    ProductList productByTag;
     if (userId.isPresent()) {
-      productByTag = productFindInputPort.getProductsByTag(userId.get(), tagId, pageable);
+      return CommonResponse.<ProductList>builder()
+          .data(productFindInputPort.getProductsByTag(userId.get(), tagId, pageable))
+          .message("select success")
+          .build();
     } else {
-      productByTag = productFindInputPort.getProductsByTag(tagId, pageable);
+      return CommonResponse.<ProductList>builder()
+          .data(productFindInputPort.getProductsByTag(tagId, pageable))
+          .message("select success")
+          .build();
     }
-    return CommonResponse.<ProductList>builder()
-        .data(productByTag)
-        .message("select success")
-        .build();
   }
 
   @GetMapping("category/{categoryId}")

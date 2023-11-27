@@ -79,7 +79,7 @@ public class ProductCommand {
     private int totalCnt;
 
     public static List<ProductListItem> fromEntity(List<Product> products) {
-      return ProductMapper.INSTANCE.entityToProductsByCategory(products);
+      return ProductMapper.INSTANCE.entityToList(products);
     }
 
     public static ProductList getData(List<ProductListItem> products, int totalCnt) {
@@ -100,11 +100,32 @@ public class ProductCommand {
     private Long salesCount;
     private Double averageRating;
     private String storeName;
+    @Builder.Default private Boolean isLiked = false;
     private CategoryForProductList category;
     private List<TagForProductList> tag;
 
     public static ProductDetail fromEntity(Product product) {
       return ProductMapper.INSTANCE.entityToDetail(product);
     }
+
+    public void setStoreName(String storeName) {
+      this.storeName = storeName;
+    }
+
+    public void setLiked(Boolean liked) {
+      isLiked = liked;
+    }
+  }
+
+  @Getter
+  @Builder
+  public static class StoreName {
+    private String storeName;
+  }
+
+  @Getter
+  @Builder
+  public static class ProductDetailLike {
+    private Boolean isLiked;
   }
 }
