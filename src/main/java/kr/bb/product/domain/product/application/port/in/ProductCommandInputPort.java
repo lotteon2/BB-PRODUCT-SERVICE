@@ -1,140 +1,86 @@
 package kr.bb.product.domain.product.application.port.in;
 
 import java.util.List;
+import kr.bb.product.domain.category.entity.Category;
+import kr.bb.product.domain.category.repository.jpa.CategoryRepository;
+import kr.bb.product.domain.product.application.port.out.ProductCommandOutPort;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
-import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
+import kr.bb.product.domain.product.application.usecase.ProductCommandUseCased;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
-import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
-import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
+import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProduct;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
+import kr.bb.product.domain.product.entity.mapper.ProductMapper;
+import kr.bb.product.domain.product.vo.ProductFlowers;
+import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
+import kr.bb.product.domain.tag.entity.Tag;
+import kr.bb.product.domain.tag.repository.jpa.TagRepository;
+import kr.bb.product.exception.errors.CategoryNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ProductCommandInputPort implements ProductCommandUseCase {
+public class ProductCommandInputPort implements ProductCommandUseCased {
   private final ProductOutPort productOutPort;
-  private final WishlistServiceClient wishlistServiceClient;
-  private final StoreServiceClient storeServiceClient;
+  private final ProductMapper productMapper;
+  private final TagRepository tagRepository;
+  private final CategoryRepository categoryRepository;
+  private final ProductCommandOutPort productCommandOutPort;
 
-  private static List<ProductListItem> getProduct(Page<Product> byCategory) {
-    return ProductList.fromEntity(byCategory.getContent());
+  @NotNull
+  private List<ProductFlowers> getFlowers(
+      ProductCommand.ProductRegister productRequestData,
+      ProductFlowersRequestData representativeFlower) {
+    List<ProductFlowersRequestData> flowersRequestData = productRequestData.getFlowers();
+    List<ProductFlowers> flowers = productMapper.flowerRequestToFlowersList(flowersRequestData);
+    flowers.add(
+        ProductFlowers.builder()
+            .flowerId(representativeFlower.getFlowerId())
+            .isRepresentative(true)
+            .flowerCount(representativeFlower.getFlowerCount())
+            .build());
+    return flowers;
   }
 
-  private static ProductDetail getProductDetail(Product byProductId) {
-    return ProductDetail.fromEntity(byProductId);
+  @NotNull
+  private List<Tag> getTags(ProductCommand.ProductRegister productRequestData) {
+    return tagRepository.findAllById(productRequestData.getProductTag());
   }
 
-  private Page<Product> getProducts(Long categoryId, Pageable pageable) {
-    return productOutPort.findByCategory(categoryId, pageable);
+  private Category getCategory(ProductCommand.ProductRegister productRequestData) {
+    return categoryRepository
+        .findById(productRequestData.getCategoryId())
+        .orElseThrow(CategoryNotFoundException::new);
   }
 
-  private String getProductDetailStoreName(Product byProductId) {
-    return storeServiceClient
-        .getStoreNameOfProductDetail(byProductId.getStoreId())
-        .getData()
-        .getStoreName();
-  }
-
-  /**
-   * product category list 조회 비 로그인
-   *
-   * @param categoryId
-   * @param pageable
-   * @return
-   */
   @Override
-  public ProductList getProductsByCategory(Long categoryId, Pageable pageable) {
-    Page<Product> byCategory = getProducts(categoryId, pageable);
-    List<ProductListItem> productByCategories = getProduct(byCategory);
-    return ProductList.getData(productByCategories, byCategory.getTotalPages());
+  public void updateProductSaleStatus(
+      String productId, ProductCommand.ProductUpdate productRequestData) {
+    Product product = productOutPort.findByProductId(productId);
+    if (productRequestData.getProductSaleStatus().equals(ProductSaleStatus.DELETED)) {
+      productOutPort.updateProductSaleStatus(product);
+    } else {
+      productOutPort.updateProductSaleStatus(product, productRequestData.getProductSaleStatus());
+    }
   }
 
-  /**
-   * 태그별 상품 리스트 조회 - 비 로그인 시
-   *
-   * @param tagId
-   * @param pageable
-   * @return
-   */
   @Override
-  public ProductList getProductsByTag(Long tagId, Pageable pageable) {
-    Page<Product> productsByTagId = productOutPort.findProductsByTagId(tagId, pageable);
-    List<ProductListItem> productByCategories = getProduct(productsByTagId);
-    return ProductList.getData(productByCategories, productsByTagId.getTotalPages());
+  public void createProduct(ProductCommand.ProductRegister productRequestData) {
+    Category category = getCategory(productRequestData);
+    List<Tag> tags = getTags(productRequestData);
+    ProductFlowersRequestData representativeFlower = productRequestData.getRepresentativeFlower();
+    List<ProductFlowers> flowers = getFlowers(productRequestData, representativeFlower);
+
+    productOutPort.createProduct(
+        productMapper.createProductRequestToEntity(productRequestData, category, tags, flowers));
   }
 
-  /**
-   * 태그별 상품 리스트 조회 - 로그인
-   *
-   * @param tagId
-   * @param pageable
-   * @return
-   */
   @Override
-  public ProductList getProductsByTag(Long userId, Long tagId, Pageable pageable) {
-    Page<Product> products = getProducts(tagId, pageable);
-    List<ProductListItem> product = getProduct(products);
-    List<ProductListItem> data =
-        wishlistServiceClient.getProductsMemberLikes(userId, product).getData();
-    return ProductList.getData(data, products.getTotalPages());
-  }
-
-  /**
-   * 상품 상세 조회 - 로그인 시
-   *
-   * @param userId
-   * @param productId
-   * @return
-   */
-  @Override
-  public ProductDetail getProductDetail(Long userId, String productId) {
-    Product byProductId = productOutPort.findByProductId(productId);
-    ProductDetail productDetail = getProductDetail(byProductId);
-    ProductCommand.ProductDetailLike isLiked =
-        wishlistServiceClient.getProductDetailLikes(productId, userId).getData();
-    String storeName = getProductDetailStoreName(byProductId);
-    productDetail.setLiked(isLiked.getIsLiked());
-    productDetail.setStoreName(storeName);
-    return productDetail;
-  }
-
-  /**
-   * 상품 상세 정보 - 비 로그인 시
-   *
-   * @param productId
-   * @return
-   */
-  @Override
-  public ProductDetail getProductDetail(String productId) {
-    Product byProductId = productOutPort.findByProductId(productId);
-    ProductDetail productDetail = getProductDetail(byProductId);
-    String storeName = getProductDetailStoreName(byProductId);
-    productDetail.setStoreName(storeName);
-    return productDetail;
-  }
-
-  /**
-   * product category list 조회 로그인
-   *
-   * @param userId
-   * @param categoryId
-   * @param pageable
-   * @return
-   */
-  @Override
-  public ProductList getProductsByCategory(Long userId, Long categoryId, Pageable pageable) {
-    Page<Product> byCategory = getProducts(categoryId, pageable);
-    List<ProductListItem> productByCategories = getProduct(byCategory);
-    List<ProductListItem> data =
-        wishlistServiceClient.getProductsMemberLikes(userId, productByCategories).getData();
-    return ProductList.getData(data, byCategory.getTotalPages());
+  public void createSubscriptionProduct(SubscriptionProduct product) {
+    productCommandOutPort.createProduct(SubscriptionProduct.toEntity(product));
   }
 }

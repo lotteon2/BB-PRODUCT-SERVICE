@@ -3,8 +3,8 @@ package kr.bb.product.domain.product.adapter.in.api;
 import bloomingblooms.response.CommonResponse;
 import java.util.Optional;
 import javax.validation.Valid;
-import kr.bb.product.domain.product.application.port.in.ProductCommandInputPort;
 import kr.bb.product.domain.product.application.port.in.ProductQueryInputPort;
+import kr.bb.product.domain.product.application.port.in.ProductCommandInputPort;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class ProductRestController {
-  private final ProductCommandInputPort productFindInputPort;
-  private final ProductQueryInputPort productStoreInputPort;
+  private final ProductQueryInputPort productFindInputPort;
+  private final ProductCommandInputPort productStoreInputPort;
 
   @GetMapping("{productId}")
   public CommonResponse<ProductCommand.ProductDetail> getProductDetail(

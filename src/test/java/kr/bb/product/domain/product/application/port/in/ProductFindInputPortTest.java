@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
@@ -24,8 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 class ProductFindInputPortTest {
   @Autowired WishlistServiceClient wishlistServiceClient;
   @Autowired private ProductOutPort productOutPort;
-  @Autowired private ProductQueryInputPort productStoreInputPort;
-  @Autowired private ProductCommandInputPort productFindInputPort;
+  @Autowired private ProductCommandInputPort productStoreInputPort;
+  @Autowired private ProductQueryInputPort productFindInputPort;
+  @Autowired private ProductMongoRepository productMongoRepository;
 
   @Test
   @DisplayName("상품 카테고리 조회 페이징")
@@ -80,7 +82,7 @@ class ProductFindInputPortTest {
   @Test
   @DisplayName("태그별 상품 리스트 조회")
   void getProductListByTagId() {
-    productOutPort.deleteAll();
+    productMongoRepository.deleteAll();
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 3);
     Page<Product> productsByTagId = productOutPort.findProductsByTagId(1L, pageRequest);

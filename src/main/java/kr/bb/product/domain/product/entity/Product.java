@@ -97,8 +97,4 @@ public class Product {
   @Builder.Default
   @Field(name = "is_deleted")
   private Boolean isDeleted = false;
-
-  public void updateSaleStatus(ProductSaleStatus productSaleStatus) {
-    this.productSaleStatus = productSaleStatus;
-  }
 }

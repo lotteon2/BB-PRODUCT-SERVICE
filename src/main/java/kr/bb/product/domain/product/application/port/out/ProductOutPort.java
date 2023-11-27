@@ -19,13 +19,4 @@ public interface ProductOutPort {
   Page<Product> findByCategory(Long categoryId, Pageable pageable);
 
   Page<Product> findProductsByTagId(Long tagId, Pageable pageable);
-
-  @TestOnly
-  void deleteAll();
-
-  @TestOnly
-  Product save(Product product);
-
-  @TestOnly
-  List<Product> findAll();
 }

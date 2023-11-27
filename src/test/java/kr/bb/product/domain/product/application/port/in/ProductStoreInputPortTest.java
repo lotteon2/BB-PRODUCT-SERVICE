@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
@@ -18,8 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 class ProductStoreInputPortTest {
-  @Autowired private ProductQueryInputPort productStoreInputPort;
+  @Autowired private ProductCommandInputPort productStoreInputPort;
   @Autowired private ProductOutPort productOutPort;
+  @Autowired private ProductMongoRepository productMongoRepository;
 
   private ProductCommand.ProductRegister getProductRequestData() {
     List<Long> tagList = new ArrayList<>();
@@ -71,7 +73,8 @@ class ProductStoreInputPortTest {
         .productDescriptionImage("image_url")
         .build();
   }
-   private ProductCommand.ProductUpdate updateProductDeleted() {
+
+  private ProductCommand.ProductUpdate updateProductDeleted() {
     List<Long> tagList = new ArrayList<>();
     tagList.add(1L);
     tagList.add(2L);
@@ -111,7 +114,7 @@ class ProductStoreInputPortTest {
 
     // Assert
     // Verify that the product is added
-    List<Product> allProducts = productOutPort.findAll();
+    List<Product> allProducts = productMongoRepository.findAll();
     assertThat(allProducts.size()).isGreaterThan(0);
 
     // Add more assertions based on your specific requirements and edge cases
@@ -147,6 +150,6 @@ class ProductStoreInputPortTest {
   private Product createProduct() {
     // Create and return a mock Product object
     productStoreInputPort.createProduct(getProductRequestData());
-    return productOutPort.findAll().get(0);
+    return productMongoRepository.findAll().get(0);
   }
 }

@@ -7,6 +7,7 @@ import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProduct;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
@@ -91,4 +92,20 @@ public interface ProductMapper {
   @Mapping(source = "tag.tagId", target = "key")
   @Mapping(source = "tag.tagName", target = "tagName")
   TagForProductList mapTag(Tag tag);
+
+  @Mappings({
+    @Mapping(target = "productId", ignore = true),
+    @Mapping(target = "productSaleStatus", expression = "java(ProductSaleStatus.SALE)"),
+    @Mapping(target = "tag", ignore = true),
+    @Mapping(target = "category", ignore = true),
+    @Mapping(target = "productFlowers", ignore = true),
+    @Mapping(target = "reviewCount", ignore = true),
+    @Mapping(target = "averageRating", ignore = true),
+    @Mapping(target = "productSaleAmount", ignore = true),
+    @Mapping(target = "storeId", ignore = true),
+    @Mapping(target = "createdAt", ignore = true),
+    @Mapping(target = "updatedAt", ignore = true),
+    @Mapping(target = "isDeleted", ignore = true)
+  })
+  Product subscriptionToEntity(SubscriptionProduct subscriptionProduct);
 }

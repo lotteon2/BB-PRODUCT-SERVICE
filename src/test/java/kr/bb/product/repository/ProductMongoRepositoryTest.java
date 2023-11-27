@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import kr.bb.product.domain.category.entity.Category;
+import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
@@ -36,6 +37,8 @@ class ProductMongoRepositoryTest {
   private MongodExecutable mongodExecutable;
   private MongoTemplate mongoTemplate;
   @Autowired private  ProductOutPort productOutPort;
+  @Autowired
+  ProductMongoRepository productMongoRepository;
 
   @AfterEach
   void clean() {
@@ -89,7 +92,7 @@ class ProductMongoRepositoryTest {
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
             .build();
-    Product save = productOutPort.save(product);
+    Product save = productMongoRepository.save(product);
     assertThat(save.getProductId()).isNotNull();
 
     System.out.println(save);

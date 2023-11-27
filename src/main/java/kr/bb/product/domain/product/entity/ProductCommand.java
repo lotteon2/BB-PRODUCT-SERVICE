@@ -134,8 +134,12 @@ public class ProductCommand {
   public static class SubscriptionProduct {
     private String productName;
     private String productSummary;
-    private String productPrice;
+    private Long productPrice;
     private String productDescriptionImage;
     private String productThumbnail;
+
+    public static Product toEntity(SubscriptionProduct subscriptionProduct) {
+      return ProductMapper.INSTANCE.subscriptionToEntity(subscriptionProduct);
+    }
   }
 }

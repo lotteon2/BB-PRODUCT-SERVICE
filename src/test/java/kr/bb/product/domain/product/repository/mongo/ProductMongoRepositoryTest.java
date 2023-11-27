@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import kr.bb.product.domain.category.entity.Category;
+import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 class ProductMongoRepositoryTest {
   @Autowired MongoTemplate mongoTemplate;
   @Autowired ProductOutPort productOutPort;
+  @Autowired ProductMongoRepository productMongoRepository;
 
   @Test
   @DisplayName("상품 판매 상태를 DISCONTINUED로 변경")
@@ -52,13 +54,11 @@ class ProductMongoRepositoryTest {
             .updatedAt(LocalDateTime.now())
             .build();
 
-    Product save = productOutPort.save(product);
+    Product save = productMongoRepository.save(product);
 
     productOutPort.updateProductSaleStatus(save, ProductSaleStatus.DISCONTINUED);
 
-    Product product1 =
-        productOutPort
-            .findByProductId(save.getProductId());
+    Product product1 = productOutPort.findByProductId(save.getProductId());
 
     System.out.println("FIND " + product1);
 
