@@ -2,8 +2,10 @@ package kr.bb.product.domain.product.entity;
 
 import java.util.List;
 import javax.validation.constraints.NotNull;
+import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
 import kr.bb.product.domain.product.entity.mapper.ProductMapper;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
+import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -21,7 +23,6 @@ public class ProductCommand {
     SortOption(String sortOption) {
       this.sortOption = sortOption;
     }
-
   }
 
   @Builder
@@ -62,7 +63,7 @@ public class ProductCommand {
   @Builder
   public static class ProductListItem {
     @Builder.Default private Boolean isLiked = false;
-    private String productId;
+    private String key;
     private String productName;
     private String productSummary;
     private String productThumbnail;
@@ -83,6 +84,27 @@ public class ProductCommand {
 
     public static ProductList getData(List<ProductListItem> products, int totalCnt) {
       return ProductList.builder().products(products).totalCnt(totalCnt).build();
+    }
+  }
+
+  @Builder
+  @Getter
+  public static class ProductDetail {
+    private String productId;
+    private String productName;
+    private String productDescription;
+    private String productThumbnail;
+    private String productDetailImage;
+    private Long productPrice;
+    private ProductSaleStatus productSaleStatus;
+    private Long salesCount;
+    private Double averageRating;
+    private String storeName;
+    private CategoryForProductList category;
+    private List<TagForProductList> tag;
+
+    public static ProductDetail fromEntity(Product product) {
+      return ProductMapper.INSTANCE.entityToDetail(product);
     }
   }
 }

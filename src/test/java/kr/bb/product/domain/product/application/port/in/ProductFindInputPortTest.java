@@ -38,10 +38,8 @@ class ProductFindInputPortTest {
     Page<Product> byCategory = productOutPort.findByCategory(1L, pageRequest);
 
     // 반환 객체로 변환
-    List<ProductListItem> productByCategories =
-        ProductList.fromEntity(byCategory.getContent());
-    ProductList data =
-        ProductList.getData(productByCategories, byCategory.getTotalPages());
+    List<ProductListItem> productByCategories = ProductList.fromEntity(byCategory.getContent());
+    ProductList data = ProductList.getData(productByCategories, byCategory.getTotalPages());
 
     assertThat(data.getTotalCnt()).isEqualTo(5);
     // 찜 생략
@@ -81,7 +79,7 @@ class ProductFindInputPortTest {
 
   @Test
   @DisplayName("태그별 상품 리스트 조회")
-  void getProductListByTagId(){
+  void getProductListByTagId() {
     productOutPort.deleteAll();
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 3);

@@ -2,13 +2,16 @@ package kr.bb.product.domain.product.entity.mapper;
 
 import java.util.List;
 import kr.bb.product.domain.category.entity.Category;
+import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.domain.tag.entity.Tag;
+import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -53,7 +56,7 @@ public interface ProductMapper {
   @Mappings({
     @Mapping(target = "isLiked", ignore = true),
     @Mapping(target = "salesCount", source = "product.productSaleAmount"),
-    @Mapping(target = "productId", source = "product.productId"),
+    @Mapping(target = "key", source = "product.productId"),
     @Mapping(target = "productName", source = "product.productName"),
     @Mapping(target = "productSummary", source = "product.productSummary"),
     @Mapping(target = "productPrice", source = "product.productPrice"),
@@ -63,4 +66,28 @@ public interface ProductMapper {
 
   @IterableMapping(qualifiedByName = "CATEGORY")
   List<ProductListItem> entityToProductsByCategory(List<Product> products);
+
+  @Mapping(source = "product.productId", target = "productId")
+  @Mapping(source = "product.productName", target = "productName")
+  @Mapping(source = "product.productSummary", target = "productDescription")
+  @Mapping(source = "product.productThumbnail", target = "productThumbnail")
+  @Mapping(source = "product.productDescriptionImage", target = "productDetailImage")
+  @Mapping(source = "product.productPrice", target = "productPrice")
+  @Mapping(source = "product.productSaleStatus", target = "productSaleStatus")
+  @Mapping(source = "product.productSaleAmount", target = "salesCount")
+  @Mapping(source = "product.averageRating", target = "averageRating")
+  @Mapping(target = "storeName", ignore = true)
+  @Mapping(source = "product.category", target = "category", qualifiedByName = "mapCategory")
+  @Mapping(source = "product.tag", target = "tag", qualifiedByName = "mapTag")
+  ProductDetail entityToDetail(Product product);
+
+  @Named("mapCategory")
+  @Mapping(source = "category.categoryId", target = "key")
+  @Mapping(source = "category.categoryName", target = "categoryName")
+  CategoryForProductList mapCategory(Category category);
+
+  @Named("mapTag")
+  @Mapping(source = "tag.tagId", target = "key")
+  @Mapping(source = "tag.tagName", target = "tagName")
+  TagForProductList mapTag(Tag tag);
 }

@@ -45,10 +45,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '2.7.17'
+
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
-    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock:3.1.5"
+    testImplementation 'org.mockito:mockito-core:4.8.0'
 }
 
 dependencyManagement {
