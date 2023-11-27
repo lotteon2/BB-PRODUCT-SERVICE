@@ -4,7 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
-import kr.bb.product.domain.product.application.port.in.ProductStoreInputPort;
+import kr.bb.product.domain.product.application.port.in.ProductQueryInputPort;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class ProductRepositoryTest {
   @Autowired private ProductOutPort productOutPort;
-  @Autowired private ProductStoreInputPort productStoreInputPort;
+  @Autowired private ProductQueryInputPort productStoreInputPort;
 
   @Test
   @DisplayName("상품 리스트 조회: 카테고리별")

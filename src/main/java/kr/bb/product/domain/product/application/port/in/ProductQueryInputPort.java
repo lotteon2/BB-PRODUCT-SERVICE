@@ -4,7 +4,7 @@ import java.util.List;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.category.repository.jpa.CategoryRepository;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
-import kr.bb.product.domain.product.application.usecase.ProductStoreUseCase;
+import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ProductStoreInputPort implements ProductStoreUseCase {
+public class ProductQueryInputPort implements ProductQueryUseCase {
   private final ProductOutPort productOutPort;
   private final ProductMapper productMapper;
   private final TagRepository tagRepository;

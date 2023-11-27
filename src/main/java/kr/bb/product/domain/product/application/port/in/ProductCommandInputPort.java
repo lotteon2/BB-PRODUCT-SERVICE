@@ -2,7 +2,7 @@ package kr.bb.product.domain.product.application.port.in;
 
 import java.util.List;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
-import kr.bb.product.domain.product.application.usecase.ProductFindUseCase;
+import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ProductFindInputPort implements ProductFindUseCase {
+public class ProductCommandInputPort implements ProductCommandUseCase {
   private final ProductOutPort productOutPort;
   private final WishlistServiceClient wishlistServiceClient;
   private final StoreServiceClient storeServiceClient;

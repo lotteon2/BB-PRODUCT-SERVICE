@@ -13,7 +13,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.category.repository.jpa.CategoryRepository;
-import kr.bb.product.domain.product.application.port.in.ProductStoreInputPort;
+import kr.bb.product.domain.product.application.port.in.ProductQueryInputPort;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.mapper.ProductMapper;
 import kr.bb.product.domain.product.vo.ProductFlowers;
@@ -37,7 +37,7 @@ class ProductServiceTest {
   @Autowired CategoryRepository categoryRepository;
   @Autowired ProductMapper productMapper;
   @Autowired
-  ProductStoreInputPort productStoreInputPort;
+  ProductQueryInputPort productStoreInputPort;
   private MongodExecutable mongodExecutable;
   private MongoTemplate mongoTemplate;
 

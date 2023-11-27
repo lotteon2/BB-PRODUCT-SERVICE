@@ -4,7 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
-import kr.bb.product.domain.product.application.port.in.ProductStoreInputPort;
+import kr.bb.product.domain.product.application.port.in.ProductQueryInputPort;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
@@ -21,7 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class ProductServiceTest {
   @Autowired ProductOutPort productOutPort;
-  @Autowired ProductStoreInputPort productStoreInputPort;
+  @Autowired
+  ProductQueryInputPort productStoreInputPort;
 
   @BeforeEach
   void setup() {

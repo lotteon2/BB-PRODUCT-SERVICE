@@ -24,8 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 class ProductFindInputPortTest {
   @Autowired WishlistServiceClient wishlistServiceClient;
   @Autowired private ProductOutPort productOutPort;
-  @Autowired private ProductStoreInputPort productStoreInputPort;
-  @Autowired private ProductFindInputPort productFindInputPort;
+  @Autowired private ProductQueryInputPort productStoreInputPort;
+  @Autowired private ProductCommandInputPort productFindInputPort;
 
   @Test
   @DisplayName("상품 카테고리 조회 페이징")

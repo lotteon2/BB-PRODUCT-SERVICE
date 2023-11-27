@@ -1,7 +1,6 @@
 package kr.bb.product.domain.product.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 class ProductStoreInputPortTest {
-  @Autowired private ProductStoreInputPort productStoreInputPort;
+  @Autowired private ProductQueryInputPort productStoreInputPort;
   @Autowired private ProductOutPort productOutPort;
 
   private ProductCommand.ProductRegister getProductRequestData() {
