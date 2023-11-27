@@ -1,6 +1,5 @@
 package kr.bb.product.domain.product.adapter.out.mongo;
 
-import java.util.List;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
@@ -62,21 +61,5 @@ public class ProductRepository implements ProductOutPort {
   @Override
   public void createProduct(Product productRequestToEntity) {
     productMongoRepository.save(productRequestToEntity);
-  }
-
-  @Override
-  public void deleteAll() {
-    productMongoRepository.deleteAll();
-  }
-
-  @Override
-  public Product save(Product product) {
-    mongoTemplate.save(product);
-    return product;
-  }
-
-  @Override
-  public List<Product> findAll() {
-    return mongoTemplate.findAll(Product.class);
   }
 }

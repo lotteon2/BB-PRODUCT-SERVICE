@@ -4,7 +4,7 @@ import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import org.springframework.data.domain.Pageable;
 
-public interface ProductFindUseCase {
+public interface ProductQueryUseCase {
   ProductList getProductsByCategory(Long userId, Long categoryId, Pageable pageable);
 
   ProductList getProductsByCategory(Long categoryId, Pageable pageable);

@@ -128,4 +128,20 @@ public class ProductCommand {
   public static class ProductDetailLike {
     private Boolean isLiked;
   }
+
+  @Getter
+  @Builder
+  public static class SubscriptionProduct {
+    private String productName;
+    private String productSummary;
+    private Long productPrice;
+    private String productDescriptionImage;
+    private String productThumbnail;
+    private Boolean isSubscription;
+
+    public static Product toEntity(SubscriptionProduct subscriptionProduct, Long storeId) {
+      subscriptionProduct.isSubscription = true;
+      return ProductMapper.INSTANCE.subscriptionToEntity(subscriptionProduct, storeId);
+    }
+  }
 }
