@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Builder
@@ -27,7 +28,7 @@ public class ReviewImages extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "review_images_id")
-  private Long id;
+  private Long reviewImageId;
 
   @Column(name = "review_image_url")
   private String reviewImageUrl;
@@ -35,7 +36,10 @@ public class ReviewImages extends BaseEntity {
   @ManyToOne(
       fetch = FetchType.LAZY,
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-  @JoinColumn(name = "id")
+  @JoinColumn(name = "review_id")
   private Review review;
 
+  public void setReview(Review review) {
+    this.review = review;
+  }
 }
