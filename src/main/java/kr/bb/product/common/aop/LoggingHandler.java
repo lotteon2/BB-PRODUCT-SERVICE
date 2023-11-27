@@ -1,4 +1,4 @@
-package kr.bb.product.infrastructure.aop;
+package kr.bb.product.common.aop;
 
 import autovalue.shaded.com.google.common.base.Joiner;
 import java.util.Map;

@@ -10,7 +10,7 @@ import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
-import kr.bb.product.infrastructure.client.WishlistServiceClient;
+import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

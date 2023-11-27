@@ -1,4 +1,4 @@
-package kr.bb.product.infrastructure.client;
+package kr.bb.product.domain.product.infrastructure.client;
 
 import bloomingblooms.response.CommonResponse;
 import kr.bb.product.config.OpenFeignClientConfiguration;

@@ -4,7 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import bloomingblooms.response.CommonResponse;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreName;
-import kr.bb.product.infrastructure.client.StoreServiceClient;
+import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
