@@ -137,9 +137,11 @@ public class ProductCommand {
     private Long productPrice;
     private String productDescriptionImage;
     private String productThumbnail;
+    private Boolean isSubscription;
 
-    public static Product toEntity(SubscriptionProduct subscriptionProduct) {
-      return ProductMapper.INSTANCE.subscriptionToEntity(subscriptionProduct);
+    public static Product toEntity(SubscriptionProduct subscriptionProduct, Long storeId) {
+      subscriptionProduct.isSubscription = true;
+      return ProductMapper.INSTANCE.subscriptionToEntity(subscriptionProduct, storeId);
     }
   }
 }

@@ -7,5 +7,5 @@ public interface ProductCommandUseCased {
 
   void createProduct(ProductCommand.ProductRegister productRequestData);
 
-  void createSubscriptionProduct(ProductCommand.SubscriptionProduct product);
+  void createSubscriptionProduct(Long storeId, ProductCommand.SubscriptionProduct product);
 }

@@ -3,8 +3,8 @@ package kr.bb.product.domain.product.adapter.in.api;
 import bloomingblooms.response.CommonResponse;
 import java.util.Optional;
 import javax.validation.Valid;
-import kr.bb.product.domain.product.application.port.in.ProductQueryInputPort;
 import kr.bb.product.domain.product.application.port.in.ProductCommandInputPort;
+import kr.bb.product.domain.product.application.port.in.ProductQueryInputPort;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
@@ -21,20 +21,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class ProductRestController {
-  private final ProductQueryInputPort productFindInputPort;
+  private final ProductQueryInputPort productQueryInputPort;
   private final ProductCommandInputPort productStoreInputPort;
+  private final ProductCommandInputPort productCommandInputPort;
+
+  @PostMapping("store/{storeId}/subscribe-product")
+  public void createSubscriptionProduct(
+      @PathVariable Long storeId, @RequestBody ProductCommand.SubscriptionProduct product) {
+    productCommandInputPort.createSubscriptionProduct(storeId, product);
+  }
 
   @GetMapping("{productId}")
   public CommonResponse<ProductCommand.ProductDetail> getProductDetail(
       @PathVariable String productId, @RequestHeader Optional<Long> userId) {
     if (userId.isPresent()) {
       return CommonResponse.<ProductDetail>builder()
-          .data(productFindInputPort.getProductDetail(userId.get(), productId))
+          .data(productQueryInputPort.getProductDetail(userId.get(), productId))
           .message("상품 상세 정보 조회")
           .build();
     } else {
       return CommonResponse.<ProductDetail>builder()
-          .data(productFindInputPort.getProductDetail(productId))
+          .data(productQueryInputPort.getProductDetail(productId))
           .message("상품 상세 정보 조회")
           .build();
     }
@@ -45,12 +52,12 @@ public class ProductRestController {
       @PathVariable Long tagId, Pageable pageable, @RequestHeader Optional<Long> userId) {
     if (userId.isPresent()) {
       return CommonResponse.<ProductList>builder()
-          .data(productFindInputPort.getProductsByTag(userId.get(), tagId, pageable))
+          .data(productQueryInputPort.getProductsByTag(userId.get(), tagId, pageable))
           .message("select success")
           .build();
     } else {
       return CommonResponse.<ProductList>builder()
-          .data(productFindInputPort.getProductsByTag(tagId, pageable))
+          .data(productQueryInputPort.getProductsByTag(tagId, pageable))
           .message("select success")
           .build();
     }
@@ -62,9 +69,9 @@ public class ProductRestController {
     ProductList productsByCategory;
     if (userId.isPresent()) {
       productsByCategory =
-          productFindInputPort.getProductsByCategory(userId.get(), categoryId, pageable);
+          productQueryInputPort.getProductsByCategory(userId.get(), categoryId, pageable);
     } else {
-      productsByCategory = productFindInputPort.getProductsByCategory(categoryId, pageable);
+      productsByCategory = productQueryInputPort.getProductsByCategory(categoryId, pageable);
     }
     return CommonResponse.<ProductList>builder()
         .data(productsByCategory)

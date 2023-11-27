@@ -84,6 +84,11 @@ public class Product {
   private Long storeId;
 
   @NotBlank
+  @Builder.Default
+  @Field(name = "is_subscription")
+  private Boolean isSubscription = false;
+
+  @NotBlank
   @CreatedDate
   @Field(name = "created_at")
   private LocalDateTime createdAt;

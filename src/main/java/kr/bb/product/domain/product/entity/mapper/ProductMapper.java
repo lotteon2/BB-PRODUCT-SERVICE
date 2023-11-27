@@ -32,6 +32,7 @@ public interface ProductMapper {
     @Mapping(target = "tag", source = "tag"),
     @Mapping(target = "category", source = "category"),
     @Mapping(target = "productFlowers", source = "flowers"),
+    @Mapping(target = "isSubscription", expression = "java(false)"),
     @Mapping(target = "reviewCount", ignore = true),
     @Mapping(target = "averageRating", ignore = true),
     @Mapping(target = "productSaleAmount", ignore = true),
@@ -102,10 +103,10 @@ public interface ProductMapper {
     @Mapping(target = "reviewCount", ignore = true),
     @Mapping(target = "averageRating", ignore = true),
     @Mapping(target = "productSaleAmount", ignore = true),
-    @Mapping(target = "storeId", ignore = true),
+    @Mapping(target = "storeId", source = "storeId"),
     @Mapping(target = "createdAt", ignore = true),
     @Mapping(target = "updatedAt", ignore = true),
     @Mapping(target = "isDeleted", ignore = true)
   })
-  Product subscriptionToEntity(SubscriptionProduct subscriptionProduct);
+  Product subscriptionToEntity(SubscriptionProduct subscriptionProduct, Long storeId);
 }

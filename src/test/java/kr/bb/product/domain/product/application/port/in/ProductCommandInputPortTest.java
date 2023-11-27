@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
-import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProduct;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class ProductCommandInputPortTest {
   @Autowired private ProductCommandInputPort productCommandInputPort;
-  @Autowired private ProductOutPort productOutPort;
   @Autowired private ProductMongoRepository productMongoRepository;
 
   @Test
@@ -31,10 +29,11 @@ class ProductCommandInputPortTest {
             .productSummary("summary ")
             .productDescriptionImage("image ")
             .build();
-    productCommandInputPort.createSubscriptionProduct(build);
+    productCommandInputPort.createSubscriptionProduct(1L, build);
     List<Product> all = productMongoRepository.findAll();
     assertThat(all.get(0).getProductName()).isEqualTo(build.getProductName());
     assertThat(all.get(0).getCategory()).isNull();
+    assertThat(all.get(0).getIsSubscription()).isEqualTo(true);
   }
 
   @Test
@@ -47,7 +46,7 @@ class ProductCommandInputPortTest {
             .productSummary("summary ")
             .productDescriptionImage("image ")
             .build();
-    productCommandInputPort.createSubscriptionProduct(build);
+    productCommandInputPort.createSubscriptionProduct(1L, build);
     List<Product> all = productMongoRepository.findAll();
     assertThat(all.get(0).getCategory()).isNull();
   }

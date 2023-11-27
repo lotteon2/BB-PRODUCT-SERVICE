@@ -11,9 +11,9 @@ public interface ProductMongoRepository extends MongoRepository<Product, String>
   @Query("{ '_id' : ?0 }")
   Optional<Product> findByProductId(String productId);
 
-  @Query("{ 'category.categoryId' : ?0, 'product_sale_status' : 'SALE' }")
+  @Query("{ 'category.categoryId' : ?0, 'product_sale_status' : 'SALE', 'is_subscription' : false }")
   Page<Product> findByCategoryId(Long categoryId, Pageable pageable);
 
-  @Query("{ 'tag.tagId' : ?0, 'product_sale_status' : 'SALE' }")
+  @Query("{ 'tag.tagId' : ?0, 'product_sale_status' : 'SALE', 'is_subscription' : false}")
   Page<Product> findProductsByTagId(Long tagId, Pageable pageable);
 }

@@ -8,7 +8,7 @@ spring:
     name: product-service
   config:
     activate:
-      on-profile: local, dev, local
+      on-profile: local
     import: optional:configserver:http://localhost:8888
 management:
   endpoints:

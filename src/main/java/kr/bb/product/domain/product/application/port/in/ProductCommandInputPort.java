@@ -80,7 +80,7 @@ public class ProductCommandInputPort implements ProductCommandUseCased {
   }
 
   @Override
-  public void createSubscriptionProduct(SubscriptionProduct product) {
-    productCommandOutPort.createProduct(SubscriptionProduct.toEntity(product));
+  public void createSubscriptionProduct( Long storeId, SubscriptionProduct product) {
+    productCommandOutPort.createProduct(SubscriptionProduct.toEntity(product, storeId));
   }
 }
