@@ -97,7 +97,7 @@ class ProductServiceTest {
             .productDescriptionImage("image_url")
             .build();
     product.setStoreId(1L);
-    Product product1 = productMapper.entityToData(product, category, allById, list);
+    Product product1 = productMapper.createProductRequestToEntity(product, category, allById, list);
     Product save = productMongoRepository.save(product1);
     System.out.println(save.toString());
     Assertions.assertThat(save).isNotNull();

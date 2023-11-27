@@ -1,26 +1,25 @@
 package kr.bb.product.exception.errors.common;
 
-import java.util.Arrays;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
-  VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "Validation failed for args"),
-  CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "no match category");
+  COMMON_SYSTEM_ERROR("일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요."), // 장애 상황
+  COMMON_INVALID_PARAMETER("요청한 값이 올바르지 않습니다."),
+  COMMON_ENTITY_NOT_FOUND("존재하지 않는 엔티티입니다."),
+  COMMON_ILLEGAL_STATUS("잘못된 상태값입니다."),
+  VALIDATION_ERROR("Validation failed for args"),
+  CATEGORY_NOT_FOUND("no match category"),
+  PRODUCT_NOT_FOUND("no match product"),
+  SERVICE_NOT_AVAILABLE("can not found service");
 
-  private final HttpStatus code;
   private final String message;
 
-  ErrorCode(HttpStatus code, String message) {
-    this.code = code;
+  ErrorCode(String message) {
     this.message = message;
   }
 
-  public static ErrorCode valueOfCode(HttpStatus errorCode) {
-    return Arrays.stream(values())
-        .filter(value -> value.code.equals(errorCode))
-        .findAny()
-        .orElse(null);
+  public String getErrorMsg(Object... arg) {
+    return String.format(message, arg);
   }
 }
