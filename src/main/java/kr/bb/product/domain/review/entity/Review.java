@@ -23,6 +23,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
+@ToString
 @Table(name = "review")
 public class Review extends BaseEntity {
   @Id
@@ -41,6 +42,9 @@ public class Review extends BaseEntity {
 
   @Column(name = "product_id")
   private String productId;
+
+  @Column(name = "nickname")
+  private String nickname;
 
   @Builder.Default
   @OneToMany(

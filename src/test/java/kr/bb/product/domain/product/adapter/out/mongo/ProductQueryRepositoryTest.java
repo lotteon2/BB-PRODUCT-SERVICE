@@ -7,6 +7,8 @@ import kr.bb.product.domain.product.entity.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -31,5 +33,26 @@ class ProductQueryRepositoryTest {
     List<Product> all = productMongoRepository.findAll();
     assertThat(all.get(0).getProductName()).isEqualTo(build.getProductName());
     assertThat(all.get(0).getCategory()).isNull();
+  }
+
+  @Test
+  void findProductByStoreId() {
+    productMongoRepository.deleteAll();
+    for (int i = 0; i < 5; i++) {
+      Product build =
+          Product.builder()
+              .productName("name")
+              .productSummary("summary")
+              .productPrice(12L)
+              .storeId(1L)
+              .productDescriptionImage("images")
+              .productThumbnail("thumbnail")
+              .build();
+      productQueryRepository.createProduct(build);
+    }
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    Page<Product> productByStoreId = productMongoRepository.findProductByStoreId(1L, pageRequest);
+    List<Product> content = productByStoreId.getContent();
+    assertThat(content.size()).isEqualTo(5);
   }
 }
