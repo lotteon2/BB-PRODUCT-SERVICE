@@ -3,7 +3,7 @@ package kr.bb.product.domain.review.application.port.in;
 import java.util.List;
 import kr.bb.product.domain.review.adapter.in.ReviewCommand;
 import kr.bb.product.domain.review.application.port.out.ReviewOutPort;
-import kr.bb.product.domain.review.application.usecase.ReviewStoreUseCase;
+import kr.bb.product.domain.review.application.usecase.ReviewCommandUseCase;
 import kr.bb.product.domain.review.entity.Review;
 import kr.bb.product.domain.review.entity.ReviewImages;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ReviewStoreInputPort implements ReviewStoreUseCase {
+public class ReviewStoreInputPort implements ReviewCommandUseCase {
   private final ReviewOutPort reviewOutPort;
 
   /**

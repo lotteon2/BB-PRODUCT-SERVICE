@@ -46,6 +46,9 @@ public class Review extends BaseEntity {
   @Column(name = "nickname")
   private String nickname;
 
+  @Column(name = "profile_image")
+  private String profileImage;
+
   @Builder.Default
   @OneToMany(
       mappedBy = "review",

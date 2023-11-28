@@ -16,6 +16,7 @@ public class ReviewCommand {
     private Double rating;
     private List<String> reviewImage;
     private String nickname;
+    private String profileImage;
 
     public static Review toEntity(Register register, Long userId, String productId) {
       return ReviewMapper.INSTANCE.toEntity(register, userId, productId);
