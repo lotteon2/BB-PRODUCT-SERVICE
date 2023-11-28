@@ -3,7 +3,6 @@ package kr.bb.product.domain.review.entity;
 import com.querydsl.core.annotations.QueryProjection;
 import java.time.LocalDateTime;
 import java.util.List;
-import kr.bb.product.domain.review.entity.ReviewImagesCommand.ReviewImageList;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -22,7 +21,7 @@ public class ReviewCommand {
       private String nickname;
       private String productName;
       private String content;
-      private ReviewImageList reviewImages;
+      private List<ReviewImages> reviewImages;
     }
 
     @Getter
