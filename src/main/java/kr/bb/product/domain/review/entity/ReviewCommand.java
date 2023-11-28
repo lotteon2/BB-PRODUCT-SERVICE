@@ -9,6 +9,18 @@ import lombok.ToString;
 
 public class ReviewCommand {
   @Getter
+  public enum SortOption {
+    DATE("createdAt"),
+    HIGH("reviewRating"),
+    LOW("reviewRating");
+    private final String property;
+
+    SortOption(String property) {
+      this.property = property;
+    }
+  }
+
+  @Getter
   @Builder
   public static class StoreReview {
     @Getter

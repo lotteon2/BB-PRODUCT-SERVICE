@@ -12,8 +12,10 @@ import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.domain.review.adapter.out.jpa.ReviewJpaRepository;
 import kr.bb.product.domain.review.entity.Review;
+import kr.bb.product.domain.review.entity.ReviewCommand.SortOption;
 import kr.bb.product.domain.review.entity.ReviewCommand.StoreReview.StoreReviewItem;
 import kr.bb.product.domain.review.entity.ReviewImages;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -55,30 +57,51 @@ class ReviewQueryInputPortTest {
   }
 
   @Test
+  @DisplayName("리뷰 조회 별점 낮은 순 - 한 페이지 개수 5개")
   void testFindReviewByStoreId() {
     productMongoRepository.deleteAll();
     PageRequest pageRequest = PageRequest.of(0, 5);
     productCommandInputPort.createProduct(getProductRequestData());
-    List<Product> all = productMongoRepository.findAll();
-    Review reviewContent =
-        Review.builder()
-            .reviewContent("review content")
-            .reviewRating(4.5)
-            .productId(all.get(0).getProductId())
-            .userId(1L)
-            .build();
-    for (int i = 0; i < 3; i++) {
-      ReviewImages images =
-          ReviewImages.builder()
-              .reviewImageUrl(String.format("imageurl%d", i))
-              .review(reviewContent)
-              .build();
-      reviewContent.getReviewImages().add(images);
-    }
-    Review save = reviewJpaRepository.save(reviewContent);
+    createReviews();
+
     List<StoreReviewItem> reviewByStoreId =
-        reviewQueryInputPort.findReviewByStoreId(1L, pageRequest);
-    assertThat(reviewByStoreId.size()).isEqualTo(1);
-    assertThat(reviewByStoreId.get(0).getReviewImages().size()).isEqualTo(3);
+        reviewQueryInputPort.findReviewByStoreId(1L, pageRequest, SortOption.LOW);
+    assertThat(reviewByStoreId.size()).isEqualTo(5);
+    assertThat(reviewByStoreId.get(0).getRating()).isEqualTo(4.5);
+  }
+  @Test
+  @DisplayName("리뷰 조회 별점 높은 순 - 한 페이지 개수 5개")
+  void testFindReviewByStoreIdHighRating() {
+    productMongoRepository.deleteAll();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    productCommandInputPort.createProduct(getProductRequestData());
+    createReviews();
+
+    List<StoreReviewItem> reviewByStoreId =
+        reviewQueryInputPort.findReviewByStoreId(1L, pageRequest, SortOption.HIGH);
+    assertThat(reviewByStoreId.size()).isEqualTo(5);
+    assertThat(reviewByStoreId.get(0).getRating()).isEqualTo(13.5);
+  }
+
+  private void createReviews() {
+    List<Product> all = productMongoRepository.findAll();
+    for (int i = 0; i < 10; i++) {
+      Review reviewContent =
+          Review.builder()
+              .reviewContent("review content" + i)
+              .reviewRating(4.5 + i)
+              .productId(all.get(0).getProductId())
+              .userId(1L)
+              .build();
+      for (int j = 0; j < 3; j++) {
+        ReviewImages images =
+            ReviewImages.builder()
+                .reviewImageUrl(String.format("imageurl%d", j))
+                .review(reviewContent)
+                .build();
+        reviewContent.getReviewImages().add(images);
+      }
+      Review save = reviewJpaRepository.save(reviewContent);
+    }
   }
 }

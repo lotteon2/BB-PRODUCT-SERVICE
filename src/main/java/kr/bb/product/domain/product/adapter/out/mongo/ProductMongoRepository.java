@@ -1,5 +1,6 @@
 package kr.bb.product.domain.product.adapter.out.mongo;
 
+import java.util.List;
 import java.util.Optional;
 import kr.bb.product.domain.product.entity.Product;
 import org.springframework.data.domain.Page;
@@ -19,5 +20,5 @@ public interface ProductMongoRepository extends MongoRepository<Product, String>
   Page<Product> findProductsByTagId(Long tagId, Pageable pageable);
 
   @Query("{'store_id':  ?0}")
-  Page<Product> findProductByStoreId(Long storeId, Pageable pageable);
+  List<Product> findProductByStoreId(Long storeId);
 }

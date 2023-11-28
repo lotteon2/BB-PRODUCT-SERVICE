@@ -7,10 +7,14 @@ import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.review.application.port.out.ReviewQueryOutPort;
 import kr.bb.product.domain.review.application.usecase.ReviewQueryUseCase;
+import kr.bb.product.domain.review.entity.ReviewCommand.SortOption;
 import kr.bb.product.domain.review.entity.ReviewCommand.StoreReview.StoreReviewItem;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,17 +23,31 @@ public class ReviewQueryInputPort implements ReviewQueryUseCase {
   private final ReviewQueryOutPort reviewQueryOutPort;
   private final ProductQueryOutPort productQueryOutPort;
 
+  @NotNull
+  private static Pageable getPageable(Pageable pageable, SortOption sortOption) {
+    Direction direction = Direction.DESC;
+    if (SortOption.LOW.equals(sortOption)) direction = Direction.ASC;
+      return PageRequest.of(
+        pageable.getPageNumber(),
+        pageable.getPageSize(),
+        Sort.by(direction, sortOption.getProperty()));
+  }
+
   @Override
-  public List<StoreReviewItem> findReviewByStoreId(Long storeId, Pageable pageable) {
-    Page<Product> productByStoreId = productQueryOutPort.findProductByStoreId(storeId, pageable);
-    List<Product> content = productByStoreId.getContent();
+  public List<StoreReviewItem> findReviewByStoreId(
+      Long storeId, Pageable pageable, SortOption sortOption) {
+
+    Pageable pageRequest = getPageable(pageable, sortOption);
+
+    List<Product> productByStoreId = productQueryOutPort.findProductByStoreId(storeId);
     List<String> productId =
-        content.stream().map(Product::getProductId).collect(Collectors.toList());
+        productByStoreId.stream().map(Product::getProductId).collect(Collectors.toList());
 
     Map<String, String> productName =
-        content.stream().collect(Collectors.toMap(Product::getProductId, Product::getProductName));
+        productByStoreId.stream()
+            .collect(Collectors.toMap(Product::getProductId, Product::getProductName));
 
-    return reviewQueryOutPort.findReviewByProductId(productId).stream()
+    return reviewQueryOutPort.findReviewByProductId(productId, pageRequest).stream()
         .map(
             item ->
                 StoreReviewItem.builder()

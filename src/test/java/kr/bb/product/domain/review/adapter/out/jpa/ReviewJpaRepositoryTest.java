@@ -9,6 +9,9 @@ import kr.bb.product.domain.review.entity.ReviewImages;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 @DataJpaTest
 class ReviewJpaRepositoryTest {
@@ -35,7 +38,8 @@ class ReviewJpaRepositoryTest {
 
     List<String> id = new ArrayList<>();
     id.add("5678i");
-    List<Review> reviewByProductId = reviewJpaRepository.getReviewByProductId(id);
+    PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Direction.DESC, "created_at"));
+    List<Review> reviewByProductId = reviewJpaRepository.getReviewByProductId(id, pageRequest);
     System.out.println(reviewByProductId.toString());
   }
 }
