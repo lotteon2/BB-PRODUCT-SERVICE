@@ -1,6 +1,5 @@
 package kr.bb.product.domain.review.entity;
 
-import com.querydsl.core.annotations.QueryProjection;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
@@ -33,7 +32,7 @@ public class ReviewCommand {
       private String nickname;
       private String productName;
       private String content;
-      private List<ReviewImages> reviewImages;
+      private List<String> reviewImages;
     }
 
     @Getter
@@ -48,15 +47,9 @@ public class ReviewCommand {
       private String nickname;
       private String profileImage;
 
-      @QueryProjection
-      public Review(
-          Long reviewId,
-          LocalDateTime createdAt,
-          Double reviewRating,
-          String reviewContent,
-          List<String> reviewImages,
-          String nickname,
-          String profileImage) {
+      public Review(Long reviewId, LocalDateTime createdAt, Double reviewRating,
+              String reviewContent, List<String> reviewImages, String nickname,
+              String profileImage) {
         this.reviewId = reviewId;
         this.createdAt = createdAt;
         this.reviewRating = reviewRating;

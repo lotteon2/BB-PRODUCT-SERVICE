@@ -1,5 +1,6 @@
 package kr.bb.product.domain.review.application.port.in;
 
+import bloomingblooms.errors.EntityNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import kr.bb.product.domain.review.application.port.out.ReviewQueryOutPort;
 import kr.bb.product.domain.review.application.usecase.ReviewQueryUseCase;
 import kr.bb.product.domain.review.entity.ReviewCommand.SortOption;
 import kr.bb.product.domain.review.entity.ReviewCommand.StoreReview.StoreReviewItem;
+import kr.bb.product.domain.review.entity.ReviewImages;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.PageRequest;
@@ -27,12 +29,20 @@ public class ReviewQueryInputPort implements ReviewQueryUseCase {
   private static Pageable getPageable(Pageable pageable, SortOption sortOption) {
     Direction direction = Direction.DESC;
     if (SortOption.LOW.equals(sortOption)) direction = Direction.ASC;
-      return PageRequest.of(
+    return PageRequest.of(
         pageable.getPageNumber(),
         pageable.getPageSize(),
         Sort.by(direction, sortOption.getProperty()));
   }
 
+  /**
+   * 가게 사장 리뷰 조회
+   *
+   * @param storeId
+   * @param pageable
+   * @param sortOption
+   * @return
+   */
   @Override
   public List<StoreReviewItem> findReviewByStoreId(
       Long storeId, Pageable pageable, SortOption sortOption) {
@@ -40,6 +50,7 @@ public class ReviewQueryInputPort implements ReviewQueryUseCase {
     Pageable pageRequest = getPageable(pageable, sortOption);
 
     List<Product> productByStoreId = productQueryOutPort.findProductByStoreId(storeId);
+    if (productByStoreId == null) throw new EntityNotFoundException();
     List<String> productId =
         productByStoreId.stream().map(Product::getProductId).collect(Collectors.toList());
 
@@ -52,7 +63,10 @@ public class ReviewQueryInputPort implements ReviewQueryUseCase {
             item ->
                 StoreReviewItem.builder()
                     .reviewId(item.getReviewId())
-                    .reviewImages(item.getReviewImages())
+                    .reviewImages(
+                        item.getReviewImages().stream()
+                            .map(ReviewImages::getReviewImageUrl)
+                            .collect(Collectors.toList()))
                     .profileImage(item.getProfileImage())
                     .rating(item.getReviewRating())
                     .nickname(item.getNickname())

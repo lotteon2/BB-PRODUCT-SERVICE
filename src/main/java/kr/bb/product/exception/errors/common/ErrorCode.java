@@ -4,19 +4,15 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-  COMMON_SYSTEM_ERROR("일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요."), // 장애 상황
-  COMMON_INVALID_PARAMETER("요청한 값이 올바르지 않습니다."),
-  COMMON_ENTITY_NOT_FOUND("존재하지 않는 엔티티입니다."),
-  COMMON_ILLEGAL_STATUS("잘못된 상태값입니다."),
-  VALIDATION_ERROR("Validation failed for args"),
-  CATEGORY_NOT_FOUND("no match category"),
-  PRODUCT_NOT_FOUND("no match product"),
-  SERVICE_NOT_AVAILABLE("can not found service");
-
+  CATEGORY_NOT_FOUND("no match category", 400),
+  PRODUCT_NOT_FOUND("no match product", 400),
+  REVIEW_NOT_FOUND("리뷰가 존재하지 않습니다.", 400);
   private final String message;
+  private final Integer errorCode;
 
-  ErrorCode(String message) {
+  ErrorCode(String message, Integer errorCode) {
     this.message = message;
+    this.errorCode = errorCode;
   }
 
   public String getErrorMsg(Object... arg) {

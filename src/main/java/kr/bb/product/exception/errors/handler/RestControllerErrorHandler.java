@@ -5,17 +5,26 @@ import java.util.HashMap;
 import java.util.Map;
 import kr.bb.product.exception.errors.CategoryNotFoundException;
 import kr.bb.product.exception.errors.ProductNotFoundException;
-import org.springframework.http.HttpStatus;
+import kr.bb.product.exception.errors.ReviewNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.validation.FieldError;
-import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestControllerAdvice
 public class RestControllerErrorHandler extends ResponseEntityExceptionHandler {
+  @ExceptionHandler(ReviewNotFoundException.class)
+  protected ResponseEntity<ErrorResponse> categoryNotFound(
+      ReviewNotFoundException reviewNotFoundException) {
+    return ResponseEntity.ok()
+        .body(
+            ErrorResponse.builder()
+                .code(reviewNotFoundException.getMessage())
+                .message(reviewNotFoundException.getMessage())
+                .build());
+  }
 
   @ExceptionHandler(CategoryNotFoundException.class)
   protected ResponseEntity<ErrorResponse> categoryNotFound(
@@ -49,5 +58,3 @@ public class RestControllerErrorHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity.badRequest().body(errors);
   }
 }
-
-
