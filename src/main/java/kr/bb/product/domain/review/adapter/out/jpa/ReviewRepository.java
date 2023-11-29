@@ -1,18 +1,15 @@
 package kr.bb.product.domain.review.adapter.out.jpa;
 
 import java.util.List;
-import kr.bb.product.domain.review.adapter.out.jpa.ReviewJpaRepository;
 import kr.bb.product.domain.review.application.port.out.ReviewOutPort;
 import kr.bb.product.domain.review.entity.Review;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
 public class ReviewRepository implements ReviewOutPort {
   private final ReviewJpaRepository repository;
-
-  public ReviewRepository(ReviewJpaRepository repository) {
-    this.repository = repository;
-  }
 
   @Override
   public void createReview(Review review) {

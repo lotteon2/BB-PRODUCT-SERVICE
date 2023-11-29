@@ -1,9 +1,7 @@
 package kr.bb.product.domain.product.application.port.out;
 
-import java.util.List;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
-import org.jetbrains.annotations.TestOnly;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,4 +17,5 @@ public interface ProductOutPort {
   Page<Product> findByCategory(Long categoryId, Pageable pageable);
 
   Page<Product> findProductsByTagId(Long tagId, Pageable pageable);
+
 }

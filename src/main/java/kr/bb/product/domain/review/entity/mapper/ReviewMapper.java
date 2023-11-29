@@ -11,12 +11,12 @@ import org.mapstruct.factory.Mappers;
 public interface ReviewMapper {
   ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
 
- @Mappings({
-        @Mapping(target = "userId", source = "userId"),
-        @Mapping(target = "productId", source = "productId"),
-        @Mapping(target = "reviewId", ignore = true),
-        @Mapping(target = "reviewRating", source = "register.rating"),
-        @Mapping(target = "reviewImages", ignore = true),
-    })
-    Review toEntity(ReviewCommand.Register register, Long userId, String productId);
+  @Mappings({
+    @Mapping(target = "userId", source = "userId"),
+    @Mapping(target = "productId", source = "productId"),
+    @Mapping(target = "reviewId", ignore = true),
+    @Mapping(target = "reviewRating", source = "register.rating"),
+    @Mapping(target = "reviewImages", ignore = true),
+  })
+  Review toEntity(ReviewCommand.Register register, Long userId, String productId);
 }

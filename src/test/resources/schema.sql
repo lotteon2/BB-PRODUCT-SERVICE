@@ -51,3 +51,17 @@ values ('장미', '장미 꽃말'),
        ('빨간 장미', '빨간 장미 꽃말'),
        ('파란 장미', '파란 장미 꽃말'),
        ( '노란 장미', '노란 장미 꽃말');
+
+-- insert into review (review_content, product_id, review_rating, user_id) value ('review_content1', '6563580648941c67d5202c24', 4.5, 1);
+-- insert into review (review_content, product_id, review_rating, user_id) value ('review_content2', '6563580648941c67d5202c24', 4.5, 2);
+-- insert into review (review_content, product_id, review_rating, user_id) value ('review_content3', '6563580648941c67d5202c24', 4.5, 3);
+-- insert into review (review_content, product_id, review_rating, user_id) value ('review_content4', '12', 4.5, 4);
+-- insert into review (review_content, product_id, review_rating, user_id) value ('review_content5', '123', 4.5, 5);
+--
+-- insert into review_images (review_image_url, review_id) value ('url1', 1);
+-- insert into review_images (review_image_url, review_id) value ('url1', 1);
+-- insert into review_images (review_image_url, review_id) value ('url1', 1);
+--
+-- insert into review_images (review_image_url, review_id) value ('url2', 2);
+-- insert into review_images (review_image_url, review_id) value ('url2', 2);
+-- insert into review_images (review_image_url, review_id) value ('url2', 2);

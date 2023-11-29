@@ -1,5 +1,6 @@
 package kr.bb.product.domain.review.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Getter
 @Builder
@@ -33,6 +33,7 @@ public class ReviewImages extends BaseEntity {
   @Column(name = "review_image_url")
   private String reviewImageUrl;
 
+  @JsonIgnore
   @ManyToOne(
       fetch = FetchType.LAZY,
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE})

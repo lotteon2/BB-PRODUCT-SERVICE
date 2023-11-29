@@ -3,6 +3,8 @@ package kr.bb.product.domain.review.adapter.out;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.List;
+import kr.bb.product.config.JpaConfiguration;
+import kr.bb.product.config.QueryDslConfiguration;
 import kr.bb.product.domain.review.adapter.out.jpa.ReviewJpaRepository;
 import kr.bb.product.domain.review.entity.Review;
 import kr.bb.product.domain.review.entity.ReviewImages;
@@ -10,11 +12,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 @DataJpaTest
+@Import({JpaConfiguration.class, QueryDslConfiguration.class})
 class ReviewJpaRepositoryTest {
-  @Autowired
-  ReviewJpaRepository reviewJpaRepository;
+  @Autowired ReviewJpaRepository reviewJpaRepository;
 
   @Test
   @DisplayName("리뷰 작성 repository 테스트")
