@@ -9,6 +9,7 @@ import kr.bb.product.domain.product.application.usecase.ProductCommandUseCased;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProduct;
+import kr.bb.product.domain.product.entity.ProductCommand.UpdateSubscriptionProduct;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.entity.mapper.ProductMapper;
 import kr.bb.product.domain.product.vo.ProductFlowers;
@@ -57,6 +58,12 @@ public class ProductCommandInputPort implements ProductCommandUseCased {
         .orElseThrow(CategoryNotFoundException::new);
   }
 
+  /**
+   * 상품 상태 변경
+   *
+   * @param productId
+   * @param productRequestData
+   */
   @Override
   public void updateProductSaleStatus(
       String productId, ProductCommand.ProductUpdate productRequestData) {
@@ -68,6 +75,11 @@ public class ProductCommandInputPort implements ProductCommandUseCased {
     }
   }
 
+  /**
+   * 상품 등록
+   *
+   * @param productRequestData
+   */
   @Override
   public void createProduct(ProductCommand.ProductRegister productRequestData) {
     Category category = getCategory(productRequestData);
@@ -79,8 +91,26 @@ public class ProductCommandInputPort implements ProductCommandUseCased {
         productMapper.createProductRequestToEntity(productRequestData, category, tags, flowers));
   }
 
+  /**
+   * 구독 상품 등록
+   *
+   * @param storeId
+   * @param product
+   */
   @Override
-  public void createSubscriptionProduct( Long storeId, SubscriptionProduct product) {
+  public void createSubscriptionProduct(Long storeId, SubscriptionProduct product) {
     productCommandOutPort.createProduct(SubscriptionProduct.toEntity(product, storeId));
+  }
+
+  /**
+   * 구독 상품 수정
+   *
+   * @param storeId
+   * @param product
+   */
+  @Override
+  public void updateSubscriptionProduct(String storeId, UpdateSubscriptionProduct product) {
+    product.setProductId(storeId);
+    productCommandOutPort.updateSubscriptionProduct(product);
   }
 }

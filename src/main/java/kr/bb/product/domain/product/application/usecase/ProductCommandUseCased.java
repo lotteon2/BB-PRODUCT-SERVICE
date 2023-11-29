@@ -8,4 +8,6 @@ public interface ProductCommandUseCased {
   void createProduct(ProductCommand.ProductRegister productRequestData);
 
   void createSubscriptionProduct(Long storeId, ProductCommand.SubscriptionProduct product);
+
+  void updateSubscriptionProduct(String productId, ProductCommand.UpdateSubscriptionProduct product);
 }

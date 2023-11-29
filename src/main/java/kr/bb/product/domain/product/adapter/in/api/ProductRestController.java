@@ -25,6 +25,13 @@ public class ProductRestController {
   private final ProductCommandInputPort productStoreInputPort;
   private final ProductCommandInputPort productCommandInputPort;
 
+  @PutMapping("{productId}/subscribe-product")
+  public void updateSubscriptionProduct(
+      @PathVariable String productId,
+      @RequestBody ProductCommand.UpdateSubscriptionProduct product) {
+    productCommandInputPort.updateSubscriptionProduct(productId, product);
+  }
+
   @PostMapping("store/{storeId}/subscribe-product")
   public void createSubscriptionProduct(
       @PathVariable Long storeId, @RequestBody ProductCommand.SubscriptionProduct product) {
