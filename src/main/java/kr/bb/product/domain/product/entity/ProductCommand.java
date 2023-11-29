@@ -153,10 +153,10 @@ public class ProductCommand {
     private Long productPrice;
     private String productDescriptionImage;
     private String productThumbnail;
-    private Long storeId;
+    private String productId;
 
-    public void setStoreId(Long storeId) {
-      this.storeId = storeId;
+    public void setProductId(String productId) {
+      this.productId = productId;
     }
   }
 }

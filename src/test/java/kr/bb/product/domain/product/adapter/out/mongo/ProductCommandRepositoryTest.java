@@ -42,7 +42,7 @@ class ProductCommandRepositoryTest {
             .productDescriptionImage("description image")
             .productPrice(100000L)
             .build();
-    updatedProduct.setStoreId(1L);
+    updatedProduct.setProductId("123");
     productCommandRepository.updateSubscriptionProduct(updatedProduct);
     List<Product> all = productMongoRepository.findAll();
     Product product = all.get(0);

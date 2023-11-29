@@ -109,8 +109,8 @@ public class ProductCommandInputPort implements ProductCommandUseCased {
    * @param product
    */
   @Override
-  public void updateSubscriptionProduct(Long storeId, UpdateSubscriptionProduct product) {
-    product.setStoreId(storeId);
+  public void updateSubscriptionProduct(String storeId, UpdateSubscriptionProduct product) {
+    product.setProductId(storeId);
     productCommandOutPort.updateSubscriptionProduct(product);
   }
 }

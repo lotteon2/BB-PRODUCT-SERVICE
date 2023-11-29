@@ -25,7 +25,7 @@ public class ProductCommandRepository implements ProductCommandOutPort {
   public void updateSubscriptionProduct(UpdateSubscriptionProduct product) {
     mongoTemplate.updateMulti(
         Query.query(
-            Criteria.where("store_id").is(product.getStoreId()).and("is_subscription").is(true)),
+            Criteria.where("_id").is(product.getProductId()).and("is_subscription").is(true)),
         Update.update("product_name", product.getProductName())
             .set("product_summary", product.getProductSummary())
             .set("product_price", product.getProductPrice())

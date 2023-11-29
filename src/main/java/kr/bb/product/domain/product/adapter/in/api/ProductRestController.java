@@ -24,6 +24,10 @@ public class ProductRestController {
   private final ProductQueryInputPort productQueryInputPort;
   private final ProductCommandInputPort productStoreInputPort;
   private final ProductCommandInputPort productCommandInputPort;
+  @PutMapping("{productId}/subscribe-product")
+  public void updateSubscriptionProduct(@PathVariable String productId){
+
+  }
 
   @PostMapping("store/{storeId}/subscribe-product")
   public void createSubscriptionProduct(

@@ -77,7 +77,7 @@ class ProductCommandInputPortTest {
             .productDescriptionImage("description image")
             .productPrice(100000L)
             .build();
-    productCommandInputPort.updateSubscriptionProduct(1L, updatedProduct);
+    productCommandInputPort.updateSubscriptionProduct("123", updatedProduct);
     List<Product> all = productMongoRepository.findAll();
     Product product = all.get(0);
     assertThat(product.getProductSummary()).isEqualTo(updatedProduct.getProductSummary());

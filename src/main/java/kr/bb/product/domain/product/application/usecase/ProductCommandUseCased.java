@@ -9,5 +9,5 @@ public interface ProductCommandUseCased {
 
   void createSubscriptionProduct(Long storeId, ProductCommand.SubscriptionProduct product);
 
-  void updateSubscriptionProduct(Long storeId, ProductCommand.UpdateSubscriptionProduct product);
+  void updateSubscriptionProduct(String productId, ProductCommand.UpdateSubscriptionProduct product);
 }
