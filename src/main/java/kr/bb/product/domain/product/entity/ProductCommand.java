@@ -144,4 +144,19 @@ public class ProductCommand {
       return ProductMapper.INSTANCE.subscriptionToEntity(subscriptionProduct, storeId);
     }
   }
+
+  @Getter
+  @Builder
+  public static class UpdateSubscriptionProduct {
+    private String productName;
+    private String productSummary;
+    private Long productPrice;
+    private String productDescriptionImage;
+    private String productThumbnail;
+    private Long storeId;
+
+    public void setStoreId(Long storeId) {
+      this.storeId = storeId;
+    }
+  }
 }
