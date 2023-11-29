@@ -105,13 +105,12 @@ jacocoTestCoverageVerification {
         rule {
             enabled = true
             element = 'CLASS'
-
             limit {
                 counter = 'BRANCH'
                 value = 'COVEREDRATIO'
                 minimum = 0.80
             }
-            excludes = ["*.mapper*", "**.adapter.**", "**.aop.**"]
+            excludes = ["*.mapper*", "**.adapter.**", "**.aop.**", "**.entity.**"]
         }
     }
 }

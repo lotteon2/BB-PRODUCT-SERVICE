@@ -1,8 +1,10 @@
 package kr.bb.product.domain.review.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.junit.jupiter.api.Assertions.*;
 
+import bloomingblooms.errors.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
@@ -69,6 +71,7 @@ class ReviewQueryInputPortTest {
     assertThat(reviewByStoreId.size()).isEqualTo(5);
     assertThat(reviewByStoreId.get(0).getRating()).isEqualTo(4.5);
   }
+
   @Test
   @DisplayName("리뷰 조회 별점 높은 순 - 한 페이지 개수 5개")
   void testFindReviewByStoreIdHighRating() {
@@ -103,5 +106,18 @@ class ReviewQueryInputPortTest {
       }
       Review save = reviewJpaRepository.save(reviewContent);
     }
+  }
+
+  @Test
+  void findReviewByStoreId() {
+    productMongoRepository.deleteAll();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+
+    Throwable throwable =
+        catchThrowable(
+            () -> {
+              reviewQueryInputPort.findReviewByStoreId(1L, pageRequest, SortOption.LOW);
+            });
+    assertThat(throwable).isInstanceOf(EntityNotFoundException.class);
   }
 }
