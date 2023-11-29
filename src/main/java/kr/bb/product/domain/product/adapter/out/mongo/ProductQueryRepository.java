@@ -15,4 +15,9 @@ public class ProductQueryRepository implements ProductQueryOutPort {
   public List<Product> findProductByStoreId(Long storeId) {
     return productMongoRepository.findProductByStoreId(storeId);
   }
+
+  @Override
+  public List<Product> findStoreProducts(Long storeId) {
+    return productMongoRepository.findProductsByStoreId(storeId);
+  }
 }
