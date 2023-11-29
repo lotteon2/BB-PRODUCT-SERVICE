@@ -4,6 +4,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
 import kr.bb.product.domain.product.entity.mapper.ProductMapper;
+import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
 import lombok.Builder;
@@ -158,5 +159,45 @@ public class ProductCommand {
     public void setProductId(String productId) {
       this.productId = productId;
     }
+  }
+
+  @Getter
+  @Builder
+  public static class StoreProduct {
+    private String key;
+    private String productThumbnail;
+    private String productName;
+    private String representativeFlower;
+    private String category;
+    private Long productPrice;
+    private Long productSaleAmount;
+    private Double averageRating;
+    private String productSaleStatus;
+
+    public static StoreProduct fromEntity(Product product) {
+      return StoreProduct.builder()
+          .averageRating(product.getAverageRating())
+          .category(product.getCategory().getCategoryName())
+          .key(product.getProductId())
+          .productName(product.getProductName())
+          .productPrice(product.getProductPrice())
+          .productSaleAmount(product.getProductSaleAmount())
+          .productSaleStatus(product.getProductSaleStatus().getMessage())
+          .productThumbnail(product.getProductThumbnail())
+          .representativeFlower(
+              product.getProductFlowers().stream()
+                  .filter(ProductFlowers::getIsRepresentative)
+                  .map(ProductFlowers::getFlowerName)
+                  .findFirst()
+                  .orElse("대표꽃이 없습니다."))
+          .build();
+    }
+  }
+
+  @Getter
+  @Builder
+  public static class StoreProductList {
+    private List<StoreProduct> products;
+    private int totalCnt;
   }
 }

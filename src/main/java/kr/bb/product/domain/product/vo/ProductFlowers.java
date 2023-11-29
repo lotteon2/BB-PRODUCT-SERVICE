@@ -15,5 +15,6 @@ import lombok.ToString;
 public class ProductFlowers {
   private Long flowerId;
   private Long flowerCount;
+  private String flowerName;
   @Builder.Default private Boolean isRepresentative = false;
 }

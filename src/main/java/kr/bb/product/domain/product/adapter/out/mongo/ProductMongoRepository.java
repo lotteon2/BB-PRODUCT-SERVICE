@@ -21,7 +21,4 @@ public interface ProductMongoRepository extends MongoRepository<Product, String>
 
   @Query("{'store_id':  ?0}")
   List<Product> findProductByStoreId(Long storeId);
-
-  @Query("{'store_id':  ?0}")
-  List<Product> findProductsByStoreId(Long storeId);
 }

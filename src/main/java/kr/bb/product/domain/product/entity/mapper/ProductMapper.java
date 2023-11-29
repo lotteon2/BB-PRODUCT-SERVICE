@@ -48,6 +48,7 @@ public interface ProductMapper {
 
   @Named("FR2FL")
   @Mapping(target = "isRepresentative", ignore = true)
+  @Mapping(target = "flowerName", ignore = true)
   ProductFlowers flowerRequestToFlowers(ProductFlowersRequestData flowersRequestData);
 
   @IterableMapping(qualifiedByName = "FR2FL")
