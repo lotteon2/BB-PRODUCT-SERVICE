@@ -1,4 +1,4 @@
-package kr.bb.product.domain.flower.adapter.out.jpa;
+package kr.bb.product.domain.flower.repository.jpa;
 
 import kr.bb.product.domain.flower.entity.Flower;
 import org.springframework.data.jpa.repository.JpaRepository;

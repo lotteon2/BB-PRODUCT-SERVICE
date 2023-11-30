@@ -1,10 +1,8 @@
 package kr.bb.product.domain.product.entity;
 
 import java.util.List;
-import javax.validation.constraints.NotNull;
 import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
 import kr.bb.product.domain.product.entity.mapper.ProductMapper;
-import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
 import lombok.Builder;
@@ -29,15 +27,15 @@ public class ProductCommand {
   @Builder
   @Getter
   public static class ProductRegister {
-    @NotNull private String productName;
-    @NotNull private String productSummary;
-    @NotNull private String productDescriptionImage;
-    @NotNull private String productThumbnail;
-    @NotNull private Long productPrice;
+    private String productName;
+    private String productSummary;
+    private String productDescriptionImage;
+    private String productThumbnail;
+    private Long productPrice;
     private Long categoryId;
     private Long storeId;
     private List<Long> productTag;
-    @NotNull private ProductFlowersRequestData representativeFlower;
+    private ProductFlowersRequestData representativeFlower;
     private List<ProductFlowersRequestData> flowers;
 
     public void setStoreId(Long storeId) {
@@ -48,15 +46,15 @@ public class ProductCommand {
   @Builder
   @Getter
   public static class ProductUpdate {
-    @NotNull private String productName;
-    @NotNull private String productSummary;
-    @NotNull private String productDescriptionImage;
-    @NotNull private String productThumbnail;
-    @NotNull private Long productPrice;
+    private String productName;
+    private String productSummary;
+    private String productDescriptionImage;
+    private String productThumbnail;
+    private Long productPrice;
     private ProductSaleStatus productSaleStatus;
     private Long categoryId;
     private List<Long> productTag;
-    @NotNull private ProductFlowersRequestData representativeFlower;
+    private ProductFlowersRequestData representativeFlower;
     private List<ProductFlowersRequestData> flowers;
   }
 
@@ -174,7 +172,7 @@ public class ProductCommand {
     private Double averageRating;
     private String productSaleStatus;
 
-    public static StoreProduct fromEntity(Product product) {
+    public static StoreProduct fromEntity(Product product, String representativeFlower) {
       return StoreProduct.builder()
           .averageRating(product.getAverageRating())
           .category(product.getCategory().getCategoryName())
@@ -184,12 +182,7 @@ public class ProductCommand {
           .productSaleAmount(product.getProductSaleAmount())
           .productSaleStatus(product.getProductSaleStatus().getMessage())
           .productThumbnail(product.getProductThumbnail())
-          .representativeFlower(
-              product.getProductFlowers().stream()
-                  .filter(ProductFlowers::getIsRepresentative)
-                  .map(ProductFlowers::getFlowerName)
-                  .findFirst()
-                  .orElse("대표꽃이 없습니다."))
+          .representativeFlower(representativeFlower)
           .build();
     }
   }

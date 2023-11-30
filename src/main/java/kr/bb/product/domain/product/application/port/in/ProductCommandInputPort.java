@@ -5,7 +5,7 @@ import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.category.repository.jpa.CategoryRepository;
 import kr.bb.product.domain.product.application.port.out.ProductCommandOutPort;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
-import kr.bb.product.domain.product.application.usecase.ProductCommandUseCased;
+import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProduct;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ProductCommandInputPort implements ProductCommandUseCased {
+public class ProductCommandInputPort implements ProductCommandUseCase {
   private final ProductOutPort productOutPort;
   private final ProductMapper productMapper;
   private final TagRepository tagRepository;
@@ -65,6 +65,7 @@ public class ProductCommandInputPort implements ProductCommandUseCased {
    * @param productRequestData
    */
   @Override
+  @Transactional
   public void updateProductSaleStatus(
       String productId, ProductCommand.ProductUpdate productRequestData) {
     Product product = productOutPort.findByProductId(productId);
@@ -81,6 +82,7 @@ public class ProductCommandInputPort implements ProductCommandUseCased {
    * @param productRequestData
    */
   @Override
+  @Transactional
   public void createProduct(ProductCommand.ProductRegister productRequestData) {
     Category category = getCategory(productRequestData);
     List<Tag> tags = getTags(productRequestData);
@@ -98,6 +100,7 @@ public class ProductCommandInputPort implements ProductCommandUseCased {
    * @param product
    */
   @Override
+  @Transactional
   public void createSubscriptionProduct(Long storeId, SubscriptionProduct product) {
     productCommandOutPort.createProduct(SubscriptionProduct.toEntity(product, storeId));
   }
@@ -109,6 +112,7 @@ public class ProductCommandInputPort implements ProductCommandUseCased {
    * @param product
    */
   @Override
+  @Transactional
   public void updateSubscriptionProduct(String storeId, UpdateSubscriptionProduct product) {
     product.setProductId(storeId);
     productCommandOutPort.updateSubscriptionProduct(product);

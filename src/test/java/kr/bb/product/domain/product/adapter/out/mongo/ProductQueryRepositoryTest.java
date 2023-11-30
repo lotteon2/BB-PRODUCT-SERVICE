@@ -59,7 +59,6 @@ class ProductQueryRepositoryTest {
               .build();
       productCommandRepository.createProduct(build);
     }
-    PageRequest pageRequest = PageRequest.of(0, 5);
     List<Product> productByStoreId = productMongoRepository.findProductByStoreId(1L);
     assertThat(productByStoreId.size()).isEqualTo(5);
   }
@@ -82,13 +81,13 @@ class ProductQueryRepositoryTest {
               .productFlowers(list)
               .productPrice(100000L)
               .storeId(1L)
-              .isSubscription(true)
+              .isSubscription(false)
               .build();
       productMongoRepository.save(build);
     }
     PageRequest pageRequest = PageRequest.of(0, 5);
-    List<Product> storeProducts =
+    Page<Product> storeProducts =
         productQueryOutPort.findStoreProducts(1L, null, 1L, null, pageRequest);
-    assertThat(storeProducts.size()).isEqualTo(5);
+    assertThat(storeProducts.getContent().size()).isEqualTo(5);
   }
 }

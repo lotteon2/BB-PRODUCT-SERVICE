@@ -1,8 +1,10 @@
 package kr.bb.product.domain.product.application.port.in;
 
+import bloomingblooms.errors.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
-import kr.bb.product.domain.flower.application.port.out.FlowerQueryOutPort;
+import kr.bb.product.domain.flower.entity.Flower;
+import kr.bb.product.domain.flower.repository.jpa.FlowerJpaRepository;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
@@ -16,6 +18,7 @@ import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
+import kr.bb.product.domain.product.vo.ProductFlowers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +33,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   private final WishlistServiceClient wishlistServiceClient;
   private final StoreServiceClient storeServiceClient;
   private final ProductQueryOutPort productQueryOutPort;
-  private final FlowerQueryOutPort flowerQueryOutPort;
+  private final FlowerJpaRepository flowerJpaRepository;
 
   private static List<ProductListItem> getProduct(Page<Product> byCategory) {
     return ProductList.fromEntity(byCategory.getContent());
@@ -49,6 +52,10 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
         .getStoreNameOfProductDetail(byProductId.getStoreId())
         .getData()
         .getStoreName();
+  }
+
+  private Flower getFlowerById(Long flowerId) {
+    return flowerJpaRepository.findById(flowerId).orElseThrow(EntityNotFoundException::new);
   }
 
   /**
@@ -142,15 +149,24 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
       Long flowerId,
       ProductSaleStatus saleStatus,
       Pageable pageable) {
-    List<Product> productByStoreId =
+    Page<Product> productByStoreId =
         productQueryOutPort.findStoreProducts(storeId, categoryId, flowerId, saleStatus, pageable);
-    List<StoreProduct> collect =
-        productByStoreId.stream()
-            .map(StoreProduct::fromEntity)
-            .collect(Collectors.toList());
+
     return StoreProductList.builder()
-        .products(collect)
-        .totalCnt(1)
+        .products(
+            productByStoreId.getContent().stream()
+                .map(
+                    product -> {
+                      String flowerName =
+                          product.getProductFlowers().stream()
+                              .filter(ProductFlowers::getIsRepresentative)
+                              .findFirst()
+                              .map(flowers -> getFlowerById(flowers.getFlowerId()).getFlowerName())
+                              .orElse("대표꽃이 없습니다.");
+                      return StoreProduct.fromEntity(product, flowerName);
+                    })
+                .collect(Collectors.toList()))
+        .totalCnt(productByStoreId.getTotalPages())
         .build();
   }
 
