@@ -8,9 +8,11 @@ import kr.bb.product.domain.review.entity.Review;
 import kr.bb.product.domain.review.entity.ReviewImages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReviewStoreInputPort implements ReviewCommandUseCase {
   private final ReviewOutPort reviewOutPort;
 
@@ -21,6 +23,7 @@ public class ReviewStoreInputPort implements ReviewCommandUseCase {
    * @param userId 작성자 id
    * @param productId 상품 id
    */
+  @Transactional
   @Override
   public void writeReview(ReviewCommand.Register review, Long userId, String productId) {
     Review reviewEntity = ReviewCommand.Register.toEntity(review, userId, productId);
