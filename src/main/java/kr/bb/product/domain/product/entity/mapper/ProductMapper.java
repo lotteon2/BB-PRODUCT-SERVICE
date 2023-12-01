@@ -64,6 +64,7 @@ public interface ProductMapper {
     @Mapping(target = "productSummary", source = "product.productSummary"),
     @Mapping(target = "productPrice", source = "product.productPrice"),
     @Mapping(target = "reviewCount", source = "product.reviewCount"),
+    @Mapping(target = "averageRating", source = "product.averageRating"),
   })
   ProductListItem entityToListItem(Product product);
 

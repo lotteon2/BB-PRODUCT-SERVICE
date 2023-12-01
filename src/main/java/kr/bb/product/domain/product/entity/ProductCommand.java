@@ -17,11 +17,12 @@ import lombok.Getter;
 public class ProductCommand {
   @Getter
   public enum SortOption {
-    SALE("product_sale_amount"),
-    NEW("created_at"),
-    PRICE("product_price"),
-    REVIEW("review_count"),
-    RATING("average_rating");
+    SALE("productSaleAmount"),
+    NEW("createdAt"),
+    LOW("productPrice"),
+    HIGH("productPrice"),
+    REVIEW("reviewCount"),
+    RATING("averageRating");
 
     private final String sortOption;
 
@@ -75,6 +76,15 @@ public class ProductCommand {
     private Long productPrice;
     private Long salesCount;
     private Long reviewCount;
+    private Long averageRating;
+
+    public static List<String> getProductIds(List<ProductListItem> productByCategories) {
+      return productByCategories.stream().map(ProductListItem::getKey).collect(Collectors.toList());
+    }
+
+    public void setLiked(Boolean liked) {
+      isLiked = liked;
+    }
   }
 
   @Builder
@@ -87,8 +97,16 @@ public class ProductCommand {
       return ProductMapper.INSTANCE.entityToList(products);
     }
 
-    public static ProductList getData(List<ProductListItem> products, int totalCnt) {
-      return ProductList.builder().products(products).totalCnt(totalCnt).build();
+    public static ProductList getData(
+        List<ProductListItem> productByCategories, List<String> data, int totalPages) {
+      for (ProductListItem p : productByCategories) {
+        if (data.contains(p.key)) p.setLiked(true);
+      }
+      return ProductList.builder().products(productByCategories).totalCnt(totalPages).build();
+    }
+
+    public static ProductList getData(List<ProductListItem> productByCategories, int totalPages) {
+      return ProductList.builder().products(productByCategories).totalCnt(totalPages).build();
     }
   }
 

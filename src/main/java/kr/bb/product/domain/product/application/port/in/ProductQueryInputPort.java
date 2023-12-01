@@ -14,6 +14,7 @@ import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProduct;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
@@ -22,8 +23,12 @@ import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +44,16 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   private final ProductQueryOutPort productQueryOutPort;
   private final FlowerQueryOutPort flowerQueryOutPort;
 
+  @NotNull
+  private static Pageable getPageable(Pageable pageable, ProductCommand.SortOption sortOption) {
+    Direction direction = Direction.DESC;
+    if (SortOption.LOW.equals(sortOption)) direction = Direction.ASC;
+    return PageRequest.of(
+        pageable.getPageNumber(),
+        pageable.getPageSize(),
+        Sort.by(direction, sortOption.getSortOption()));
+  }
+
   private static List<ProductListItem> getProduct(Page<Product> byCategory) {
     return ProductList.fromEntity(byCategory.getContent());
   }
@@ -47,8 +62,8 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     return ProductDetail.fromEntity(byProductId);
   }
 
-  private Page<Product> getProducts(Long categoryId, Pageable pageable) {
-    return productOutPort.findByCategory(categoryId, pageable);
+  private Page<Product> getProductsByCategoryId(Long categoryId, Long storeId, Pageable pageable) {
+    return productQueryOutPort.findProductsByCategory(categoryId, storeId, pageable);
   }
 
   private String getProductDetailStoreName(Product byProductId) {
@@ -60,50 +75,6 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
   private Flower getFlowerById(Long flowerId) {
     return flowerJpaRepository.findById(flowerId).orElseThrow(EntityNotFoundException::new);
-  }
-
-  /**
-   * product category list 조회 비 로그인
-   *
-   * @param categoryId
-   * @param pageable
-   * @return
-   */
-  @Override
-  public ProductList getProductsByCategory(Long categoryId, Pageable pageable) {
-    Page<Product> byCategory = getProducts(categoryId, pageable);
-    List<ProductListItem> productByCategories = getProduct(byCategory);
-    return ProductList.getData(productByCategories, byCategory.getTotalPages());
-  }
-
-  /**
-   * 태그별 상품 리스트 조회 - 비 로그인 시
-   *
-   * @param tagId
-   * @param pageable
-   * @return
-   */
-  @Override
-  public ProductList getProductsByTag(Long tagId, Pageable pageable) {
-    Page<Product> productsByTagId = productOutPort.findProductsByTagId(tagId, pageable);
-    List<ProductListItem> productByCategories = getProduct(productsByTagId);
-    return ProductList.getData(productByCategories, productsByTagId.getTotalPages());
-  }
-
-  /**
-   * 태그별 상품 리스트 조회 - 로그인
-   *
-   * @param tagId
-   * @param pageable
-   * @return
-   */
-  @Override
-  public ProductList getProductsByTag(Long userId, Long tagId, Pageable pageable) {
-    Page<Product> products = getProducts(tagId, pageable);
-    List<ProductListItem> product = getProduct(products);
-    List<ProductListItem> data =
-        wishlistServiceClient.getProductsMemberLikes(userId, product).getData();
-    return ProductList.getData(data, products.getTotalPages());
   }
 
   /**
@@ -192,7 +163,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   }
 
   /**
-   * product category list 조회 로그인
+   * 카테고리별 상품 리스트 조회 - 로그인
    *
    * @param userId
    * @param categoryId
@@ -200,11 +171,35 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
    * @return
    */
   @Override
-  public ProductList getProductsByCategory(Long userId, Long categoryId, Pageable pageable) {
-    Page<Product> byCategory = getProducts(categoryId, pageable);
+  public ProductList getProductsByCategory(
+      Long userId,
+      Long categoryId,
+      Long storeId,
+      ProductCommand.SortOption sortOption,
+      Pageable pageable) {
+    Pageable pageRequest = getPageable(pageable, sortOption);
+    Page<Product> byCategory = getProductsByCategoryId(categoryId, storeId, pageRequest);
     List<ProductListItem> productByCategories = getProduct(byCategory);
-    List<ProductListItem> data =
-        wishlistServiceClient.getProductsMemberLikes(userId, productByCategories).getData();
-    return ProductList.getData(data, byCategory.getTotalPages());
+    List<String> ids = ProductCommand.ProductListItem.getProductIds(productByCategories);
+    List<String> data = wishlistServiceClient.getProductsMemberLikes(userId, ids).getData();
+    return ProductList.getData(productByCategories, data, byCategory.getTotalPages());
+  }
+
+  /**
+   * 카테고리별 상품 리스트 조회 - 비로그인
+   *
+   * @param categoryId
+   * @param storeId
+   * @param sortOption
+   * @param pageable
+   * @return
+   */
+  @Override
+  public ProductList getProductsByCategory(
+      Long categoryId, Long storeId, SortOption sortOption, Pageable pageable) {
+    Pageable pageRequest = getPageable(pageable, sortOption);
+    Page<Product> byCategory = getProductsByCategoryId(categoryId, storeId, pageRequest);
+    List<ProductListItem> productByCategories = getProduct(byCategory);
+    return ProductList.getData(productByCategories, byCategory.getTotalPages());
   }
 }

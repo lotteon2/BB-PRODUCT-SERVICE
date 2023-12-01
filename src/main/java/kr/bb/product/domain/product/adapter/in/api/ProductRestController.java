@@ -6,7 +6,6 @@ import javax.validation.Valid;
 import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
@@ -81,37 +80,6 @@ public class ProductRestController {
     }
   }
 
-  @GetMapping("tag/{tagId}")
-  public CommonResponse<ProductList> getProductListByTag(
-      @PathVariable Long tagId, Pageable pageable, @RequestHeader Optional<Long> userId) {
-    if (userId.isPresent()) {
-      return CommonResponse.<ProductList>builder()
-          .data(productQueryUseCase.getProductsByTag(userId.get(), tagId, pageable))
-          .message("select success")
-          .build();
-    } else {
-      return CommonResponse.<ProductList>builder()
-          .data(productQueryUseCase.getProductsByTag(tagId, pageable))
-          .message("select success")
-          .build();
-    }
-  }
-
-  @GetMapping("category/{categoryId}")
-  public CommonResponse<ProductList> getProductListByCategory(
-      @PathVariable Long categoryId, Pageable pageable, @RequestHeader Optional<Long> userId) {
-    ProductList productsByCategory;
-    if (userId.isPresent()) {
-      productsByCategory =
-          productQueryUseCase.getProductsByCategory(userId.get(), categoryId, pageable);
-    } else {
-      productsByCategory = productQueryUseCase.getProductsByCategory(categoryId, pageable);
-    }
-    return CommonResponse.<ProductList>builder()
-        .data(productsByCategory)
-        .message("select success")
-        .build();
-  }
 
   @PostMapping("store/{storeId}")
   public void createProduct(
