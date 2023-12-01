@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
 import kr.bb.product.domain.flower.entity.Flower;
 import kr.bb.product.domain.product.entity.mapper.ProductMapper;
+import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
@@ -171,6 +172,17 @@ public class ProductCommand {
     private Long flowerId;
     private String flowerName;
     private Long flowerCount;
+
+    public static ProductDetailFlower getData(ProductFlowers item) {
+      return ProductDetailFlower.builder()
+          .flowerId(item.getFlowerId())
+          .flowerCount(item.getFlowerCount())
+          .build();
+    }
+
+    public void setFlowerName(String flowerName) {
+      this.flowerName = flowerName;
+    }
   }
 
   @Getter
@@ -180,27 +192,48 @@ public class ProductCommand {
     private String productThumbnail;
     private String productName;
     private String productSummary;
-    private String productPrice;
+    private Long productPrice;
     private String category;
     private List<String> tag;
     private String productDescriptionImage;
-    private String productSaleAmount;
-    private String averageRating;
+    private Long productSaleAmount;
+    private Double averageRating;
     private String productSaleStatus;
     private ProductDetailFlower representativeFlower;
-    @Builder.Default private List<ProductDetailFlower> flowers = new ArrayList<>();
-    public static StoreProductDetail fromEntity(Product product, List<Flower> flowers){
-      List<String> tagNames = product.getTag().stream().map(Tag::getTagName)
-              .collect(Collectors.toList());
-      Map<Long, String> flowerName = flowers.stream()
-              .collect(Collectors.toMap(Flower::getId, Flower::getFlowerName));
+    private List<ProductDetailFlower> flowers;
 
-      product.getProductFlowers().forEach(item-> {
-        if (item.getIsRepresentative()) {
-          
-        }
-      });
+    public static StoreProductDetail fromEntity(Product product, List<Flower> flowers) {
+      List<String> tagNames =
+          product.getTag().stream().map(Tag::getTagName).collect(Collectors.toList());
+      Map<Long, String> flowerName =
+          flowers.stream().collect(Collectors.toMap(Flower::getId, Flower::getFlowerName));
 
+      List<ProductDetailFlower> flowerList = new ArrayList<>();
+      ProductDetailFlower representativeFlower = null;
+
+      for (ProductFlowers item : product.getProductFlowers()) {
+        ProductDetailFlower data = ProductDetailFlower.getData(item);
+        data.setFlowerName(flowerName.get(item.getFlowerId()));
+
+        if (item.getIsRepresentative()) representativeFlower = data;
+        else flowerList.add(data);
+      }
+
+      return StoreProductDetail.builder()
+          .productId(product.getProductId())
+          .productThumbnail(product.getProductThumbnail())
+          .productName(product.getProductName())
+          .productSummary(product.getProductSummary())
+          .productPrice(product.getProductPrice())
+          .category(product.getCategory().getCategoryName())
+          .tag(tagNames)
+          .productDescriptionImage(product.getProductDescriptionImage())
+          .productSaleAmount(product.getProductSaleAmount())
+          .averageRating(product.getAverageRating())
+          .productSaleStatus(product.getProductSaleStatus().getMessage())
+          .representativeFlower(representativeFlower)
+          .flowers(flowerList)
+          .build();
     }
   }
 }

@@ -1,7 +1,6 @@
 package kr.bb.product.domain.product.application.port.in;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import kr.bb.product.domain.flower.application.port.out.FlowerQueryOutPort;
 import kr.bb.product.domain.flower.entity.Flower;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
@@ -15,7 +14,6 @@ import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
-import kr.bb.product.domain.product.vo.ProductFlowers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -130,6 +128,13 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     return productDetail;
   }
 
+  /**
+   * 가게 사장 상품 상세 조회
+   *
+   * @param storeId
+   * @param productId
+   * @return
+   */
   @Override
   public StoreProductDetail getStoreProductDetail(Long storeId, String productId) {
     Product storeProductByStoreIdAndProductId =
@@ -137,11 +142,8 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     // 꽃 정보 받기
     List<Flower> productDetailFlower =
         flowerQueryOutPort.findProductDetailFlower(
-            storeProductByStoreIdAndProductId.getProductFlowers().stream()
-                .map(ProductFlowers::getFlowerId)
-                .collect(Collectors.toList()));
-    StoreProductDetail storeProductDetail = StoreProductDetail.fromEntity(
-            storeProductByStoreIdAndProductId, productDetailFlower);
+            Product.getFlowerIds(storeProductByStoreIdAndProductId));
+    return StoreProductDetail.fromEntity(storeProductByStoreIdAndProductId, productDetailFlower);
   }
 
   /**
