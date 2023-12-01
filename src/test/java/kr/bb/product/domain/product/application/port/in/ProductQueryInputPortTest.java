@@ -3,10 +3,8 @@ package kr.bb.product.domain.product.application.port.in;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-import bloomingblooms.response.CommonResponse;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
@@ -26,7 +24,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -158,13 +155,6 @@ class ProductQueryInputPortTest {
     ProductList productsByCategory =
         productQueryInputPort.getProductsByCategory( 1L, 1L, SortOption.LOW, pageRequest);
     List<ProductListItem> products = productsByCategory.getProducts();
-    List<String> collect =
-        products.stream().map(ProductListItem::getKey).collect(Collectors.toList());
-    List<String> ids = new ArrayList<>();
-    ids.add(collect.get(0));
-    ids.add(collect.get(1));
-    CommonResponse<List<String>> success = CommonResponse.success(ids);
-    Mockito.when(wishlistServiceClient.getProductsMemberLikes(1L, collect)).thenReturn(success);
     assertThat(products.get(0).getProductPrice() < products.get(1).getProductPrice()).isTrue();
   }
 }

@@ -64,8 +64,8 @@ public class ProductQueryRepository implements ProductQueryOutPort {
   @Override
   public Page<Product> findProductsByCategory(Long categoryId, Long storeId, Pageable pageable) {
     Query query = new Query();
-    query.addCriteria(Criteria.where("store_id").is(storeId));
-    if (categoryId != null) query.addCriteria(Criteria.where("category.categoryId").is(categoryId));
+    if (storeId != null) query.addCriteria(Criteria.where("store_id").is(storeId));
+    query.addCriteria(Criteria.where("category.categoryId").is(categoryId));
     query.addCriteria(Criteria.where("product_sale_status").is(ProductSaleStatus.SALE));
     query.with(pageable);
     List<Product> products = mongoTemplate.find(query, Product.class);

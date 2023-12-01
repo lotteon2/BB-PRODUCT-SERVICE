@@ -80,7 +80,6 @@ public class ProductRestController {
     }
   }
 
-
   @PostMapping("store/{storeId}")
   public void createProduct(
       @PathVariable Long storeId,
@@ -94,5 +93,43 @@ public class ProductRestController {
       @PathVariable String productId,
       @RequestBody ProductCommand.ProductUpdate productRequestData) {
     productCommandUseCase.updateProductSaleStatus(productId, productRequestData);
+  }
+
+  /**
+   * 카테고리별 상품 리스트 조회
+   *
+   * @param userId
+   * @param categoryId
+   * @param sortOption
+   * @param storeId
+   * @param pageable
+   * @return
+   */
+  @GetMapping("category/{categoryId}")
+  public CommonResponse<ProductCommand.ProductList> getProductByCategory(
+      @RequestHeader Optional<Long> userId,
+      @PathVariable Optional<Long> categoryId,
+      @RequestParam("sort-option") Optional<ProductCommand.SortOption> sortOption,
+      @RequestParam("store-id") Optional<Long> storeId,
+      @PageableDefault(
+              page = 0,
+              size = 10,
+              sort = {"createdAt"},
+              direction = Sort.Direction.DESC)
+          Pageable pageable) {
+    Long categoryIdParam = categoryId.orElse(null);
+    ProductCommand.SortOption sortOptionParam = sortOption.orElse(null);
+    Long storeIdParam = storeId.orElse(null);
+    if (userId.isPresent()) {
+      return CommonResponse.<ProductCommand.ProductList>success(
+          productQueryUseCase.getProductsByCategory(
+              userId.get(), categoryIdParam, storeIdParam, sortOptionParam, pageable),
+          "카테고리별 상품 리스트 조회");
+    } else {
+      return CommonResponse.<ProductCommand.ProductList>success(
+          productQueryUseCase.getProductsByCategory(
+              categoryIdParam, storeIdParam, sortOptionParam, pageable),
+          "카테고리별 상품 리스트 조회");
+    }
   }
 }
