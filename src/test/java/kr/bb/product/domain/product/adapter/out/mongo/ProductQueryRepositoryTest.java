@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -87,6 +88,14 @@ class ProductQueryRepositoryTest {
 
   @DisplayName("가게 사장 상품 리스트 조회")
   void findStoreProducts() {
+    extracted();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    Page<Product> storeProducts =
+        productQueryOutPort.findStoreProducts(1L, null, 1L, null, pageRequest);
+    assertThat(storeProducts.getContent().size()).isEqualTo(5);
+  }
+
+  private void extracted() {
     productMongoRepository.deleteAll();
     ProductFlowers build1 = ProductFlowers.builder().flowerId(1L).build();
     List<ProductFlowers> list = new ArrayList<>();
@@ -100,15 +109,34 @@ class ProductQueryRepositoryTest {
               .category(Category.builder().categoryName("ca").categoryId(1L + i).build())
               .productDescriptionImage("description image")
               .productFlowers(list)
+              .productSaleStatus(ProductSaleStatus.SALE)
               .productPrice(100000L)
               .storeId(1L)
               .isSubscription(false)
               .build();
       productMongoRepository.save(build);
     }
-    PageRequest pageRequest = PageRequest.of(0, 5);
-    Page<Product> storeProducts =
-        productQueryOutPort.findStoreProducts(1L, null, 1L, null, pageRequest);
-    assertThat(storeProducts.getContent().size()).isEqualTo(5);
+  }
+
+  @Test
+  @DisplayName("상품 카테고리별 리스트 조회")
+  void findProductsByCategory() {
+    extracted();
+    PageRequest pageRequest = PageRequest.of(0, 10);
+    Page<Product> productsByCategory =
+        productQueryRepository.findProductsByCategory(null, 1L, pageRequest);
+    List<Product> content = productsByCategory.getContent();
+    assertThat(content.size()).isEqualTo(10);
+  }
+
+  @Test
+  @DisplayName("상품 카테고리별 리스트 조회")
+  void findProductsByCategoryWithCategory() {
+    extracted();
+    PageRequest pageRequest = PageRequest.of(0, 10);
+    Page<Product> productsByCategory =
+        productQueryRepository.findProductsByCategory(1L, 1L, pageRequest);
+    List<Product> content = productsByCategory.getContent();
+    assertThat(content.size()).isEqualTo(1);
   }
 }

@@ -60,4 +60,18 @@ public class ProductQueryRepository implements ProductQueryOutPort {
         pageable,
         () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Product.class));
   }
+
+  @Override
+  public Page<Product> findProductsByCategory(Long categoryId, Long storeId, Pageable pageable) {
+    Query query = new Query();
+    query.addCriteria(Criteria.where("store_id").is(storeId));
+    if (categoryId != null) query.addCriteria(Criteria.where("category.categoryId").is(categoryId));
+    query.addCriteria(Criteria.where("product_sale_status").is(ProductSaleStatus.SALE));
+    query.with(pageable);
+    List<Product> products = mongoTemplate.find(query, Product.class);
+    return PageableExecutionUtils.getPage(
+        products,
+        pageable,
+        () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Product.class));
+  }
 }
