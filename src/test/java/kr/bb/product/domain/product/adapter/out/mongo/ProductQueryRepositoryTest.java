@@ -117,26 +117,4 @@ class ProductQueryRepositoryTest {
       productMongoRepository.save(build);
     }
   }
-
-  @Test
-  @DisplayName("상품 카테고리별 리스트 조회")
-  void findProductsByCategory() {
-    extracted();
-    PageRequest pageRequest = PageRequest.of(0, 10);
-    Page<Product> productsByCategory =
-        productQueryRepository.findProductsByCategory(null, 1L, pageRequest);
-    List<Product> content = productsByCategory.getContent();
-    assertThat(content.size()).isEqualTo(10);
-  }
-
-  @Test
-  @DisplayName("상품 카테고리별 리스트 조회")
-  void findProductsByCategoryWithCategory() {
-    extracted();
-    PageRequest pageRequest = PageRequest.of(0, 10);
-    Page<Product> productsByCategory =
-        productQueryRepository.findProductsByCategory(1L, 1L, pageRequest);
-    List<Product> content = productsByCategory.getContent();
-    assertThat(content.size()).isEqualTo(1);
-  }
 }

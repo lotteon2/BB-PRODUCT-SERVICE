@@ -141,7 +141,7 @@ class ProductQueryInputPortTest {
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 5);
     ProductList productsByCategory =
-        productQueryInputPort.getProductsByCategory(null, 1L, SortOption.LOW, pageRequest);
+        productQueryInputPort.getProductsByCategory(1L, null, SortOption.LOW, pageRequest);
     List<ProductListItem> products = productsByCategory.getProducts();
     assertThat(products.get(0).getProductPrice() < products.get(1).getProductPrice()).isTrue();
   }
