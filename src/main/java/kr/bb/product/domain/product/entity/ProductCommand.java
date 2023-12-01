@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.validation.constraints.NotNull;
 import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
 import kr.bb.product.domain.flower.entity.Flower;
 import kr.bb.product.domain.product.entity.mapper.ProductMapper;
@@ -34,15 +33,15 @@ public class ProductCommand {
   @Builder
   @Getter
   public static class ProductRegister {
-    @NotNull private String productName;
-    @NotNull private String productSummary;
-    @NotNull private String productDescriptionImage;
-    @NotNull private String productThumbnail;
-    @NotNull private Long productPrice;
+    private String productName;
+    private String productSummary;
+    private String productDescriptionImage;
+    private String productThumbnail;
+    private Long productPrice;
     private Long categoryId;
     private Long storeId;
     private List<Long> productTag;
-    @NotNull private ProductFlowersRequestData representativeFlower;
+    private ProductFlowersRequestData representativeFlower;
     private List<ProductFlowersRequestData> flowers;
 
     public void setStoreId(Long storeId) {
@@ -53,15 +52,15 @@ public class ProductCommand {
   @Builder
   @Getter
   public static class ProductUpdate {
-    @NotNull private String productName;
-    @NotNull private String productSummary;
-    @NotNull private String productDescriptionImage;
-    @NotNull private String productThumbnail;
-    @NotNull private Long productPrice;
+    private String productName;
+    private String productSummary;
+    private String productDescriptionImage;
+    private String productThumbnail;
+    private Long productPrice;
     private ProductSaleStatus productSaleStatus;
     private Long categoryId;
     private List<Long> productTag;
-    @NotNull private ProductFlowersRequestData representativeFlower;
+    private ProductFlowersRequestData representativeFlower;
     private List<ProductFlowersRequestData> flowers;
   }
 
@@ -235,5 +234,40 @@ public class ProductCommand {
           .flowers(flowerList)
           .build();
     }
+  }
+
+  @Getter
+  @Builder
+  public static class StoreProduct {
+    private String key;
+    private String productThumbnail;
+    private String productName;
+    private String representativeFlower;
+    private String category;
+    private Long productPrice;
+    private Long productSaleAmount;
+    private Double averageRating;
+    private String productSaleStatus;
+
+    public static StoreProduct fromEntity(Product product, String representativeFlower) {
+      return StoreProduct.builder()
+          .averageRating(product.getAverageRating())
+          .category(product.getCategory().getCategoryName())
+          .key(product.getProductId())
+          .productName(product.getProductName())
+          .productPrice(product.getProductPrice())
+          .productSaleAmount(product.getProductSaleAmount())
+          .productSaleStatus(product.getProductSaleStatus().getMessage())
+          .productThumbnail(product.getProductThumbnail())
+          .representativeFlower(representativeFlower)
+          .build();
+    }
+  }
+
+  @Getter
+  @Builder
+  public static class StoreProductList {
+    private List<StoreProduct> products;
+    private int totalCnt;
   }
 }
