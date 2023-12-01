@@ -24,6 +24,11 @@ public class ProductQueryRepository implements ProductQueryOutPort {
     return productMongoRepository.findProductByStoreId(storeId);
   }
 
+  @Override
+  public Product findStoreProductByStoreIdAndProductId(Long storeId, String productId) {
+    return productMongoRepository.findProductByStoreIdAndProductId(storeId, productId);
+  }
+
   /**
    * 가게 사장 상품 리스트 조회 - 카테고리, 꽃, 판매 상태
    *

@@ -1,9 +1,15 @@
 package kr.bb.product.domain.product.entity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
+import kr.bb.product.domain.flower.entity.Flower;
 import kr.bb.product.domain.product.entity.mapper.ProductMapper;
+import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
+import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
 import lombok.Builder;
 import lombok.Getter;
@@ -156,6 +162,77 @@ public class ProductCommand {
 
     public void setProductId(String productId) {
       this.productId = productId;
+    }
+  }
+
+  @Getter
+  @Builder
+  public static class ProductDetailFlower {
+    private Long flowerId;
+    private String flowerName;
+    private Long flowerCount;
+
+    public static ProductDetailFlower getData(ProductFlowers item) {
+      return ProductDetailFlower.builder()
+          .flowerId(item.getFlowerId())
+          .flowerCount(item.getFlowerCount())
+          .build();
+    }
+
+    public void setFlowerName(String flowerName) {
+      this.flowerName = flowerName;
+    }
+  }
+
+  @Getter
+  @Builder
+  public static class StoreProductDetail {
+    private String productId;
+    private String productThumbnail;
+    private String productName;
+    private String productSummary;
+    private Long productPrice;
+    private String category;
+    private List<String> tag;
+    private String productDescriptionImage;
+    private Long productSaleAmount;
+    private Double averageRating;
+    private String productSaleStatus;
+    private ProductDetailFlower representativeFlower;
+    private List<ProductDetailFlower> flowers;
+
+    public static StoreProductDetail fromEntity(Product product, List<Flower> flowers) {
+      List<String> tagNames =
+          product.getTag().stream().map(Tag::getTagName).collect(Collectors.toList());
+      Map<Long, String> flowerName =
+          flowers.stream().collect(Collectors.toMap(Flower::getId, Flower::getFlowerName));
+
+      List<ProductDetailFlower> flowerList = new ArrayList<>();
+      ProductDetailFlower representativeFlower = null;
+
+      for (ProductFlowers item : product.getProductFlowers()) {
+        ProductDetailFlower data = ProductDetailFlower.getData(item);
+        data.setFlowerName(flowerName.get(item.getFlowerId()));
+
+        if (item.getIsRepresentative()) representativeFlower = data;
+        else flowerList.add(data);
+      }
+
+      return StoreProductDetail.builder()
+          .productId(product.getProductId())
+          .productThumbnail(product.getProductThumbnail())
+          .productName(product.getProductName())
+          .productSummary(product.getProductSummary())
+          .productPrice(product.getProductPrice())
+          .category(product.getCategory().getCategoryName())
+          .tag(tagNames)
+          .productDescriptionImage(product.getProductDescriptionImage())
+          .productSaleAmount(product.getProductSaleAmount())
+          .averageRating(product.getAverageRating())
+          .productSaleStatus(product.getProductSaleStatus().getMessage())
+          .representativeFlower(representativeFlower)
+          .flowers(flowerList)
+          .build();
     }
   }
 

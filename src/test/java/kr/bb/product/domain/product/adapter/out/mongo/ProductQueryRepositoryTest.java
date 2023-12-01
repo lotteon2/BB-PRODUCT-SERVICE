@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +24,7 @@ class ProductQueryRepositoryTest {
   @Autowired ProductRepository productRepository;
   @Autowired EntityManager em;
   @Autowired private ProductMongoRepository productMongoRepository;
+  @Autowired private ProductQueryRepository productQueryRepository;
   @Autowired private ProductQueryOutPort productQueryOutPort;
 
   @Test
@@ -45,6 +45,7 @@ class ProductQueryRepositoryTest {
   }
 
   @Test
+  @DisplayName("가게 사장 상품 리스트 조회")
   void findProductByStoreId() {
     productMongoRepository.deleteAll();
     for (int i = 0; i < 5; i++) {
@@ -64,6 +65,26 @@ class ProductQueryRepositoryTest {
   }
 
   @Test
+  @DisplayName("가게 사장 상품 상세 조회")
+  void findStoreProductByStoreIdAndProductId() {
+    productMongoRepository.deleteAll();
+    Product build =
+        Product.builder()
+            .productId("123")
+            .productName("name")
+            .productSummary("summary")
+            .productPrice(12L)
+            .storeId(1L)
+            .productDescriptionImage("images")
+            .productThumbnail("thumbnail")
+            .build();
+    productCommandRepository.createProduct(build);
+    Product storeProductByStoreIdAndProductId =
+        productQueryRepository.findStoreProductByStoreIdAndProductId(1L, "123");
+    assertThat(storeProductByStoreIdAndProductId.getProductSummary())
+        .isEqualTo(build.getProductSummary());
+  }
+
   @DisplayName("가게 사장 상품 리스트 조회")
   void findStoreProducts() {
     productMongoRepository.deleteAll();

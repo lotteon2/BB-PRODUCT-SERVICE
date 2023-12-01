@@ -6,8 +6,8 @@ import javax.validation.Valid;
 import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
+import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ProductRestController {
   private final ProductQueryUseCase productQueryUseCase;
-  private final ProductCommandUseCase productCommandUseCased;
+  private final ProductCommandUseCase productCommandUseCase;
 
   @GetMapping("store/{storeId}")
   public CommonResponse<StoreProductList> getStoreManagerProducts(
@@ -50,32 +50,34 @@ public class ProductRestController {
         .build();
   }
 
+  @GetMapping("{productId}/store/{storeId}")
+  public CommonResponse<StoreProductDetail> getStoreProductDetail(
+      @PathVariable String productId, @PathVariable Long storeId) {
+    return CommonResponse.success(
+        productQueryUseCase.getStoreProductDetail(storeId, productId), "가게 사장 상품 상세 조회");
+  }
+
   @PutMapping("{productId}/subscribe-product")
   public void updateSubscriptionProduct(
       @PathVariable String productId,
       @RequestBody ProductCommand.UpdateSubscriptionProduct product) {
-    productCommandUseCased.updateSubscriptionProduct(productId, product);
+    productCommandUseCase.updateSubscriptionProduct(productId, product);
   }
 
   @PostMapping("store/{storeId}/subscribe-product")
   public void createSubscriptionProduct(
       @PathVariable Long storeId, @RequestBody ProductCommand.SubscriptionProduct product) {
-    productCommandUseCased.createSubscriptionProduct(storeId, product);
+    productCommandUseCase.createSubscriptionProduct(storeId, product);
   }
 
   @GetMapping("{productId}")
   public CommonResponse<ProductCommand.ProductDetail> getProductDetail(
       @PathVariable String productId, @RequestHeader Optional<Long> userId) {
     if (userId.isPresent()) {
-      return CommonResponse.<ProductDetail>builder()
-          .data(productQueryUseCase.getProductDetail(userId.get(), productId))
-          .message("상품 상세 정보 조회")
-          .build();
+      return CommonResponse.success(
+          productQueryUseCase.getProductDetail(userId.get(), productId), "상품 상세 정보 조회");
     } else {
-      return CommonResponse.<ProductDetail>builder()
-          .data(productQueryUseCase.getProductDetail(productId))
-          .message("상품 상세 정보 조회")
-          .build();
+      return CommonResponse.success(productQueryUseCase.getProductDetail(productId), "상품 상세 정보 조회");
     }
   }
 
@@ -116,13 +118,13 @@ public class ProductRestController {
       @PathVariable Long storeId,
       final @Valid @RequestBody ProductCommand.ProductRegister productRequestData) {
     productRequestData.setStoreId(storeId);
-    productCommandUseCased.createProduct(productRequestData);
+    productCommandUseCase.createProduct(productRequestData);
   }
 
   @PutMapping("{productId}")
   public void updateProductSaleStatus(
       @PathVariable String productId,
       @RequestBody ProductCommand.ProductUpdate productRequestData) {
-    productCommandUseCased.updateProductSaleStatus(productId, productRequestData);
+    productCommandUseCase.updateProductSaleStatus(productId, productRequestData);
   }
 }

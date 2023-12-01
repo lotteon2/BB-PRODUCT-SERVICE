@@ -3,8 +3,9 @@ package kr.bb.product.domain.product.application.port.in;
 import bloomingblooms.errors.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
+import kr.bb.product.domain.flower.adapter.out.jpa.FlowerJpaRepository;
+import kr.bb.product.domain.flower.application.port.out.FlowerQueryOutPort;
 import kr.bb.product.domain.flower.entity.Flower;
-import kr.bb.product.domain.flower.repository.jpa.FlowerJpaRepository;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
@@ -14,6 +15,7 @@ import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProduct;
+import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
@@ -32,8 +34,10 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   private final ProductOutPort productOutPort;
   private final WishlistServiceClient wishlistServiceClient;
   private final StoreServiceClient storeServiceClient;
-  private final ProductQueryOutPort productQueryOutPort;
   private final FlowerJpaRepository flowerJpaRepository;
+
+  private final ProductQueryOutPort productQueryOutPort;
+  private final FlowerQueryOutPort flowerQueryOutPort;
 
   private static List<ProductListItem> getProduct(Page<Product> byCategory) {
     return ProductList.fromEntity(byCategory.getContent());
@@ -134,6 +138,23 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     String storeName = getProductDetailStoreName(byProductId);
     productDetail.setStoreName(storeName);
     return productDetail;
+  }
+
+  /**
+   * 가게 사장 상품 상세 조회
+   *
+   * @param storeId
+   * @param productId
+   * @return
+   */
+  @Override
+  public StoreProductDetail getStoreProductDetail(Long storeId, String productId) {
+    Product storeProductByStoreIdAndProductId =
+        productQueryOutPort.findStoreProductByStoreIdAndProductId(storeId, productId);
+    List<Flower> productDetailFlower =
+        flowerQueryOutPort.findProductDetailFlower(
+            Product.getFlowerIds(storeProductByStoreIdAndProductId));
+    return StoreProductDetail.fromEntity(storeProductByStoreIdAndProductId, productDetailFlower);
   }
 
   /**

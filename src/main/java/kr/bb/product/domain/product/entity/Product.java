@@ -2,6 +2,7 @@ package kr.bb.product.domain.product.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import kr.bb.product.domain.category.entity.Category;
@@ -102,4 +103,10 @@ public class Product {
   @Builder.Default
   @Field(name = "is_deleted")
   private Boolean isDeleted = false;
+
+  public static List<Long> getFlowerIds(Product product) {
+    return product.getProductFlowers().stream()
+        .map(ProductFlowers::getFlowerId)
+        .collect(Collectors.toList());
+  }
 }
