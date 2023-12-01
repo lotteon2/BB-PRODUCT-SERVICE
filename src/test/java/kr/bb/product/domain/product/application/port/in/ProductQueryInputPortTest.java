@@ -56,6 +56,7 @@ class ProductQueryInputPortTest {
   @Test
   @DisplayName("가게 사장 상품 상세 조회")
   void getStoreProductDetail() {
+    productMongoRepository.deleteAll();
     extracted();
     Product product = productMongoRepository.findAll().get(0);
 
