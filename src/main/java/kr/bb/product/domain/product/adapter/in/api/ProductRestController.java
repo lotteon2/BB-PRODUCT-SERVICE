@@ -42,10 +42,8 @@ public class ProductRestController {
   public CommonResponse<ProductCommand.ProductDetail> getProductDetail(
       @PathVariable String productId, @RequestHeader Optional<Long> userId) {
     if (userId.isPresent()) {
-      return CommonResponse.<ProductDetail>builder()
-          .data(productQueryInputPort.getProductDetail(userId.get(), productId))
-          .message("상품 상세 정보 조회")
-          .build();
+      return CommonResponse.success(
+          productQueryInputPort.getProductDetail(userId.get(), productId), "상품 상세 정보 조회");
     } else {
       return CommonResponse.<ProductDetail>builder()
           .data(productQueryInputPort.getProductDetail(productId))

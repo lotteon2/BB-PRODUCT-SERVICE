@@ -1,15 +1,21 @@
 package kr.bb.product.domain.product.application.port.in;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import kr.bb.product.domain.flower.application.port.out.FlowerQueryOutPort;
+import kr.bb.product.domain.flower.entity.Flower;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
+import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
+import kr.bb.product.domain.product.vo.ProductFlowers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +29,9 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   private final ProductOutPort productOutPort;
   private final WishlistServiceClient wishlistServiceClient;
   private final StoreServiceClient storeServiceClient;
+
+  private final ProductQueryOutPort productQueryOutPort;
+  private final FlowerQueryOutPort flowerQueryOutPort;
 
   private static List<ProductListItem> getProduct(Page<Product> byCategory) {
     return ProductList.fromEntity(byCategory.getContent());
@@ -119,6 +128,20 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     String storeName = getProductDetailStoreName(byProductId);
     productDetail.setStoreName(storeName);
     return productDetail;
+  }
+
+  @Override
+  public StoreProductDetail getStoreProductDetail(Long storeId, String productId) {
+    Product storeProductByStoreIdAndProductId =
+        productQueryOutPort.findStoreProductByStoreIdAndProductId(storeId, productId);
+    // 꽃 정보 받기
+    List<Flower> productDetailFlower =
+        flowerQueryOutPort.findProductDetailFlower(
+            storeProductByStoreIdAndProductId.getProductFlowers().stream()
+                .map(ProductFlowers::getFlowerId)
+                .collect(Collectors.toList()));
+    StoreProductDetail storeProductDetail = StoreProductDetail.fromEntity(
+            storeProductByStoreIdAndProductId, productDetailFlower);
   }
 
   /**

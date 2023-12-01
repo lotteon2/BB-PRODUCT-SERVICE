@@ -1,10 +1,15 @@
 package kr.bb.product.domain.product.entity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
+import kr.bb.product.domain.flower.entity.Flower;
 import kr.bb.product.domain.product.entity.mapper.ProductMapper;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
+import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
 import lombok.Builder;
 import lombok.Getter;
@@ -157,6 +162,45 @@ public class ProductCommand {
 
     public void setProductId(String productId) {
       this.productId = productId;
+    }
+  }
+
+  @Getter
+  @Builder
+  public static class ProductDetailFlower {
+    private Long flowerId;
+    private String flowerName;
+    private Long flowerCount;
+  }
+
+  @Getter
+  @Builder
+  public static class StoreProductDetail {
+    private String productId;
+    private String productThumbnail;
+    private String productName;
+    private String productSummary;
+    private String productPrice;
+    private String category;
+    private List<String> tag;
+    private String productDescriptionImage;
+    private String productSaleAmount;
+    private String averageRating;
+    private String productSaleStatus;
+    private ProductDetailFlower representativeFlower;
+    @Builder.Default private List<ProductDetailFlower> flowers = new ArrayList<>();
+    public static StoreProductDetail fromEntity(Product product, List<Flower> flowers){
+      List<String> tagNames = product.getTag().stream().map(Tag::getTagName)
+              .collect(Collectors.toList());
+      Map<Long, String> flowerName = flowers.stream()
+              .collect(Collectors.toMap(Flower::getId, Flower::getFlowerName));
+
+      product.getProductFlowers().forEach(item-> {
+        if (item.getIsRepresentative()) {
+          
+        }
+      });
+
     }
   }
 }

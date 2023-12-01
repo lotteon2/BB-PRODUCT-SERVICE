@@ -16,4 +16,6 @@ public interface ProductQueryUseCase {
   ProductCommand.ProductDetail getProductDetail(Long userId, String productId);
 
   ProductCommand.ProductDetail getProductDetail(String productId);
+
+  ProductCommand.StoreProductDetail getStoreProductDetail(Long storeId, String productId);
 }
