@@ -10,6 +10,7 @@ import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
+import kr.bb.product.domain.tag.entity.Tag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +101,9 @@ class ProductQueryRepositoryTest {
     ProductFlowers build1 = ProductFlowers.builder().flowerId(1L).build();
     List<ProductFlowers> list = new ArrayList<>();
     list.add(build1);
+    List<Tag> tagList = new ArrayList<>();
+    tagList.add(Tag.builder().tagId(1L).build());
+    tagList.add(Tag.builder().tagId(2L).build());
     for (int i = 0; i < 10; i++) {
       Product build =
           Product.builder()
@@ -109,6 +113,7 @@ class ProductQueryRepositoryTest {
               .category(Category.builder().categoryName("ca").categoryId(1L + i).build())
               .productDescriptionImage("description image")
               .productFlowers(list)
+              .tag(tagList)
               .productSaleStatus(ProductSaleStatus.SALE)
               .productPrice(100000L)
               .storeId(1L)
@@ -116,5 +121,15 @@ class ProductQueryRepositoryTest {
               .build();
       productMongoRepository.save(build);
     }
+  }
+
+  @Test
+  @DisplayName("태그별 상품 리스트 조회")
+  void findProductsByTag() {
+    extracted();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    Page<Product> storeProducts = productQueryOutPort.findProductsByTag(2L, 1L, pageRequest);
+    assertThat(storeProducts.getContent().size()).isEqualTo(5);
+    assertThat(storeProducts.getContent().get(0).getTag().get(0).getTagId()).isEqualTo(1L);
   }
 }

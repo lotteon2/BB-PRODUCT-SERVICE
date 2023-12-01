@@ -15,4 +15,5 @@ public interface ProductQueryOutPort {
       Long soreId, Long categoryId, Long flowerId, ProductSaleStatus saleStatus, Pageable pageable);
 
   Page<Product> findProductsByCategory(Long categoryId, Long storeId, Pageable pageable);
+  Page<Product> findProductsByTag(Long tagId, Long storeId, Pageable pageable);
 }

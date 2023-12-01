@@ -5,6 +5,7 @@ import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -61,11 +62,29 @@ public class ProductQueryRepository implements ProductQueryOutPort {
         () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Product.class));
   }
 
+  /**
+   * 카테고리별 상품 리스트 조회
+   *
+   * @param categoryId
+   * @param storeId
+   * @param pageable
+   * @return
+   */
   @Override
   public Page<Product> findProductsByCategory(Long categoryId, Long storeId, Pageable pageable) {
+    return getProducts(storeId, "category.categoryId", categoryId, pageable);
+  }
+
+  @Override
+  public Page<Product> findProductsByTag(Long tagId, Long storeId, Pageable pageable) {
+    return getProducts(storeId, "tag.tagId", tagId, pageable);
+  }
+
+  @NotNull
+  private Page<Product> getProducts(Long storeId, String key, Long keyId, Pageable pageable) {
     Query query = new Query();
     if (storeId != null) query.addCriteria(Criteria.where("store_id").is(storeId));
-    query.addCriteria(Criteria.where("category.categoryId").is(categoryId));
+    query.addCriteria(Criteria.where(key).is(keyId));
     query.addCriteria(Criteria.where("product_sale_status").is(ProductSaleStatus.SALE));
     query.with(pageable);
     List<Product> products = mongoTemplate.find(query, Product.class);
