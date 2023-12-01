@@ -8,6 +8,7 @@ import kr.bb.product.domain.product.application.port.in.ProductQueryInputPort;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
+import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,13 @@ public class ProductRestController {
   private final ProductQueryInputPort productQueryInputPort;
   private final ProductCommandInputPort productStoreInputPort;
   private final ProductCommandInputPort productCommandInputPort;
+
+  @GetMapping("{productId}/store/{storeId}")
+  public CommonResponse<StoreProductDetail> getStoreProductDetail(
+      @PathVariable String productId, @PathVariable Long storeId) {
+    return CommonResponse.success(
+        productQueryInputPort.getStoreProductDetail(storeId, productId), "가게 사장 상품 상세 조회");
+  }
 
   @PutMapping("{productId}/subscribe-product")
   public void updateSubscriptionProduct(

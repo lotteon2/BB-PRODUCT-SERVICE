@@ -139,7 +139,6 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   public StoreProductDetail getStoreProductDetail(Long storeId, String productId) {
     Product storeProductByStoreIdAndProductId =
         productQueryOutPort.findStoreProductByStoreIdAndProductId(storeId, productId);
-    // 꽃 정보 받기
     List<Flower> productDetailFlower =
         flowerQueryOutPort.findProductDetailFlower(
             Product.getFlowerIds(storeProductByStoreIdAndProductId));
