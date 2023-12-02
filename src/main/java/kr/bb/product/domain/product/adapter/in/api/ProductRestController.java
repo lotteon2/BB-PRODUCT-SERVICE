@@ -153,8 +153,6 @@ public class ProductRestController {
           productQueryUseCase.getProductsByTag(userId.get(), tagId, 0L, sortOptionParam, pageable),
           "태그별 상품 리스트 조회");
     } else {
-      log.warn(String.valueOf(tagId));
-      log.warn(String.valueOf(sortOptionParam));
       return CommonResponse.success(
           productQueryUseCase.getProductsByTag(tagId, 0L, sortOptionParam, pageable),
           "태그별 상품 리스트 조회");

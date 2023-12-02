@@ -161,12 +161,36 @@ class ProductQueryInputPortTest {
 
   @Test
   @DisplayName("태그별 상품 리스트 조회 - login ")
-  void getProductsByTag() {
+  void getProductsByTagLogin() {
     productMongoRepository.deleteAll();
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 5);
     ProductsGroupByCategory productsByTag =
         productQueryInputPort.getProductsByTag(1L, 1L, 1L, SortOption.SALE, pageRequest);
+    assertThat(productsByTag.getProducts().size()).isEqualTo(5);
+    assertThat(productsByTag.getProducts().get(1L).getProducts().size()).isEqualTo(5);
+  }
+
+  @Test
+  @DisplayName("태그별 상품 리스트 조회 - 비로그인  ")
+  void getProductsByTag() {
+    productMongoRepository.deleteAll();
+    extracted();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    ProductsGroupByCategory productsByTag =
+        productQueryInputPort.getProductsByTag(null, 1L, 1L, SortOption.SALE, pageRequest);
+    assertThat(productsByTag.getProducts().size()).isEqualTo(5);
+    assertThat(productsByTag.getProducts().get(1L).getProducts().size()).isEqualTo(5);
+  }
+
+  @Test
+  @DisplayName("태그별 상품 리스트 조회 - 비로그인  ")
+  void getProductsByTagNotLogin() {
+    productMongoRepository.deleteAll();
+    extracted();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    ProductsGroupByCategory productsByTag =
+        productQueryInputPort.getProductsByTag(1L, 1L, SortOption.SALE, pageRequest);
     assertThat(productsByTag.getProducts().size()).isEqualTo(5);
     assertThat(productsByTag.getProducts().get(1L).getProducts().size()).isEqualTo(5);
   }

@@ -219,6 +219,13 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   @Override
   public ProductCommand.ProductsGroupByCategory getProductsByTag(
       Long userId, Long tagId, Long categoryId, SortOption sortOption, Pageable pageable) {
+    return getProductsGroupByCategory(userId, tagId, categoryId, sortOption, pageable);
+  }
+
+  // 태그 조회 카테고리별 묶음
+  @NotNull
+  private ProductsGroupByCategory getProductsGroupByCategory(
+      Long userId, Long tagId, Long categoryId, SortOption sortOption, Pageable pageable) {
     ProductsGroupByCategory productsGroupByCategory = ProductsGroupByCategory.builder().build();
     for (int i = 0; i < 5; i++) {
       ProductList productWithLikes =
@@ -229,6 +236,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     return productsGroupByCategory;
   }
 
+  // 태그별 조회 응답 생성 - 찜 포함
   private ProductList getProductListByTagId(
       Long userId, Long categoryId, Long tagId, SortOption sortOption, Pageable pageable) {
     Pageable pageRequest = getPageable(pageable, sortOption);
@@ -243,16 +251,18 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     return ProductList.getData(product, data, productsByTag.getTotalPages());
   }
 
+  /**
+   * 태그별 상품 리스트 조회 - 비로그인
+   *
+   * @param tagId
+   * @param categoryId
+   * @param sortOption
+   * @param pageable
+   * @return
+   */
   @Override
   public ProductCommand.ProductsGroupByCategory getProductsByTag(
       Long tagId, Long categoryId, SortOption sortOption, Pageable pageable) {
-    ProductsGroupByCategory productsGroupByCategory = ProductsGroupByCategory.builder().build();
-    for (int i = 0; i < 5; i++) {
-      ProductList productWithLikes =
-          getProductListByTagId(null, categoryId, tagId, sortOption, pageable);
-      productsGroupByCategory.setProducts(categoryId, productWithLikes);
-      categoryId += 1;
-    }
-    return productsGroupByCategory;
+    return getProductsGroupByCategory(null, tagId, categoryId, sortOption, pageable);
   }
 }
