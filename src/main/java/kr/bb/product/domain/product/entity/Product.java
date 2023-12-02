@@ -65,8 +65,10 @@ public class Product {
   @Field(name = "product_description_image")
   private String productDescriptionImage;
 
+  @Builder.Default
   @NotBlank
-  private @Field(name = "review_count") Long reviewCount;
+  @Field(name = "review_count")
+  private Long reviewCount = 0L;
 
   @Builder.Default
   @NotBlank

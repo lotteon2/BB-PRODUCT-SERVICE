@@ -80,6 +80,8 @@ public interface ProductMapper {
   @Mapping(source = "product.productSaleStatus", target = "productSaleStatus")
   @Mapping(source = "product.productSaleAmount", target = "salesCount")
   @Mapping(source = "product.averageRating", target = "averageRating")
+  @Mapping(source = "product.storeId", target = "storeId")
+  @Mapping(source = "product.reviewCount", target = "reviewCount")
   @Mapping(target = "storeName", ignore = true)
   @Mapping(target = "isLiked", ignore = true)
   @Mapping(source = "product.category", target = "category", qualifiedByName = "mapCategory")

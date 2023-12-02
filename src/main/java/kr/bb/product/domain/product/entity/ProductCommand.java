@@ -140,6 +140,8 @@ public class ProductCommand {
     private Long salesCount;
     private Double averageRating;
     private String storeName;
+    private Long storeId;
+    private Long reviewCount;
     @Builder.Default private Boolean isLiked = false;
     private CategoryForProductList category;
     private List<TagForProductList> tag;
