@@ -16,4 +16,5 @@ public interface ProductQueryOutPort {
 
   Page<Product> findProductsByCategory(Long categoryId, Long tagId, Pageable pageable);
   Page<Product> findProductsByTag(Long tagId,Long categoryId, Pageable pageable);
+  Product findByProductId(String productId);
 }

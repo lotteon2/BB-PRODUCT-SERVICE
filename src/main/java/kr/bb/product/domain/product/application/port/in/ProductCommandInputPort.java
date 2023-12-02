@@ -5,6 +5,7 @@ import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.category.repository.jpa.CategoryRepository;
 import kr.bb.product.domain.product.application.port.out.ProductCommandOutPort;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
+import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
@@ -30,7 +31,9 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
   private final ProductMapper productMapper;
   private final TagRepository tagRepository;
   private final CategoryRepository categoryRepository;
+
   private final ProductCommandOutPort productCommandOutPort;
+  private final ProductQueryOutPort productQueryOutPort;
 
   @NotNull
   private List<ProductFlowers> getFlowers(
@@ -68,7 +71,7 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
   @Transactional
   public void updateProductSaleStatus(
       String productId, ProductCommand.ProductUpdate productRequestData) {
-    Product product = productOutPort.findByProductId(productId);
+    Product product = productQueryOutPort.findByProductId(productId);
     if (productRequestData.getProductSaleStatus().equals(ProductSaleStatus.DELETED)) {
       productOutPort.updateProductSaleStatus(product);
     } else {

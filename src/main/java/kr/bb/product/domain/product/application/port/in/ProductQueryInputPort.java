@@ -89,7 +89,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
    */
   @Override
   public ProductDetail getProductDetail(Long userId, String productId) {
-    Product byProductId = productOutPort.findByProductId(productId);
+    Product byProductId = productQueryOutPort.findByProductId(productId);
     ProductDetail productDetail = getProductDetail(byProductId);
     ProductCommand.ProductDetailLike isLiked =
         wishlistServiceClient.getProductDetailLikes(productId, userId).getData();
@@ -107,7 +107,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
    */
   @Override
   public ProductDetail getProductDetail(String productId) {
-    Product byProductId = productOutPort.findByProductId(productId);
+    Product byProductId = productQueryOutPort.findByProductId(productId);
     ProductDetail productDetail = getProductDetail(byProductId);
     String storeName = getProductDetailStoreName(byProductId);
     productDetail.setStoreName(storeName);

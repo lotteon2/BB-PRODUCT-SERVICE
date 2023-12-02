@@ -4,6 +4,7 @@ import java.util.List;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
+import kr.bb.product.exception.errors.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -96,5 +97,12 @@ public class ProductQueryRepository implements ProductQueryOutPort {
         products,
         pageable,
         () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Product.class));
+  }
+
+  @Override
+  public Product findByProductId(String productId) {
+    return productMongoRepository
+        .findByProductId(productId)
+        .orElseThrow(ProductNotFoundException::new);
   }
 }
