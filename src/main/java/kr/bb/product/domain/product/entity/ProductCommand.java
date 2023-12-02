@@ -1,6 +1,8 @@
 package kr.bb.product.domain.product.entity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -78,8 +80,8 @@ public class ProductCommand {
     private Long reviewCount;
     private Long averageRating;
 
-    public static List<String> getProductIds(List<ProductListItem> productByCategories) {
-      return productByCategories.stream().map(ProductListItem::getKey).collect(Collectors.toList());
+    public static List<String> getProductIds(List<ProductListItem> productListItem) {
+      return productListItem.stream().map(ProductListItem::getKey).collect(Collectors.toList());
     }
 
     public void setLiked(Boolean liked) {
@@ -98,15 +100,30 @@ public class ProductCommand {
     }
 
     public static ProductList getData(
-        List<ProductListItem> productByCategories, List<String> data, int totalPages) {
-      for (ProductListItem p : productByCategories) {
+        List<ProductListItem> productListItem, List<String> data, int totalPages) {
+      for (ProductListItem p : productListItem) {
         if (data.contains(p.key)) p.setLiked(true);
       }
-      return ProductList.builder().products(productByCategories).totalCnt(totalPages).build();
+      return ProductList.builder().products(productListItem).totalCnt(totalPages).build();
     }
 
-    public static ProductList getData(List<ProductListItem> productByCategories, int totalPages) {
-      return ProductList.builder().products(productByCategories).totalCnt(totalPages).build();
+    public static ProductList getData(List<ProductListItem> productListItem, int totalPages) {
+      return ProductList.builder().products(productListItem).totalCnt(totalPages).build();
+    }
+  }
+
+  @Getter
+  @Builder
+  public static class ProductsGroupByCategory {
+    @Builder.Default private Map<Long, ProductList> products = new HashMap<>();
+
+    public static ProductsGroupByCategory getData(Long categoryId, ProductList productList) {
+      Map<Long, ProductList> productListMap = Collections.singletonMap(categoryId, productList);
+      return ProductsGroupByCategory.builder().products(productListMap).build();
+    }
+
+    public void setProducts(Long categoryId, ProductList productList) {
+      this.products.put(categoryId, productList);
     }
   }
 

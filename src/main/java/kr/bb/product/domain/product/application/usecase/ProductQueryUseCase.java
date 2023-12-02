@@ -27,9 +27,17 @@ public interface ProductQueryUseCase {
       Long storeId,
       ProductCommand.SortOption sortOption,
       Pageable pageable);
-    ProductList getProductsByCategory(
+
+  ProductList getProductsByCategory(
+      Long categoryId, Long storeId, ProductCommand.SortOption sortOption, Pageable pageable);
+
+  ProductCommand.ProductsGroupByCategory getProductsByTag(
+      Long userId,
+      Long tagId,
       Long categoryId,
-      Long storeId,
       ProductCommand.SortOption sortOption,
       Pageable pageable);
+
+  ProductCommand.ProductsGroupByCategory getProductsByTag(
+      Long categoryId, Long tagId, ProductCommand.SortOption sortOption, Pageable pageable);
 }

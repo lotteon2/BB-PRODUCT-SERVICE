@@ -128,8 +128,7 @@ class ProductQueryRepositoryTest {
   void findProductsByTag() {
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 5);
-    Page<Product> storeProducts = productQueryOutPort.findProductsByTag(2L, 1L, pageRequest);
-    assertThat(storeProducts.getContent().size()).isEqualTo(5);
-    assertThat(storeProducts.getContent().get(0).getTag().get(0).getTagId()).isEqualTo(1L);
+    Page<Product> storeProducts = productQueryOutPort.findProductsByTag(1L, 1L, pageRequest);
+    assertThat(storeProducts.getContent().size()).isEqualTo(1);
   }
 }

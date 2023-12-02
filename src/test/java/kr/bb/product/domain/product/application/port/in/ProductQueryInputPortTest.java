@@ -11,6 +11,7 @@ import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductRegister;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
 import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProduct;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
@@ -153,8 +154,20 @@ class ProductQueryInputPortTest {
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 5);
     ProductList productsByCategory =
-        productQueryInputPort.getProductsByCategory( 1L, 1L, SortOption.LOW, pageRequest);
+        productQueryInputPort.getProductsByCategory(1L, 1L, SortOption.LOW, pageRequest);
     List<ProductListItem> products = productsByCategory.getProducts();
     assertThat(products.get(0).getProductPrice() < products.get(1).getProductPrice()).isTrue();
+  }
+
+  @Test
+  @DisplayName("태그별 상품 리스트 조회 - login ")
+  void getProductsByTag() {
+    productMongoRepository.deleteAll();
+    extracted();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    ProductsGroupByCategory productsByTag =
+        productQueryInputPort.getProductsByTag(1L, 1L, 1L, SortOption.SALE, pageRequest);
+    assertThat(productsByTag.getProducts().size()).isEqualTo(5);
+    assertThat(productsByTag.getProducts().get(1L).getProducts().size()).isEqualTo(5);
   }
 }

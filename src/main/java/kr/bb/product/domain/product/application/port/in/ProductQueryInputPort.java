@@ -14,6 +14,7 @@ import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
 import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProduct;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
@@ -203,5 +204,45 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     Page<Product> byCategory = getProductsByCategoryId(categoryId, storeId, pageRequest);
     List<ProductListItem> productByCategories = getProduct(byCategory);
     return ProductList.getData(productByCategories, byCategory.getTotalPages());
+  }
+
+  /**
+   * 태그별 상품 리스트 조회 - 로그인 group by category
+   *
+   * @param userId
+   * @param categoryId
+   * @param tagId
+   * @param sortOption
+   * @param pageable
+   * @return
+   */
+  @Override
+  public ProductCommand.ProductsGroupByCategory getProductsByTag(
+      Long userId, Long categoryId, Long tagId, SortOption sortOption, Pageable pageable) {
+    ProductsGroupByCategory productsGroupByCategory = ProductsGroupByCategory.builder().build();
+    for (int i = 0; i < 5; i++) {
+      ProductList productWithLikes =
+          getProductListByTagId(userId, categoryId, tagId, sortOption, pageable);
+      productsGroupByCategory.setProducts(categoryId, productWithLikes);
+      categoryId++;
+    }
+    return productsGroupByCategory;
+  }
+
+  private ProductList getProductListByTagId(
+      Long userId, Long categoryId, Long tagId, SortOption sortOption, Pageable pageable) {
+    Pageable pageRequest = getPageable(pageable, sortOption);
+    Page<Product> productsByTag =
+        productQueryOutPort.findProductsByTag(tagId, categoryId, pageRequest);
+    List<ProductListItem> product = getProduct(productsByTag);
+    List<String> ids = ProductListItem.getProductIds(product);
+    List<String> data = wishlistServiceClient.getProductsMemberLikes(userId, ids).getData();
+    return ProductList.getData(product, data, productsByTag.getTotalPages());
+  }
+
+  @Override
+  public ProductCommand.ProductsGroupByCategory getProductsByTag(
+      Long categoryId, Long tagId, SortOption sortOption, Pageable pageable) {
+    return null;
   }
 }
