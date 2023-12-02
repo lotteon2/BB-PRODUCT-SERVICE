@@ -270,4 +270,11 @@ public class ProductCommand {
     private List<StoreProduct> products;
     private int totalCnt;
   }
+
+  @Getter
+  @Builder
+  public static class BestSellerTopTenItem {
+    private String productName;
+    private List<Long> data;
+  }
 }
