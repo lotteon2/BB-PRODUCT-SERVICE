@@ -218,7 +218,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
    */
   @Override
   public ProductCommand.ProductsGroupByCategory getProductsByTag(
-      Long userId, Long categoryId, Long tagId, SortOption sortOption, Pageable pageable) {
+      Long userId, Long tagId, Long categoryId, SortOption sortOption, Pageable pageable) {
     ProductsGroupByCategory productsGroupByCategory = ProductsGroupByCategory.builder().build();
     for (int i = 0; i < 5; i++) {
       ProductList productWithLikes =
@@ -235,6 +235,9 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     Page<Product> productsByTag =
         productQueryOutPort.findProductsByTag(tagId, categoryId, pageRequest);
     List<ProductListItem> product = getProduct(productsByTag);
+
+    if (userId == null) return ProductList.getData(product, productsByTag.getTotalPages());
+
     List<String> ids = ProductListItem.getProductIds(product);
     List<String> data = wishlistServiceClient.getProductsMemberLikes(userId, ids).getData();
     return ProductList.getData(product, data, productsByTag.getTotalPages());
@@ -242,7 +245,14 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
   @Override
   public ProductCommand.ProductsGroupByCategory getProductsByTag(
-      Long categoryId, Long tagId, SortOption sortOption, Pageable pageable) {
-    return null;
+      Long tagId, Long categoryId, SortOption sortOption, Pageable pageable) {
+    ProductsGroupByCategory productsGroupByCategory = ProductsGroupByCategory.builder().build();
+    for (int i = 0; i < 5; i++) {
+      ProductList productWithLikes =
+          getProductListByTagId(null, categoryId, tagId, sortOption, pageable);
+      productsGroupByCategory.setProducts(categoryId, productWithLikes);
+      categoryId += 1;
+    }
+    return productsGroupByCategory;
   }
 }

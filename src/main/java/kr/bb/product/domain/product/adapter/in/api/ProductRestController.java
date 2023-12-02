@@ -6,10 +6,12 @@ import javax.validation.Valid;
 import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.ProductCommand;
+import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class ProductRestController {
@@ -130,6 +133,31 @@ public class ProductRestController {
           productQueryUseCase.getProductsByCategory(
               categoryIdParam, storeIdParam, sortOptionParam, pageable),
           "카테고리별 상품 리스트 조회");
+    }
+  }
+
+  @GetMapping("tag/{tagId}")
+  public CommonResponse<ProductCommand.ProductsGroupByCategory> getProductsByTag(
+      @PathVariable Long tagId,
+      @RequestHeader Optional<Long> userId,
+      @RequestParam("sort-option") Optional<ProductCommand.SortOption> sortOption,
+      @PageableDefault(
+              page = 0,
+              size = 10,
+              sort = {"createdAt"},
+              direction = Sort.Direction.DESC)
+          Pageable pageable) {
+    SortOption sortOptionParam = sortOption.orElse(null);
+    if (userId.isPresent()) {
+      return CommonResponse.success(
+          productQueryUseCase.getProductsByTag(userId.get(), tagId, 0L, sortOptionParam, pageable),
+          "태그별 상품 리스트 조회");
+    } else {
+      log.warn(String.valueOf(tagId));
+      log.warn(String.valueOf(sortOptionParam));
+      return CommonResponse.success(
+          productQueryUseCase.getProductsByTag(tagId, 0L, sortOptionParam, pageable),
+          "태그별 상품 리스트 조회");
     }
   }
 }
