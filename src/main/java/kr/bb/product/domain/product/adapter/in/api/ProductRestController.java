@@ -34,18 +34,22 @@ public class ProductRestController {
   @GetMapping("store/{storeId}")
   public CommonResponse<StoreProductList> getStoreManagerProducts(
       @PathVariable Long storeId,
-      @RequestParam("category") Long categoryId,
-      @RequestParam("flower") Long flowerId,
-      @RequestParam("status") ProductSaleStatus saleStatus,
+      @RequestParam("category") Optional<Long> categoryId,
+      @RequestParam("flower") Optional<Long> flowerId,
+      @RequestParam("status") Optional<ProductSaleStatus> saleStatus,
       @PageableDefault(
               page = 0,
               size = 10,
               sort = {"createdAt"},
               direction = Sort.Direction.DESC)
           Pageable pageable) {
+    Long categoryParam = categoryId.orElse(null);
+    Long flowerParam = flowerId.orElse(null);
+    ProductSaleStatus productSaleStatus = saleStatus.orElse(null);
 
     StoreProductList storeProducts =
-        productQueryUseCase.getStoreProducts(storeId, categoryId, flowerId, saleStatus, pageable);
+        productQueryUseCase.getStoreProducts(
+            storeId, categoryParam, flowerParam, productSaleStatus, pageable);
     return CommonResponse.<StoreProductList>builder()
         .data(storeProducts)
         .message("가게 상품 리스트 조회")
