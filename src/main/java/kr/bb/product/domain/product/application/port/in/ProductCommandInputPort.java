@@ -12,6 +12,7 @@ import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProduct;
 import kr.bb.product.domain.product.entity.ProductCommand.UpdateSubscriptionProduct;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.entity.mapper.ProductMapper;
+import kr.bb.product.domain.product.infrastructure.message.ProductSQSPublisher;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.domain.tag.entity.Tag;
@@ -31,6 +32,8 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
   private final TagRepository tagRepository;
   private final CategoryRepository categoryRepository;
   private final ProductCommandOutPort productCommandOutPort;
+
+  private final ProductSQSPublisher publishMessageToSQS;
 
   @NotNull
   private List<ProductFlowers> getFlowers(
@@ -71,6 +74,10 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
     Product product = productOutPort.findByProductId(productId);
     if (productRequestData.getProductSaleStatus().equals(ProductSaleStatus.DELETED)) {
       productOutPort.updateProductSaleStatus(product);
+    } else if (productRequestData.getProductSaleStatus().equals(ProductSaleStatus.SALE)) {
+      // sqs 재입고 알림 조회 요청
+      publishMessageToSQS.publishProductResaleNotificationCheckQueue(productId);
+      productOutPort.updateProductSaleStatus(product, productRequestData.getProductSaleStatus());
     } else {
       productOutPort.updateProductSaleStatus(product, productRequestData.getProductSaleStatus());
     }
