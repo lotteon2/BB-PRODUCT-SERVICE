@@ -13,6 +13,14 @@ public class SalesResumeCommand {
     private String userName;
     private String productId;
 
+    public void setUserId(Long userId) {
+      this.userId = userId;
+    }
+
+    public void setProductId(String productId) {
+      this.productId = productId;
+    }
+
     public static SalesResume toEntity(SalesResumeCommand.SalesResumeRequest request) {
       return SalesResumeMapper.INSTANCE.toEntity(request);
     }

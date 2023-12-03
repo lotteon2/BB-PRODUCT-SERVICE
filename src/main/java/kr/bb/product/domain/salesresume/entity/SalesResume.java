@@ -29,7 +29,7 @@ public class SalesResume extends BaseEntity {
   private Boolean isNotified;
 
   @Column(name = "product_id")
-  private Long productId;
+  private String productId;
 
   @Column(name = "user_id")
   private Long userId;

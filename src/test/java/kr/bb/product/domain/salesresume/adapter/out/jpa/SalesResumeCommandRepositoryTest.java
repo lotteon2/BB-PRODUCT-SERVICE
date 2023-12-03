@@ -15,13 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 class SalesResumeCommandRepositoryTest {
-@Autowired SalesResumeJpaRepository salesResumeJpaRepository;
+  @Autowired SalesResumeJpaRepository salesResumeJpaRepository;
   @Autowired private SalesResumeCommandOutPort salesResumeCommandOutPort;
 
   @Test
   @DisplayName("재입고 신청 알림 저장")
   void save() {
-    SalesResume build = SalesResume.builder().userId(1L).productId(1L).isNotified(true).build();
+    SalesResume build = SalesResume.builder().userId(1L).productId("123").isNotified(true).build();
     salesResumeCommandOutPort.save(build);
     List<SalesResume> all = salesResumeJpaRepository.findAll();
     assertThat(all.size()).isEqualTo(1);
