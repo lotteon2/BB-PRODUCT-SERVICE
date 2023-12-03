@@ -5,15 +5,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
+import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductRegister;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
 import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreProduct;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
@@ -128,10 +129,6 @@ class ProductQueryInputPortTest {
         productQueryInputPort.getProductsByCategory(1L, 1L, 1L, SortOption.SALE, pageRequest);
     StoreProductList storeProducts =
         productQueryInputPort.getStoreProducts(1L, 1L, null, ProductSaleStatus.SALE, pageRequest);
-    for (StoreProduct p : storeProducts.getProducts()) {
-      System.out.println(p.getProductSaleStatus());
-      System.out.println(p.getRepresentativeFlower());
-    }
     assertThat(storeProducts.getProducts().size()).isGreaterThan(0);
   }
 
@@ -193,5 +190,32 @@ class ProductQueryInputPortTest {
         productQueryInputPort.getProductsByTag(1L, 1L, SortOption.SALE, pageRequest);
     assertThat(productsByTag.getProducts().size()).isEqualTo(5);
     assertThat(productsByTag.getProducts().get(1L).getProducts().size()).isEqualTo(5);
+  }
+
+  @DisplayName("베스트 셀러 10개 정보")
+  void getBestSellerTopTen() {
+    productMongoRepository.deleteAll();
+    ProductFlowers build1 = ProductFlowers.builder().flowerId(1L).build();
+    List<ProductFlowers> list = new ArrayList<>();
+    list.add(build1);
+    for (int i = 0; i < 10; i++) {
+      Product build =
+          Product.builder()
+              .productThumbnail("thumbnail")
+              .productName("product name")
+              .productSummary("summary")
+              .category(Category.builder().categoryName("ca").categoryId(1L + i).build())
+              .productDescriptionImage("description image")
+              .productFlowers(list)
+              .productPrice(100000L + i)
+              .productSaleAmount(10L + i)
+              .storeId(1L)
+              .isSubscription(false)
+              .build();
+      productMongoRepository.save(build);
+    }
+    BestSellerTopTen bestSellerTopTen = productQueryInputPort.getBestSellerTopTen(1L);
+    assertThat(bestSellerTopTen.getProducts().size()).isEqualTo(10);
+    assertThat(bestSellerTopTen.getProducts().get(0).getData().get(0)).isEqualTo(19L);
   }
 }

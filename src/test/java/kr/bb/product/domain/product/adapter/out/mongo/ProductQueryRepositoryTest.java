@@ -98,6 +98,14 @@ class ProductQueryRepositoryTest {
 
   private void extracted() {
     productMongoRepository.deleteAll();
+    createProducts();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    Page<Product> storeProducts =
+        productQueryOutPort.findStoreProducts(1L, null, 1L, null, pageRequest);
+    assertThat(storeProducts.getContent().size()).isEqualTo(5);
+  }
+
+  private void createProducts() {
     ProductFlowers build1 = ProductFlowers.builder().flowerId(1L).build();
     List<ProductFlowers> list = new ArrayList<>();
     list.add(build1);
@@ -115,7 +123,8 @@ class ProductQueryRepositoryTest {
               .productFlowers(list)
               .tag(tagList)
               .productSaleStatus(ProductSaleStatus.SALE)
-              .productPrice(100000L)
+              .productPrice(100000L + i)
+              .productSaleAmount(10L + i)
               .storeId(1L)
               .isSubscription(false)
               .build();
@@ -130,5 +139,16 @@ class ProductQueryRepositoryTest {
     PageRequest pageRequest = PageRequest.of(0, 5);
     Page<Product> storeProducts = productQueryOutPort.findProductsByTag(1L, 1L, pageRequest);
     assertThat(storeProducts.getContent().size()).isEqualTo(1);
+  }
+
+  @DisplayName("베스트 셀러 10개 ")
+  void findBestSellerTopTen() {
+    productMongoRepository.deleteAll();
+    createProducts();
+    List<Product> bestSellerTopTen = productQueryRepository.findBestSellerTopTen(1L);
+    assertThat(bestSellerTopTen.size()).isEqualTo(10);
+    assertThat(
+            bestSellerTopTen.get(0).getProductPrice() > bestSellerTopTen.get(1).getProductPrice())
+        .isTrue();
   }
 }

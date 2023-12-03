@@ -11,6 +11,7 @@ import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
+import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
@@ -163,6 +164,12 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
                 .collect(Collectors.toList()))
         .totalCnt(productByStoreId.getTotalPages())
         .build();
+  }
+
+  @Override
+  public BestSellerTopTen getBestSellerTopTen(Long storeId) {
+    List<Product> bestSellerTopTen = productQueryOutPort.findBestSellerTopTen(storeId);
+    return BestSellerTopTen.getData(bestSellerTopTen);
   }
 
   /**

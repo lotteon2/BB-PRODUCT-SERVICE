@@ -8,6 +8,7 @@ import kr.bb.product.exception.errors.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -104,5 +105,14 @@ public class ProductQueryRepository implements ProductQueryOutPort {
     return productMongoRepository
         .findByProductId(productId)
         .orElseThrow(ProductNotFoundException::new);
+  }
+
+  @Override
+  public List<Product> findBestSellerTopTen(Long storeId) {
+    return mongoTemplate.find(
+        Query.query(Criteria.where("store_id").is(storeId))
+            .limit(10)
+            .with(Sort.by(Sort.Order.desc("productSaleAmount"))),
+        Product.class);
   }
 }

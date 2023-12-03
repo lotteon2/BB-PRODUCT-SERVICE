@@ -37,4 +37,6 @@ public interface ProductQueryUseCase {
 
   ProductCommand.ProductsGroupByCategory getProductsByTag(
       Long tagId, Long categoryId, ProductCommand.SortOption sortOption, Pageable pageable);
+
+  ProductCommand.BestSellerTopTen getBestSellerTopTen(Long storeId);
 }
