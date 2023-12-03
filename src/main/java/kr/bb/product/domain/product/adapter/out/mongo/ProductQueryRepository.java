@@ -7,6 +7,7 @@ import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -59,5 +60,14 @@ public class ProductQueryRepository implements ProductQueryOutPort {
         products,
         pageable,
         () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Product.class));
+  }
+
+  @Override
+  public List<Product> findBestSellerTopTen(Long storeId) {
+    return mongoTemplate.find(
+        Query.query(Criteria.where("store_id").is(storeId))
+            .limit(10)
+            .with(Sort.by(Sort.Order.desc("productSaleAmount"))),
+        Product.class);
   }
 }

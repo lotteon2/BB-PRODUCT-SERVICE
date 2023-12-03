@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.ProductCommand;
+import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
@@ -126,5 +127,11 @@ public class ProductRestController {
       @PathVariable String productId,
       @RequestBody ProductCommand.ProductUpdate productRequestData) {
     productCommandUseCase.updateProductSaleStatus(productId, productRequestData);
+  }
+
+  @GetMapping("store/{storeId}/best-top-ten")
+  public CommonResponse<BestSellerTopTen> getBestSellerTopTen(@PathVariable Long storeId) {
+    return CommonResponse.success(
+        productQueryUseCase.getBestSellerTopTen(storeId), "베스트 셀러 top 10 상품 조회");
   }
 }
