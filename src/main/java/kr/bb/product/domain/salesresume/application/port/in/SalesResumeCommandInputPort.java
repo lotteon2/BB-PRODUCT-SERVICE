@@ -5,12 +5,14 @@ import kr.bb.product.domain.salesresume.application.usecase.SalesResumeCommandUs
 import kr.bb.product.domain.salesresume.entity.SalesResumeCommand.SalesResumeRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class SalesResumeCommandInputPort implements SalesResumeCommandUseCase {
   private final SalesResumeCommandOutPort salesResumeCommandOutPort;
 
+  @Transactional
   @Override
   public void save(SalesResumeRequest request) {
     salesResumeCommandOutPort.save(SalesResumeRequest.toEntity(request));
