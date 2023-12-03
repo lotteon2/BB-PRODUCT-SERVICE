@@ -29,6 +29,21 @@ create table if not exists flower
     language_of_flower varchar(255) null
 );
 
+create table if not exists sales_resume
+(
+    sales_resume_id bigint auto_increment
+        primary key,
+    created_at      datetime(6)  null,
+    is_deleted      bit          null,
+    updated_at      datetime(6)  null,
+    is_notified     bit          null,
+    phone_number    varchar(255) null,
+    product_id      bigint       null,
+    user_id         bigint       null,
+    user_name       varchar(255) null
+);
+
+
 INSERT INTO category ( category_name)
 VALUES ('Electronics'),
        ( 'Clothing'),

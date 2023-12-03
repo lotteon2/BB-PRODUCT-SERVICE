@@ -23,14 +23,20 @@ public class SalesResume extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "sales_resume_id")
-  private Long id;
+  private Long saleResumeId;
 
-  @Column(name = "sales_resume_status")
-  private Boolean salesResumeStatus;
+  @Column(name = "is_notified")
+  private Boolean isNotified;
 
   @Column(name = "product_id")
   private Long productId;
 
   @Column(name = "user_id")
   private Long userId;
+
+  @Column(name = "phone_number")
+  private String phoneNumber;
+
+  @Column(name = "user_name")
+  private String userName;
 }
