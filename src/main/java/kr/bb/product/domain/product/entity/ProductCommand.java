@@ -270,31 +270,4 @@ public class ProductCommand {
     private List<StoreProduct> products;
     private int totalCnt;
   }
-
-  @Getter
-  @Builder
-  public static class BestSellerTopTenItem {
-    private String productName;
-    private List<Long> data;
-  }
-
-  @Getter
-  @Builder
-  public static class BestSellerTopTen {
-    private List<BestSellerTopTenItem> products;
-
-    public static BestSellerTopTen getData(List<Product> bestSellerTopTen) {
-      return BestSellerTopTen.builder()
-          .products(
-              bestSellerTopTen.stream()
-                  .map(
-                      item ->
-                          BestSellerTopTenItem.builder()
-                              .productName(item.getProductName())
-                              .data(List.of(item.getProductSaleAmount()))
-                              .build())
-                  .collect(Collectors.toList()))
-          .build();
-    }
-  }
 }

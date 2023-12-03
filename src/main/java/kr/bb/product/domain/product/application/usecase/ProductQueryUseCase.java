@@ -20,13 +20,10 @@ public interface ProductQueryUseCase {
   ProductCommand.ProductDetail getProductDetail(String productId);
 
   ProductCommand.StoreProductDetail getStoreProductDetail(Long storeId, String productId);
-
   StoreProductList getStoreProducts(
       Long storeId,
       Long categoryId,
       Long flowerId,
       ProductSaleStatus saleStatus,
       Pageable pageable);
-
-  ProductCommand.BestSellerTopTen getBestSellerTopTen(Long storeId);
 }
