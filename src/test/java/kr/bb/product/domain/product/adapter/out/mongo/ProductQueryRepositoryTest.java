@@ -88,6 +88,14 @@ class ProductQueryRepositoryTest {
   @DisplayName("가게 사장 상품 리스트 조회")
   void findStoreProducts() {
     productMongoRepository.deleteAll();
+    createProducts();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    Page<Product> storeProducts =
+        productQueryOutPort.findStoreProducts(1L, null, 1L, null, pageRequest);
+    assertThat(storeProducts.getContent().size()).isEqualTo(5);
+  }
+
+  private void createProducts() {
     ProductFlowers build1 = ProductFlowers.builder().flowerId(1L).build();
     List<ProductFlowers> list = new ArrayList<>();
     list.add(build1);
@@ -100,15 +108,24 @@ class ProductQueryRepositoryTest {
               .category(Category.builder().categoryName("ca").categoryId(1L + i).build())
               .productDescriptionImage("description image")
               .productFlowers(list)
-              .productPrice(100000L)
+              .productPrice(100000L + i)
+              .productSaleAmount(10L + i)
               .storeId(1L)
               .isSubscription(false)
               .build();
       productMongoRepository.save(build);
     }
-    PageRequest pageRequest = PageRequest.of(0, 5);
-    Page<Product> storeProducts =
-        productQueryOutPort.findStoreProducts(1L, null, 1L, null, pageRequest);
-    assertThat(storeProducts.getContent().size()).isEqualTo(5);
+  }
+
+  @Test
+  @DisplayName("베스트 셀러 10개 ")
+  void findBestSellerTopTen() {
+    productMongoRepository.deleteAll();
+    createProducts();
+    List<Product> bestSellerTopTen = productQueryRepository.findBestSellerTopTen(1L);
+    assertThat(bestSellerTopTen.size()).isEqualTo(10);
+    assertThat(
+            bestSellerTopTen.get(0).getProductPrice() > bestSellerTopTen.get(1).getProductPrice())
+        .isTrue();
   }
 }

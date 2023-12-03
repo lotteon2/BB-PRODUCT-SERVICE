@@ -1,18 +1,18 @@
 package kr.bb.product.domain.product.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
+import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductRegister;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreProduct;
+import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
@@ -21,17 +21,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
 class ProductQueryInputPortTest {
+  @Autowired ProductCommandInputPort productCommandInputPort;
   @Autowired private ProductCommandInputPort productStoreInputPort;
   @Autowired private ProductMongoRepository productMongoRepository;
   @Autowired private ProductQueryInputPort productQueryInputPort;
-  @Autowired ProductCommandInputPort productCommandInputPort;
 
   private void extracted() {
     for (int i = 0; i < 10; i++) {
@@ -74,7 +73,7 @@ class ProductQueryInputPortTest {
         productQueryInputPort.getStoreProductDetail(1L, product.getProductId());
     System.out.println(storeProductDetail.getRepresentativeFlower().getFlowerName());
     assertThat(storeProductDetail.getRepresentativeFlower().getFlowerName()).isNotNull();
-}
+  }
 
   @Test
   @DisplayName("가게 사장 상품 리스트 조회 ")
@@ -109,10 +108,34 @@ class ProductQueryInputPortTest {
     ProductList productsByCategory = productQueryInputPort.getProductsByCategory(1L, pageRequest);
     StoreProductList storeProducts =
         productQueryInputPort.getStoreProducts(1L, 1L, null, ProductSaleStatus.SALE, pageRequest);
-    for (StoreProduct p : storeProducts.getProducts()) {
-      System.out.println(p.getProductSaleStatus());
-      System.out.println(p.getRepresentativeFlower());
-    }
     assertThat(storeProducts.getProducts().size()).isGreaterThan(0);
+  }
+
+  @Test
+  @DisplayName("베스트 셀러 10개 정보")
+  void getBestSellerTopTen() {
+    productMongoRepository.deleteAll();
+    ProductFlowers build1 = ProductFlowers.builder().flowerId(1L).build();
+    List<ProductFlowers> list = new ArrayList<>();
+    list.add(build1);
+    for (int i = 0; i < 10; i++) {
+      Product build =
+          Product.builder()
+              .productThumbnail("thumbnail")
+              .productName("product name")
+              .productSummary("summary")
+              .category(Category.builder().categoryName("ca").categoryId(1L + i).build())
+              .productDescriptionImage("description image")
+              .productFlowers(list)
+              .productPrice(100000L + i)
+              .productSaleAmount(10L + i)
+              .storeId(1L)
+              .isSubscription(false)
+              .build();
+      productMongoRepository.save(build);
+    }
+    BestSellerTopTen bestSellerTopTen = productQueryInputPort.getBestSellerTopTen(1L);
+    assertThat(bestSellerTopTen.getProducts().size()).isEqualTo(10);
+    assertThat(bestSellerTopTen.getProducts().get(0).getData().get(0)).isEqualTo(19L);
   }
 }
