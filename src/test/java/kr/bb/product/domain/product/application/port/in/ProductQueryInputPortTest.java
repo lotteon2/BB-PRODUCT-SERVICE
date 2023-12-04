@@ -11,26 +11,45 @@ import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductRegister;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
+import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
+import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
+@AutoConfigureWebTestClient
+@ExtendWith(SpringExtension.class)
 class ProductQueryInputPortTest {
   @Autowired ProductCommandInputPort productCommandInputPort;
   @Autowired private ProductCommandInputPort productStoreInputPort;
   @Autowired private ProductMongoRepository productMongoRepository;
   @Autowired private ProductQueryInputPort productQueryInputPort;
+  private WebTestClient webTestClient;
+  @Mock private WishlistServiceClient wishlistServiceClient;
+
+  @BeforeEach
+  void beforeEach() {
+    this.webTestClient = WebTestClient.bindToController(this.wishlistServiceClient).build();
+  }
 
   private void extracted() {
     for (int i = 0; i < 10; i++) {
@@ -55,7 +74,7 @@ class ProductQueryInputPortTest {
               .productDescriptionImage("image")
               .storeId(1L)
               .productThumbnail("thumbnail")
-              .productPrice(100L)
+              .productPrice(100L + i)
               .productDescriptionImage("image_url")
               .build();
       productStoreInputPort.createProduct(product);
@@ -93,6 +112,7 @@ class ProductQueryInputPortTest {
               .storeId(1L)
               .categoryId(1L)
               .flowers(lst)
+              .productPrice(1L + i)
               .productTag(list)
               .representativeFlower(
                   ProductFlowersRequestData.builder().flowerCount(3L).flowerId(1L).build())
@@ -105,13 +125,73 @@ class ProductQueryInputPortTest {
 
     PageRequest pageRequest = PageRequest.of(0, 5);
 
-    ProductList productsByCategory = productQueryInputPort.getProductsByCategory(1L, pageRequest);
+    ProductList productsByCategory =
+        productQueryInputPort.getProductsByCategory(1L, 1L, 1L, SortOption.SALE, pageRequest);
     StoreProductList storeProducts =
         productQueryInputPort.getStoreProducts(1L, 1L, null, ProductSaleStatus.SALE, pageRequest);
     assertThat(storeProducts.getProducts().size()).isGreaterThan(0);
   }
 
   @Test
+  @DisplayName("카테고리별 상품 리스트 조회")
+  void getProductsByCategory() {
+    productMongoRepository.deleteAll();
+    extracted();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    ProductList productsByCategory =
+        productQueryInputPort.getProductsByCategory(1L, null, SortOption.LOW, pageRequest);
+    List<ProductListItem> products = productsByCategory.getProducts();
+    assertThat(products.get(0).getProductPrice() < products.get(1).getProductPrice()).isTrue();
+  }
+
+  @Test
+  @DisplayName("카테고리별 상품 리스트 조회 - login ")
+  void getProductsByCategoryLogin() {
+    productMongoRepository.deleteAll();
+    extracted();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    ProductList productsByCategory =
+        productQueryInputPort.getProductsByCategory(1L, 1L, SortOption.LOW, pageRequest);
+    List<ProductListItem> products = productsByCategory.getProducts();
+    assertThat(products.get(0).getProductPrice() < products.get(1).getProductPrice()).isTrue();
+  }
+
+  @Test
+  @DisplayName("태그별 상품 리스트 조회 - login ")
+  void getProductsByTagLogin() {
+    productMongoRepository.deleteAll();
+    extracted();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    ProductsGroupByCategory productsByTag =
+        productQueryInputPort.getProductsByTag(1L, 1L, 1L, SortOption.SALE, pageRequest);
+    assertThat(productsByTag.getProducts().size()).isEqualTo(5);
+    assertThat(productsByTag.getProducts().get(1L).getProducts().size()).isEqualTo(5);
+  }
+
+  @Test
+  @DisplayName("태그별 상품 리스트 조회 - 비로그인  ")
+  void getProductsByTag() {
+    productMongoRepository.deleteAll();
+    extracted();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    ProductsGroupByCategory productsByTag =
+        productQueryInputPort.getProductsByTag(null, 1L, 1L, SortOption.SALE, pageRequest);
+    assertThat(productsByTag.getProducts().size()).isEqualTo(5);
+    assertThat(productsByTag.getProducts().get(1L).getProducts().size()).isEqualTo(5);
+  }
+
+  @Test
+  @DisplayName("태그별 상품 리스트 조회 - 비로그인  ")
+  void getProductsByTagNotLogin() {
+    productMongoRepository.deleteAll();
+    extracted();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    ProductsGroupByCategory productsByTag =
+        productQueryInputPort.getProductsByTag(1L, 1L, SortOption.SALE, pageRequest);
+    assertThat(productsByTag.getProducts().size()).isEqualTo(5);
+    assertThat(productsByTag.getProducts().get(1L).getProducts().size()).isEqualTo(5);
+  }
+
   @DisplayName("베스트 셀러 10개 정보")
   void getBestSellerTopTen() {
     productMongoRepository.deleteAll();

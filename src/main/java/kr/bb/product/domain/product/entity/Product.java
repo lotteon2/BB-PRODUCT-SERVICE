@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,7 +24,6 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@ToString
 @Document
 public class Product {
   @MongoId(value = FieldType.DECIMAL128)
@@ -67,8 +65,10 @@ public class Product {
   @Field(name = "product_description_image")
   private String productDescriptionImage;
 
+  @Builder.Default
   @NotBlank
-  private @Field(name = "review_count") Long reviewCount;
+  @Field(name = "review_count")
+  private Long reviewCount = 0L;
 
   @Builder.Default
   @NotBlank

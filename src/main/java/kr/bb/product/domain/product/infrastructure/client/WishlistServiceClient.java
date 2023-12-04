@@ -4,7 +4,6 @@ import bloomingblooms.response.CommonResponse;
 import java.util.List;
 import kr.bb.product.config.OpenFeignClientConfiguration;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetailLike;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,8 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
     configuration = OpenFeignClientConfiguration.class)
 public interface WishlistServiceClient {
   @PostMapping("/likes/{userId}")
-  CommonResponse<List<ProductListItem>> getProductsMemberLikes(
-      @PathVariable Long userId, List<ProductListItem> products);
+  CommonResponse<List<String>> getProductsMemberLikes(
+      @PathVariable Long userId, List<String> productIds);
 
   @GetMapping("/likes/{userId}/product/{productId}")
   CommonResponse<ProductDetailLike> getProductDetailLikes(
