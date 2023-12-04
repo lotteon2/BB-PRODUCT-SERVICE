@@ -10,12 +10,9 @@ public interface ProductOutPort {
 
   void updateProductSaleStatus(Product product);
 
-  Product findByProductId(String productId);
-
   void createProduct(Product productRequestToEntity);
 
   Page<Product> findByCategory(Long categoryId, Pageable pageable);
 
   Page<Product> findProductsByTagId(Long tagId, Pageable pageable);
-
 }

@@ -4,9 +4,11 @@ import java.util.List;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
+import kr.bb.product.exception.errors.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -59,5 +61,58 @@ public class ProductQueryRepository implements ProductQueryOutPort {
         products,
         pageable,
         () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Product.class));
+  }
+
+  /**
+   * 카테고리별 상품 리스트 조회
+   *
+   * @param categoryId
+   * @param storeId
+   * @param pageable
+   * @return
+   */
+  @Override
+  public Page<Product> findProductsByCategory(Long categoryId, Long storeId, Pageable pageable) {
+    Query query = new Query();
+    if (storeId != null) query.addCriteria(Criteria.where("store_id").is(storeId));
+    query.addCriteria(Criteria.where("category.categoryId").is(categoryId));
+    query.addCriteria(Criteria.where("product_sale_status").is(ProductSaleStatus.SALE));
+    query.with(pageable);
+    List<Product> products = mongoTemplate.find(query, Product.class);
+    return PageableExecutionUtils.getPage(
+        products,
+        pageable,
+        () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Product.class));
+  }
+
+  @Override
+  public Page<Product> findProductsByTag(Long tagId, Long categoryId, Pageable pageable) {
+    Query query = new Query();
+    query.addCriteria(Criteria.where("tag.tagId").is(tagId));
+    query.addCriteria(Criteria.where("category.categoryId").is(categoryId));
+    query.addCriteria(Criteria.where("product_sale_status").is(ProductSaleStatus.SALE));
+    query.with(pageable);
+
+    List<Product> products = mongoTemplate.find(query, Product.class);
+    return PageableExecutionUtils.getPage(
+        products,
+        pageable,
+        () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Product.class));
+  }
+
+  @Override
+  public Product findByProductId(String productId) {
+    return productMongoRepository
+        .findByProductId(productId)
+        .orElseThrow(ProductNotFoundException::new);
+  }
+
+  @Override
+  public List<Product> findBestSellerTopTen(Long storeId) {
+    return mongoTemplate.find(
+        Query.query(Criteria.where("store_id").is(storeId))
+            .limit(10)
+            .with(Sort.by(Sort.Order.desc("productSaleAmount"))),
+        Product.class);
   }
 }

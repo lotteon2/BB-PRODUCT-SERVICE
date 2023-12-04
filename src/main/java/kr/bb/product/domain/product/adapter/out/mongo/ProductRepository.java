@@ -3,7 +3,6 @@ package kr.bb.product.domain.product.adapter.out.mongo;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
-import kr.bb.product.exception.errors.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,13 +48,6 @@ public class ProductRepository implements ProductOutPort {
         Update.update("is_deleted", true)
             .set("product_sale_status", ProductSaleStatus.DISCONTINUED),
         Product.class);
-  }
-
-  @Override
-  public Product findByProductId(String productId) {
-    return productMongoRepository
-        .findByProductId(productId)
-        .orElseThrow(ProductNotFoundException::new);
   }
 
   @Override

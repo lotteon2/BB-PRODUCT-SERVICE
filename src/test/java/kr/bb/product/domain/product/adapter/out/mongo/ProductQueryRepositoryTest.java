@@ -8,7 +8,9 @@ import javax.persistence.EntityManager;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
+import kr.bb.product.domain.tag.entity.Tag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,10 +89,29 @@ class ProductQueryRepositoryTest {
 
   @DisplayName("가게 사장 상품 리스트 조회")
   void findStoreProducts() {
+    extracted();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    Page<Product> storeProducts =
+        productQueryOutPort.findStoreProducts(1L, null, 1L, null, pageRequest);
+    assertThat(storeProducts.getContent().size()).isEqualTo(5);
+  }
+
+  private void extracted() {
     productMongoRepository.deleteAll();
+    createProducts();
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    Page<Product> storeProducts =
+        productQueryOutPort.findStoreProducts(1L, null, 1L, null, pageRequest);
+    assertThat(storeProducts.getContent().size()).isEqualTo(5);
+  }
+
+  private void createProducts() {
     ProductFlowers build1 = ProductFlowers.builder().flowerId(1L).build();
     List<ProductFlowers> list = new ArrayList<>();
     list.add(build1);
+    List<Tag> tagList = new ArrayList<>();
+    tagList.add(Tag.builder().tagId(1L).build());
+    tagList.add(Tag.builder().tagId(2L).build());
     for (int i = 0; i < 10; i++) {
       Product build =
           Product.builder()
@@ -100,15 +121,34 @@ class ProductQueryRepositoryTest {
               .category(Category.builder().categoryName("ca").categoryId(1L + i).build())
               .productDescriptionImage("description image")
               .productFlowers(list)
-              .productPrice(100000L)
+              .tag(tagList)
+              .productSaleStatus(ProductSaleStatus.SALE)
+              .productPrice(100000L + i)
+              .productSaleAmount(10L + i)
               .storeId(1L)
               .isSubscription(false)
               .build();
       productMongoRepository.save(build);
     }
+  }
+
+  @Test
+  @DisplayName("태그별 상품 리스트 조회")
+  void findProductsByTag() {
+    extracted();
     PageRequest pageRequest = PageRequest.of(0, 5);
-    Page<Product> storeProducts =
-        productQueryOutPort.findStoreProducts(1L, null, 1L, null, pageRequest);
-    assertThat(storeProducts.getContent().size()).isEqualTo(5);
+    Page<Product> storeProducts = productQueryOutPort.findProductsByTag(1L, 1L, pageRequest);
+    assertThat(storeProducts.getContent().size()).isEqualTo(1);
+  }
+
+  @DisplayName("베스트 셀러 10개 ")
+  void findBestSellerTopTen() {
+    productMongoRepository.deleteAll();
+    createProducts();
+    List<Product> bestSellerTopTen = productQueryRepository.findBestSellerTopTen(1L);
+    assertThat(bestSellerTopTen.size()).isEqualTo(10);
+    assertThat(
+            bestSellerTopTen.get(0).getProductPrice() > bestSellerTopTen.get(1).getProductPrice())
+        .isTrue();
   }
 }

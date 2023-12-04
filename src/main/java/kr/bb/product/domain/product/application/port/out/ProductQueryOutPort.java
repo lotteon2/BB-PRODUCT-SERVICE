@@ -13,4 +13,12 @@ public interface ProductQueryOutPort {
 
   Page<Product> findStoreProducts(
       Long soreId, Long categoryId, Long flowerId, ProductSaleStatus saleStatus, Pageable pageable);
+
+  Page<Product> findProductsByCategory(Long categoryId, Long tagId, Pageable pageable);
+
+  Page<Product> findProductsByTag(Long tagId, Long categoryId, Pageable pageable);
+
+  Product findByProductId(String productId);
+
+  List<Product> findBestSellerTopTen(Long storeId);
 }

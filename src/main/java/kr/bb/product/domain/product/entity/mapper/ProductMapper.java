@@ -55,7 +55,7 @@ public interface ProductMapper {
   List<ProductFlowers> flowerRequestToFlowersList(
       List<ProductFlowersRequestData> flowersRequestData);
 
-  @Named("CATEGORY")
+  @Named("PRODUCTLIST")
   @Mappings({
     @Mapping(target = "isLiked", ignore = true),
     @Mapping(target = "salesCount", source = "product.productSaleAmount"),
@@ -64,10 +64,11 @@ public interface ProductMapper {
     @Mapping(target = "productSummary", source = "product.productSummary"),
     @Mapping(target = "productPrice", source = "product.productPrice"),
     @Mapping(target = "reviewCount", source = "product.reviewCount"),
+    @Mapping(target = "averageRating", source = "product.averageRating"),
   })
   ProductListItem entityToListItem(Product product);
 
-  @IterableMapping(qualifiedByName = "CATEGORY")
+  @IterableMapping(qualifiedByName = "PRODUCTLIST")
   List<ProductListItem> entityToList(List<Product> products);
 
   @Mapping(source = "product.productId", target = "productId")
@@ -79,6 +80,8 @@ public interface ProductMapper {
   @Mapping(source = "product.productSaleStatus", target = "productSaleStatus")
   @Mapping(source = "product.productSaleAmount", target = "salesCount")
   @Mapping(source = "product.averageRating", target = "averageRating")
+  @Mapping(source = "product.storeId", target = "storeId")
+  @Mapping(source = "product.reviewCount", target = "reviewCount")
   @Mapping(target = "storeName", ignore = true)
   @Mapping(target = "isLiked", ignore = true)
   @Mapping(source = "product.category", target = "category", qualifiedByName = "mapCategory")
