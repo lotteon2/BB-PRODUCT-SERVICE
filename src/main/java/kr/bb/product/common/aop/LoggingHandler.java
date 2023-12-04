@@ -1,6 +1,7 @@
 package kr.bb.product.common.aop;
 
 import autovalue.shaded.com.google.common.base.Joiner;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +34,7 @@ public class LoggingHandler {
     try {
       Object result = pjp.proceed();
 
-      if ("local".equals(activeProfile)) {
+      if (List.of("local", "test").contains(activeProfile)) {
         logger.debug(
             "[REQUEST] : {}({}) = {}",
             pjp.getSignature().getDeclaringTypeName(),

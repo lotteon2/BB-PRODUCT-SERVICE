@@ -56,8 +56,9 @@ dependencies {
     implementation group: 'com.google.auto.value', name: 'auto-value', version: '1.10.1'
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
-    implementation 'com.amazonaws:aws-java-sdk-sqs:1.12.603'
-    implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.4.RELEASE'
+    implementation 'software.amazon.awssdk:sqs:2.21.37'
+    implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.6.RELEASE'
+    implementation 'software.amazon.awssdk:sns:2.21.37'
 
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

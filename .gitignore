@@ -37,3 +37,4 @@ out/
 .vscode/
 docker.sh
 *.DS_Store
+data.sql

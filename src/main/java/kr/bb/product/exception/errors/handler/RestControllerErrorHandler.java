@@ -1,6 +1,8 @@
 package kr.bb.product.exception.errors.handler;
 
+import bloomingblooms.response.CommonResponse;
 import bloomingblooms.response.ErrorResponse;
+import com.amazonaws.services.sns.model.AmazonSNSException;
 import java.util.HashMap;
 import java.util.Map;
 import kr.bb.product.exception.errors.CategoryNotFoundException;
@@ -15,6 +17,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestControllerAdvice
 public class RestControllerErrorHandler extends ResponseEntityExceptionHandler {
+  @ExceptionHandler(AmazonSNSException.class)
+  protected CommonResponse resaleSubscribeException(AmazonSNSException amazonSNSException) {
+    return CommonResponse.fail(amazonSNSException.getMessage(), "EP01");
+  }
+
   @ExceptionHandler(ReviewNotFoundException.class)
   protected ResponseEntity<ErrorResponse> categoryNotFound(
       ReviewNotFoundException reviewNotFoundException) {
