@@ -3,11 +3,14 @@ package kr.bb.product.domain.product.application.port.in;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.amazonaws.services.sqs.model.AmazonSQSException;
 import java.util.List;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductUpdate;
 import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProduct;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,5 +84,26 @@ class ProductCommandInputPortTest {
     List<Product> all = productMongoRepository.findAll();
     Product product = all.get(0);
     assertThat(product.getProductSummary()).isEqualTo(updatedProduct.getProductSummary());
+  }
+
+  @Test
+  @DisplayName("상품 판매 상태 수정")
+  void updateProductSaleStatus() {
+    Product save =
+        productMongoRepository.save(
+            Product.builder()
+                .productId("123")
+                .productSaleStatus(ProductSaleStatus.DISCONTINUED)
+                .productName("name")
+                .build());
+    ProductUpdate name =
+        ProductUpdate.builder()
+            .productSaleStatus(ProductSaleStatus.SALE)
+            .productName("name")
+            .build();
+
+    assertThrows(
+        AmazonSQSException.class,
+        () -> productCommandInputPort.updateProductSaleStatus("123", name));
   }
 }

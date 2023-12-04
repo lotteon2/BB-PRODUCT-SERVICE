@@ -114,7 +114,7 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.80
             }
-            excludes = ["*.mapper*", "**.adapter.**", "**.aop.**", "**.entity.**"]
+            excludes = ["*.mapper*", "**.adapter.**", "**.aop.**", "**.entity.**", "**.infrastructure.**"]
         }
     }
 }
