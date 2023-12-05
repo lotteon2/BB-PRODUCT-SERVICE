@@ -12,11 +12,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.aws.messaging.listener.SimpleMessageListenerContainer;
 import org.springframework.context.annotation.Import;
 
 @DataJpaTest
 @Import({JpaConfiguration.class, QueryDslConfiguration.class})
 class ReviewJpaRepositoryTest {
+  @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired ReviewJpaRepository reviewJpaRepository;
 
   @Test

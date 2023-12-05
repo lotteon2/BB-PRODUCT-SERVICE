@@ -27,18 +27,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.aws.messaging.listener.SimpleMessageListenerContainer;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 @SpringBootTest
 @Transactional
 class ProductMongoRepositoryTest {
-
   private static final String CONNECTION_STRING = "mongodb://%s:%d";
+  @MockBean
+  SimpleMessageListenerContainer simpleMessageListenerContainer;
+  @Autowired
+  ProductMongoRepository productMongoRepository;
   private MongodExecutable mongodExecutable;
   private MongoTemplate mongoTemplate;
   @Autowired private  ProductOutPort productOutPort;
-  @Autowired
-  ProductMongoRepository productMongoRepository;
 
   @AfterEach
   void clean() {

@@ -6,17 +6,18 @@ import javax.transaction.Transactional;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.category.repository.jpa.CategoryRepository;
 import kr.bb.product.exception.errors.CategoryNotFoundException;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.aws.messaging.listener.SimpleMessageListenerContainer;
 
 @SpringBootTest
 @Transactional
 class CategoryRepositoryTest {
-  @Autowired
-  CategoryRepository categoryRepository;
+  @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
+  @Autowired CategoryRepository categoryRepository;
 
   @Test
   @DisplayName("select category by id ")

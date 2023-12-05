@@ -9,23 +9,31 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sns.SnsClient;
 
 @Configuration
 public class AWSConfiguration {
-  private final String region = "ap-northeast-2";
+  @Value("${cloud.aws.region.static}")
+  private String region;
 
-  @Value("${aws.credentials.ACCESS_KEY_ID}")
+  @Value("${cloud.aws.credentials.ACCESS_KEY_ID}")
   private String accessKeyId;
 
-  @Value("${aws.credentials.SECRET_ACCESS_KEY}")
+  @Value("${cloud.aws.credentials.SECRET_ACCESS_KEY}")
   private String secretAccessKey;
 
   @NotNull
   private BasicAWSCredentials getBasicAWSCredentials() {
     return new BasicAWSCredentials(accessKeyId, secretAccessKey);
+  }
+
+  public AwsCredentialsProvider getAwsCredentials() {
+    AwsBasicCredentials awsBasicCredentials =
+        AwsBasicCredentials.create(accessKeyId, secretAccessKey);
+    return () -> awsBasicCredentials;
   }
 
   @Primary
@@ -41,8 +49,8 @@ public class AWSConfiguration {
   @Bean
   public SnsClient snsClient() {
     return SnsClient.builder()
+        .credentialsProvider(getAwsCredentials())
         .region(Region.AP_NORTHEAST_1)
-        .credentialsProvider(ProfileCredentialsProvider.create())
         .build();
   }
 }
