@@ -10,6 +10,8 @@ import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
+import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import org.junit.jupiter.api.DisplayName;
@@ -89,8 +91,8 @@ class ProductFindInputPortTest {
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 3);
     Page<Product> productsByTagId = productOutPort.findProductsByTagId(1L, pageRequest);
-    ProductList productsByTag = productFindInputPort.getProductsByTag(1L, pageRequest);
-    assertThat(productsByTag.getProducts().size()).isEqualTo(3);
-    assertThat(productsByTag.getTotalCnt()).isEqualTo(4);
+    ProductsGroupByCategory productsByTag =
+        productFindInputPort.getProductsByTag(1L, 1L, SortOption.LOW, pageRequest);
+    assertThat(productsByTag.getProducts().size()).isEqualTo(5);
   }
 }

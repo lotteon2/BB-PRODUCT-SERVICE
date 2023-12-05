@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
+import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
@@ -25,6 +26,7 @@ class ProductStoreInputPortTest {
   @Autowired private ProductCommandInputPort productStoreInputPort;
   @Autowired private ProductOutPort productOutPort;
   @Autowired private ProductMongoRepository productMongoRepository;
+  @Autowired private ProductQueryOutPort productQueryOutPort;
 
   private ProductCommand.ProductRegister getProductRequestData() {
     List<Long> tagList = new ArrayList<>();
@@ -132,7 +134,7 @@ class ProductStoreInputPortTest {
 
     // Act
     productStoreInputPort.updateProductSaleStatus(product.getProductId(), productRequestData);
-    Product byProductId = productOutPort.findByProductId(product.getProductId());
+    Product byProductId = productQueryOutPort.findByProductId(product.getProductId());
     assertThat(byProductId.getProductSaleStatus()).isEqualTo(ProductSaleStatus.DISCONTINUED);
   }
 
@@ -145,7 +147,7 @@ class ProductStoreInputPortTest {
 
     // Act
     productStoreInputPort.updateProductSaleStatus(product.getProductId(), productRequestData);
-    Product byProductId = productOutPort.findByProductId(product.getProductId());
+    Product byProductId = productQueryOutPort.findByProductId(product.getProductId());
     assertThat(byProductId.getProductSaleStatus()).isEqualTo(ProductSaleStatus.DISCONTINUED);
     assertThat(byProductId.getIsDeleted()).isEqualTo(true);
   }

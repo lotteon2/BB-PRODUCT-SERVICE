@@ -1,6 +1,8 @@
 package kr.bb.product.domain.product.entity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,11 +19,12 @@ import lombok.Getter;
 public class ProductCommand {
   @Getter
   public enum SortOption {
-    SALE("product_sale_amount"),
-    NEW("created_at"),
-    PRICE("product_price"),
-    REVIEW("review_count"),
-    RATING("average_rating");
+    SALE("productSaleAmount"),
+    NEW("createdAt"),
+    LOW("productPrice"),
+    HIGH("productPrice"),
+    REVIEW("reviewCount"),
+    RATING("averageRating");
 
     private final String sortOption;
 
@@ -75,6 +78,15 @@ public class ProductCommand {
     private Long productPrice;
     private Long salesCount;
     private Long reviewCount;
+    private Long averageRating;
+
+    public static List<String> getProductIds(List<ProductListItem> productListItem) {
+      return productListItem.stream().map(ProductListItem::getKey).collect(Collectors.toList());
+    }
+
+    public void setLiked(Boolean liked) {
+      isLiked = liked;
+    }
   }
 
   @Builder
@@ -87,8 +99,31 @@ public class ProductCommand {
       return ProductMapper.INSTANCE.entityToList(products);
     }
 
-    public static ProductList getData(List<ProductListItem> products, int totalCnt) {
-      return ProductList.builder().products(products).totalCnt(totalCnt).build();
+    public static ProductList getData(
+        List<ProductListItem> productListItem, List<String> data, int totalPages) {
+      for (ProductListItem p : productListItem) {
+        if (data.contains(p.key)) p.setLiked(true);
+      }
+      return ProductList.builder().products(productListItem).totalCnt(totalPages).build();
+    }
+
+    public static ProductList getData(List<ProductListItem> productListItem, int totalPages) {
+      return ProductList.builder().products(productListItem).totalCnt(totalPages).build();
+    }
+  }
+
+  @Getter
+  @Builder
+  public static class ProductsGroupByCategory {
+    @Builder.Default private Map<Long, ProductList> products = new HashMap<>();
+
+    public static ProductsGroupByCategory getData(Long categoryId, ProductList productList) {
+      Map<Long, ProductList> productListMap = Collections.singletonMap(categoryId, productList);
+      return ProductsGroupByCategory.builder().products(productListMap).build();
+    }
+
+    public void setProducts(Long categoryId, ProductList productList) {
+      this.products.put(categoryId, productList);
     }
   }
 
@@ -105,6 +140,8 @@ public class ProductCommand {
     private Long salesCount;
     private Double averageRating;
     private String storeName;
+    private Long storeId;
+    private Long reviewCount;
     @Builder.Default private Boolean isLiked = false;
     private CategoryForProductList category;
     private List<TagForProductList> tag;

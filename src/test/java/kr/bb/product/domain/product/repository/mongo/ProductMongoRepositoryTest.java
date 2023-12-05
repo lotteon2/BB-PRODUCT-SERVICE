@@ -8,6 +8,7 @@ import java.util.List;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
+import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
@@ -28,6 +29,9 @@ class ProductMongoRepositoryTest {
   @Autowired MongoTemplate mongoTemplate;
   @Autowired ProductOutPort productOutPort;
   @Autowired ProductMongoRepository productMongoRepository;
+
+  @Autowired
+  ProductQueryOutPort productQueryOutPort;
 
   @Test
   @DisplayName("상품 판매 상태를 DISCONTINUED로 변경")
@@ -61,11 +65,11 @@ class ProductMongoRepositoryTest {
 
     productOutPort.updateProductSaleStatus(save, ProductSaleStatus.DISCONTINUED);
 
-    Product product1 = productOutPort.findByProductId(save.getProductId());
+    Product product1 = productQueryOutPort.findByProductId(save.getProductId());
 
     System.out.println("FIND " + product1);
 
-    Product updatedProduct = productOutPort.findByProductId(save.getProductId());
+    Product updatedProduct = productQueryOutPort.findByProductId(save.getProductId());
 
     assertThat(updatedProduct.getProductSaleStatus()).isEqualTo(ProductSaleStatus.DISCONTINUED);
   }
