@@ -12,7 +12,7 @@ import software.amazon.awssdk.services.sns.model.SubscribeRequest;
 public class SalesResumeSNSSubscribe {
   private final AWSConfiguration awsConfiguration;
 
-  @Value("aws.sns.arn")
+  @Value("${cloud.aws.sns.arn}")
   private String arn;
 
   public void subscribe(String phoneNumber) {
@@ -25,6 +25,5 @@ public class SalesResumeSNSSubscribe {
             .protocol("sms")
             .build();
     snsClient.subscribe(subscribeRequest);
-
   }
 }

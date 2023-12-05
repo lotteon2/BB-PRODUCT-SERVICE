@@ -21,18 +21,24 @@ public class SalesResumeSQSListener {
   private final ObjectMapper objectMapper;
   private final SalesResumeQueryOutPort salesResumeQueryOutPort;
 
+  private final SalesResumeSQSPublisher salesResumeSQSPublisher;
+
   @SqsListener(
-      value = "${aws.sqs.product-resale-notification-check-queue.name}",
+      value = "${cloud.aws.sqs.product-resale-notification-check-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
   public void consumeProductResaleNotificationCheckQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
     String productId = objectMapper.readValue(message, String.class);
+
     List<SalesResume> needToSendResaleNotification =
         salesResumeQueryOutPort.findNeedToSendResaleNotification(productId);
     if (!needToSendResaleNotification.isEmpty()) {
       List<ResaleNotification> resaleNotifications =
           ResaleNotification.fromEntity(needToSendResaleNotification);
+      // send sqs resale notification
+      salesResumeSQSPublisher.publishProductResaleNotificationQueueUrl(resaleNotifications);
     }
+    ack.acknowledge();
   }
 }
