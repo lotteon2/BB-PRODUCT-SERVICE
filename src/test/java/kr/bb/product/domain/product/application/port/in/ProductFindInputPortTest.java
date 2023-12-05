@@ -10,12 +10,14 @@ import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
-import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
+import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.aws.messaging.listener.SimpleMessageListenerContainer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 class ProductFindInputPortTest {
+  @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired WishlistServiceClient wishlistServiceClient;
   @Autowired private ProductOutPort productOutPort;
   @Autowired private ProductCommandInputPort productStoreInputPort;
