@@ -1,9 +1,9 @@
 package kr.bb.product.domain.salesresume.entity.mapper;
 
+import bloomingblooms.domain.resale.ResaleNotificationData;
 import java.util.List;
 import kr.bb.product.domain.salesresume.entity.SalesResume;
 import kr.bb.product.domain.salesresume.entity.SalesResumeCommand;
-import kr.bb.product.domain.salesresume.entity.SalesResumeCommand.ResaleNotification;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,8 +19,8 @@ public interface SalesResumeMapper {
   SalesResume toEntity(SalesResumeCommand.SalesResumeRequest request);
 
   @Named("RESALE")
-  SalesResumeCommand.ResaleNotification toResaleNotificationList(SalesResume salesResume);
+  ResaleNotificationData toResaleNotification(SalesResume salesResume);
 
   @IterableMapping(qualifiedByName = "RESALE")
-  List<ResaleNotification> toResaleNotificationList(List<SalesResume> salesResume);
+  List<ResaleNotificationData> toResaleNotificationList(List<SalesResume> salesResume);
 }

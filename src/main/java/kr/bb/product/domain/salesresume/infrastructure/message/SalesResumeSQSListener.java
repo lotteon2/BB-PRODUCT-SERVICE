@@ -1,12 +1,15 @@
 package kr.bb.product.domain.salesresume.infrastructure.message;
 
+import bloomingblooms.domain.resale.ResaleNotificationData;
+import bloomingblooms.domain.resale.ResaleNotificationList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Map;
+import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.salesresume.application.port.out.SalesResumeQueryOutPort;
 import kr.bb.product.domain.salesresume.entity.SalesResume;
-import kr.bb.product.domain.salesresume.entity.SalesResumeCommand.ResaleNotification;
+import kr.bb.product.domain.salesresume.entity.mapper.SalesResumeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.aws.messaging.listener.Acknowledgment;
 import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy;
@@ -29,15 +32,20 @@ public class SalesResumeSQSListener {
   public void consumeProductResaleNotificationCheckQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
-    String productId = objectMapper.readValue(message, String.class);
+    ProductCommand.ResaleCheckRequest resaleCheckRequest =
+        objectMapper.readValue(message, ProductCommand.ResaleCheckRequest.class);
 
     List<SalesResume> needToSendResaleNotification =
-        salesResumeQueryOutPort.findNeedToSendResaleNotification(productId);
+        salesResumeQueryOutPort.findNeedToSendResaleNotification(resaleCheckRequest.getProductId());
     if (!needToSendResaleNotification.isEmpty()) {
-      List<ResaleNotification> resaleNotifications =
-          ResaleNotification.fromEntity(needToSendResaleNotification);
+      List<ResaleNotificationData> resaleNotificationList =
+          SalesResumeMapper.INSTANCE.toResaleNotificationList(needToSendResaleNotification);
       // send sqs resale notification
-      salesResumeSQSPublisher.publishProductResaleNotificationQueueUrl(resaleNotifications);
+      salesResumeSQSPublisher.publishProductResaleNotificationQueueUrl(
+          ResaleNotificationList.builder()
+              .resaleNotificationData(resaleNotificationList)
+              .message(String.format("%s이 판매 시작되었습니다.", resaleCheckRequest.getProductName()))
+              .build());
     }
     ack.acknowledge();
   }

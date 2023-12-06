@@ -1,13 +1,9 @@
 package kr.bb.product.exception.errors.handler;
 
 import bloomingblooms.response.CommonResponse;
-import bloomingblooms.response.ErrorResponse;
 import com.amazonaws.services.sns.model.AmazonSNSException;
 import java.util.HashMap;
 import java.util.Map;
-import kr.bb.product.exception.errors.CategoryNotFoundException;
-import kr.bb.product.exception.errors.ProductNotFoundException;
-import kr.bb.product.exception.errors.ReviewNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.validation.FieldError;
@@ -22,38 +18,38 @@ public class RestControllerErrorHandler extends ResponseEntityExceptionHandler {
     return CommonResponse.fail(amazonSNSException.getMessage(), "EP01");
   }
 
-  @ExceptionHandler(ReviewNotFoundException.class)
-  protected ResponseEntity<ErrorResponse> categoryNotFound(
-      ReviewNotFoundException reviewNotFoundException) {
-    return ResponseEntity.ok()
-        .body(
-            ErrorResponse.builder()
-                .code(reviewNotFoundException.getMessage())
-                .message(reviewNotFoundException.getMessage())
-                .build());
-  }
-
-  @ExceptionHandler(CategoryNotFoundException.class)
-  protected ResponseEntity<ErrorResponse> categoryNotFound(
-      CategoryNotFoundException categoryNotFoundException) {
-    return ResponseEntity.ok()
-        .body(
-            ErrorResponse.builder()
-                .code(categoryNotFoundException.getMessage())
-                .message(categoryNotFoundException.getMessage())
-                .build());
-  }
-
-  @ExceptionHandler(ProductNotFoundException.class)
-  protected ResponseEntity<ErrorResponse> categoryNotFound(
-      ProductNotFoundException productNotFoundException) {
-    return ResponseEntity.ok()
-        .body(
-            ErrorResponse.builder()
-                .code(String.valueOf(productNotFoundException.getErrorCode()))
-                .message(productNotFoundException.getMessage())
-                .build());
-  }
+//  @ExceptionHandler(ReviewNotFoundException.class)
+//  protected ResponseEntity<ErrorResponse> categoryNotFound(
+//      ReviewNotFoundException reviewNotFoundException) {
+//    return ResponseEntity.ok()
+//        .body(
+//            ErrorResponse.builder()
+//                .code(reviewNotFoundException.getMessage())
+//                .message(reviewNotFoundException.getMessage())
+//                .build());
+//  }
+//
+//  @ExceptionHandler(CategoryNotFoundException.class)
+//  protected ResponseEntity<ErrorResponse> categoryNotFound(
+//      CategoryNotFoundException categoryNotFoundException) {
+//    return ResponseEntity.ok()
+//        .body(
+//            ErrorResponse.builder()
+//                .code(categoryNotFoundException.getMessage())
+//                .message(categoryNotFoundException.getMessage())
+//                .build());
+//  }
+//
+//  @ExceptionHandler(ProductNotFoundException.class)
+//  protected ResponseEntity<ErrorResponse> categoryNotFound(
+//      ProductNotFoundException productNotFoundException) {
+//    return ResponseEntity.ok()
+//        .body(
+//            ErrorResponse.builder()
+//                .code(String.valueOf(productNotFoundException.getErrorCode()))
+//                .message(productNotFoundException.getMessage())
+//                .build());
+//  }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<Map<String, String>> handleValidationExceptions(

@@ -33,7 +33,7 @@ public class LoggingHandler {
     try {
       Object result = pjp.proceed();
 
-      if ("local".equals(activeProfile)) {
+      if (!"prod".equals(activeProfile)) {
         logger.debug(
             "[REQUEST] : {}({}) = {}",
             pjp.getSignature().getDeclaringTypeName(),

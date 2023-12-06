@@ -1,6 +1,5 @@
 package kr.bb.product.domain.salesresume.entity;
 
-import java.util.List;
 import kr.bb.product.domain.salesresume.entity.mapper.SalesResumeMapper;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,18 +27,6 @@ public class SalesResumeCommand {
 
     public void setPhoneNumber(String format) {
       this.phoneNumber = format;
-    }
-  }
-
-  @Getter
-  @Builder
-  public static class ResaleNotification {
-    private Long userId;
-    private String phoneNumber;
-    private String userName;
-
-    public static List<ResaleNotification> fromEntity(List<SalesResume> salesResumes) {
-      return SalesResumeMapper.INSTANCE.toResaleNotificationList(salesResumes);
     }
   }
 }

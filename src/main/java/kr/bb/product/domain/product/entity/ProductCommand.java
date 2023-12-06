@@ -33,6 +33,13 @@ public class ProductCommand {
     }
   }
 
+  @Getter
+  @Builder
+  public static class ResaleCheckRequest {
+    private String productId;
+    private String productName;
+  }
+
   @Builder
   @Getter
   public static class ProductRegister {
