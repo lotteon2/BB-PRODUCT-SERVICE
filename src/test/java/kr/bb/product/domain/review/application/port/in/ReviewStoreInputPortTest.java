@@ -5,12 +5,12 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import kr.bb.product.domain.review.adapter.in.ReviewCommand;
-import kr.bb.product.domain.review.adapter.in.ReviewCommand.Register;
-import kr.bb.product.domain.review.adapter.in.ReviewCommand.ReviewImage;
 import kr.bb.product.domain.review.adapter.out.jpa.ReviewCommandRepository;
 import kr.bb.product.domain.review.application.port.out.ReviewOutPort;
 import kr.bb.product.domain.review.entity.Review;
+import kr.bb.product.domain.review.entity.ReviewCommand;
+import kr.bb.product.domain.review.entity.ReviewCommand.Register;
+import kr.bb.product.domain.review.entity.ReviewCommand.ReviewImage;
 import kr.bb.product.domain.review.entity.ReviewImages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,10 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 class ReviewStoreInputPortTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired ReviewOutPort reviewOutPort;
-  @Autowired
-  ReviewCommandRepository reviewRepository;
-  @Autowired
-  ReviewCommandInputPort reviewStoreInputPort;
+  @Autowired ReviewCommandRepository reviewRepository;
+  @Autowired ReviewCommandInputPort reviewStoreInputPort;
   @Autowired EntityManager em;
 
   @Test

@@ -1,7 +1,7 @@
 package kr.bb.product.domain.review.entity.mapper;
 
-import kr.bb.product.domain.review.adapter.in.ReviewCommand;
 import kr.bb.product.domain.review.entity.Review;
+import kr.bb.product.domain.review.entity.ReviewCommand;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

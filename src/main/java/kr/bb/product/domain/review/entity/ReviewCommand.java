@@ -3,6 +3,8 @@ package kr.bb.product.domain.review.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import kr.bb.product.domain.review.entity.mapper.ReviewImageMapper;
+import kr.bb.product.domain.review.entity.mapper.ReviewMapper;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -18,6 +20,26 @@ public class ReviewCommand {
 
     SortOption(String property) {
       this.property = property;
+    }
+  }
+
+    @Getter
+  @Builder
+  public static class Register {
+    private String reviewContent;
+    private Double rating;
+    private List<String> reviewImage;
+    private String nickname;
+    private String profileImage;
+
+    public static Review toEntity(Register register, Long userId, String productId) {
+      return ReviewMapper.INSTANCE.toEntity(register, userId, productId);
+    }
+  }
+
+  public static class ReviewImage {
+    public static List<ReviewImages> toEntityList(List<String> images) {
+      return ReviewImageMapper.INSTANCE.toEntityList(images);
     }
   }
 

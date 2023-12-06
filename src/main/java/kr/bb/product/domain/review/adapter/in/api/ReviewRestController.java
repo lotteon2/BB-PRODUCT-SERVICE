@@ -2,9 +2,9 @@ package kr.bb.product.domain.review.adapter.in.api;
 
 import bloomingblooms.response.CommonResponse;
 import java.util.List;
-import kr.bb.product.domain.review.adapter.in.ReviewCommand;
 import kr.bb.product.domain.review.application.usecase.ReviewCommandUseCase;
 import kr.bb.product.domain.review.application.usecase.ReviewQueryUseCase;
+import kr.bb.product.domain.review.entity.ReviewCommand;
 import kr.bb.product.domain.review.entity.ReviewCommand.SortOption;
 import kr.bb.product.domain.review.entity.ReviewCommand.StoreReview.StoreReviewItem;
 import kr.bb.product.exception.errors.ReviewNotFoundException;
@@ -50,5 +50,14 @@ public class ReviewRestController {
       @RequestHeader Long userId,
       @RequestBody ReviewCommand.Register review) {
     reviewCommandUseCase.writeReview(review, userId, productId);
+  }
+
+  @GetMapping("{productId}/reviews")
+  public CommonResponse<ReviewCommand.ProductDetailReviewList> getProductDetailReviews(
+      @PathVariable String productId,
+      Pageable pageable,
+      @RequestParam("sort-option") SortOption sortOption) {
+    return CommonResponse.success(
+        reviewQueryUseCase.findReviewsByProductId(productId, pageable, sortOption));
   }
 }
