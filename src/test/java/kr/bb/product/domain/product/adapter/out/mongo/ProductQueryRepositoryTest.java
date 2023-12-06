@@ -154,4 +154,15 @@ class ProductQueryRepositoryTest {
             bestSellerTopTen.get(0).getProductPrice() > bestSellerTopTen.get(1).getProductPrice())
         .isTrue();
   }
+
+  @Test
+  @DisplayName("가게 사장 구독 상품 조회")
+  void findSubscriptionProductByStoreId() {
+    productMongoRepository.deleteAll();
+    Product build = Product.builder().productName("name").isSubscription(true).storeId(1L).build();
+    productMongoRepository.save(build);
+    Product subscriptionProductByStoreId =
+        productMongoRepository.findSubscriptionProductByStoreId(1L);
+    assertThat(subscriptionProductByStoreId.getProductName()).isEqualTo(build.getProductName());
+  }
 }

@@ -115,4 +115,9 @@ public class ProductQueryRepository implements ProductQueryOutPort {
             .with(Sort.by(Sort.Order.desc("productSaleAmount"))),
         Product.class);
   }
+
+  @Override
+  public Product findSubscriptionProductByStoreId(Long storeId) {
+    return productMongoRepository.findSubscriptionProductByStoreId(storeId);
+  }
 }
