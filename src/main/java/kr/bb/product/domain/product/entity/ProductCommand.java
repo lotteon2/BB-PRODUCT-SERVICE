@@ -1,7 +1,6 @@
 package kr.bb.product.domain.product.entity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +29,22 @@ public class ProductCommand {
 
     SortOption(String sortOption) {
       this.sortOption = sortOption;
+    }
+  }
+
+  @Getter
+  @Builder
+  public static class StoreManagerSubscriptionProduct {
+    private String productId;
+    private Double averageRating;
+    private String productName;
+    private String productSummary;
+    private Long productPrice;
+    private String productDescriptionImage;
+    private String productThumbnail;
+
+    public static StoreManagerSubscriptionProduct getData(Product subscriptionProductByStoreId) {
+      return ProductMapper.INSTANCE.getStoreSubscriptionProduct(subscriptionProductByStoreId);
     }
   }
 
@@ -116,11 +131,6 @@ public class ProductCommand {
   @Builder
   public static class ProductsGroupByCategory {
     @Builder.Default private Map<Long, ProductList> products = new HashMap<>();
-
-    public static ProductsGroupByCategory getData(Long categoryId, ProductList productList) {
-      Map<Long, ProductList> productListMap = Collections.singletonMap(categoryId, productList);
-      return ProductsGroupByCategory.builder().products(productListMap).build();
-    }
 
     public void setProducts(Long categoryId, ProductList productList) {
       this.products.put(categoryId, productList);

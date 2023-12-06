@@ -7,6 +7,7 @@ import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.entity.ProductCommand.StoreManagerSubscriptionProduct;
 import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProduct;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
@@ -113,4 +114,6 @@ public interface ProductMapper {
     @Mapping(target = "isDeleted", ignore = true)
   })
   Product subscriptionToEntity(SubscriptionProduct subscriptionProduct, Long storeId);
+
+  StoreManagerSubscriptionProduct getStoreSubscriptionProduct(Product subscriptionProductByStoreId);
 }
