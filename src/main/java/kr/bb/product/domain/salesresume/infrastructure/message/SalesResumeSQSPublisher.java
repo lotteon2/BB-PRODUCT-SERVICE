@@ -19,6 +19,7 @@ public class SalesResumeSQSPublisher {
   private String productResaleNotificationQueueUrl;
 
   public void publishProductResaleNotificationQueueUrl(ResaleNotificationList resaleNotifications) {
+    // TODO: publish v2 고려해보기
     try {
       SendMessageRequest sendMessageRequest =
           new SendMessageRequest(
@@ -26,7 +27,8 @@ public class SalesResumeSQSPublisher {
               objectMapper.writeValueAsString(
                   ResaleNotificationList.builder()
                       .resaleNotificationData(resaleNotifications.getResaleNotificationData())
-                      .message(resaleNotifications.getMessage())));
+                      .message(resaleNotifications.getMessage())
+                      .build()));
       sqs.sendMessage(sendMessageRequest);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);

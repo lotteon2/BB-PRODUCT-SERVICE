@@ -34,7 +34,7 @@ public class SalesResumeSQSListener {
       throws JsonProcessingException {
     ProductCommand.ResaleCheckRequest resaleCheckRequest =
         objectMapper.readValue(message, ProductCommand.ResaleCheckRequest.class);
-
+    ack.acknowledge();
     List<SalesResume> needToSendResaleNotification =
         salesResumeQueryOutPort.findNeedToSendResaleNotification(resaleCheckRequest.getProductId());
     if (!needToSendResaleNotification.isEmpty()) {
@@ -47,6 +47,5 @@ public class SalesResumeSQSListener {
               .message(String.format("%s이 판매 시작되었습니다.", resaleCheckRequest.getProductName()))
               .build());
     }
-    ack.acknowledge();
   }
 }
