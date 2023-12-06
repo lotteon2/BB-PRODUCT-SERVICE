@@ -14,6 +14,7 @@ import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.domain.review.adapter.out.jpa.ReviewJpaRepository;
 import kr.bb.product.domain.review.entity.Review;
+import kr.bb.product.domain.review.entity.ReviewCommand.ProductDetailReviewList;
 import kr.bb.product.domain.review.entity.ReviewCommand.SortOption;
 import kr.bb.product.domain.review.entity.ReviewCommand.StoreReview.StoreReviewItem;
 import kr.bb.product.domain.review.entity.ReviewImages;
@@ -122,5 +123,30 @@ class ReviewQueryInputPortTest {
               reviewQueryInputPort.findReviewByStoreId(1L, pageRequest, SortOption.LOW);
             });
     assertThat(throwable).isInstanceOf(EntityNotFoundException.class);
+  }
+
+  @Test
+  @DisplayName("상품 상세 리뷰 조회")
+  void findReviewsByProductId() {
+    List<ReviewImages> reviewImages = new ArrayList<>();
+    for (int i = 0; i < 3; i++) {
+      ReviewImages build = ReviewImages.builder().reviewImageUrl("url").build();
+      reviewImages.add(build);
+    }
+    for (int i = 0; i < 10; i++) {
+      Review build =
+          Review.builder()
+              .productId("123")
+              .reviewImages(reviewImages)
+              .reviewRating(1.0 + i)
+              .reviewContent(i + " content")
+              .build();
+      reviewJpaRepository.save(build);
+    }
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    ProductDetailReviewList reviewsByProductId =
+        reviewQueryInputPort.findReviewsByProductId("123", pageRequest, SortOption.DATE);
+    assertThat(reviewsByProductId.getProductReview().size()).isEqualTo(5);
+    assertThat(reviewsByProductId.getProductReview().get(0).getReviewImages().size()).isEqualTo(3);
   }
 }

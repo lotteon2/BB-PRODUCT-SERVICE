@@ -16,7 +16,7 @@ public interface ReviewJpaRepository extends JpaRepository<Review, Long> {
 
   @Query(
       value =
-          "SELECT r FROM Review r LEFT JOIN FETCH r.reviewImages i WHERE r.productId = :productId",
+          "SELECT r FROM Review r LEFT JOIN r.reviewImages i WHERE r.productId = :productId",
       countQuery = "SELECT COUNT(r) FROM Review r WHERE r.productId = :productId")
   Page<Review> findReviewsByProductId(@Param("productId") String productId, Pageable pageable);
 }
