@@ -3,6 +3,7 @@ package kr.bb.product.domain.review.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import kr.bb.product.domain.review.entity.mapper.ReviewImageMapper;
 import kr.bb.product.domain.review.entity.mapper.ReviewMapper;
 import lombok.Builder;
@@ -23,7 +24,7 @@ public class ReviewCommand {
     }
   }
 
-    @Getter
+  @Getter
   @Builder
   public static class Register {
     private String reviewContent;
@@ -46,7 +47,7 @@ public class ReviewCommand {
   @Getter
   @Builder
   public static class ProductDetailReviewList {
-    private List<ProductDetailReview> productReview;
+    @Nullable private List<ProductDetailReview> productReview;
     private int totalCnt;
 
     public static ProductDetailReviewList getData(Page<Review> reviewsByProductId) {
