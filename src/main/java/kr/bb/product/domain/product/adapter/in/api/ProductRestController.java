@@ -169,4 +169,10 @@ public class ProductRestController {
     return CommonResponse.success(
         productQueryUseCase.getBestSellerTopTen(storeId), "베스트 셀러 top 10 상품 조회");
   }
+
+  @GetMapping("store/{storeId}/subscribe-product")
+  public CommonResponse<ProductCommand.StoreManagerSubscriptionProduct>
+      getStoreManagerSubscriptionProduct(@PathVariable Long storeId) {
+    return CommonResponse.success(productQueryUseCase.getSubscriptionProductByStoreId(storeId));
+  }
 }
