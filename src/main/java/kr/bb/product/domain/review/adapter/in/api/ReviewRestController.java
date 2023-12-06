@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class ReviewRestController {
-  private final ReviewCommandUseCase reviewStoreUseCase;
+  private final ReviewCommandUseCase reviewCommandUseCase;
   private final ReviewQueryUseCase reviewQueryUseCase;
 
   @GetMapping("stores/{storeId}/reviews")
@@ -49,6 +49,6 @@ public class ReviewRestController {
       @PathVariable String productId,
       @RequestHeader Long userId,
       @RequestBody ReviewCommand.Register review) {
-    reviewStoreUseCase.writeReview(review, userId, productId);
+    reviewCommandUseCase.writeReview(review, userId, productId);
   }
 }

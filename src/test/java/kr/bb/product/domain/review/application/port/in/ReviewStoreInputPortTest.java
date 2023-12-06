@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import kr.bb.product.domain.review.adapter.in.ReviewCommand;
 import kr.bb.product.domain.review.adapter.in.ReviewCommand.Register;
 import kr.bb.product.domain.review.adapter.in.ReviewCommand.ReviewImage;
-import kr.bb.product.domain.review.adapter.out.jpa.ReviewRepository;
+import kr.bb.product.domain.review.adapter.out.jpa.ReviewCommandRepository;
 import kr.bb.product.domain.review.application.port.out.ReviewOutPort;
 import kr.bb.product.domain.review.entity.Review;
 import kr.bb.product.domain.review.entity.ReviewImages;
@@ -25,8 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 class ReviewStoreInputPortTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired ReviewOutPort reviewOutPort;
-  @Autowired ReviewRepository reviewRepository;
-  @Autowired ReviewStoreInputPort reviewStoreInputPort;
+  @Autowired
+  ReviewCommandRepository reviewRepository;
+  @Autowired
+  ReviewCommandInputPort reviewStoreInputPort;
   @Autowired EntityManager em;
 
   @Test

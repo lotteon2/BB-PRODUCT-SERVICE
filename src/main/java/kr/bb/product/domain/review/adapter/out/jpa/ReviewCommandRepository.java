@@ -8,16 +8,16 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class ReviewRepository implements ReviewOutPort {
-  private final ReviewJpaRepository repository;
+public class ReviewCommandRepository implements ReviewOutPort {
+  private final ReviewJpaRepository reviewJpaRepository;
 
   @Override
   public void createReview(Review review) {
-    repository.save(review);
+    reviewJpaRepository.save(review);
   }
 
   @Override
   public List<Review> findAll() {
-    return repository.findAll();
+    return reviewJpaRepository.findAll();
   }
 }

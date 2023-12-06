@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ReviewStoreInputPort implements ReviewCommandUseCase {
+public class ReviewCommandInputPort implements ReviewCommandUseCase {
   private final ReviewOutPort reviewOutPort;
 
   /**

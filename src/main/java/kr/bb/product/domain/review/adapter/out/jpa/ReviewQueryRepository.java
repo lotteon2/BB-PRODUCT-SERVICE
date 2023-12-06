@@ -4,6 +4,7 @@ import java.util.List;
 import kr.bb.product.domain.review.application.port.out.ReviewQueryOutPort;
 import kr.bb.product.domain.review.entity.Review;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,11 @@ public class ReviewQueryRepository implements ReviewQueryOutPort {
 
   @Override
   public List<Review> findReviewByProductId(List<String> productId, Pageable pageable) {
-    return reviewJpaRepository.getReviewByProductId(productId, pageable);
+    return reviewJpaRepository.findReviewByProductIds(productId, pageable);
+  }
+
+  @Override
+  public Page<Review> findReviewsByProductId(String productId, Pageable pageable) {
+    return reviewJpaRepository.findReviewsByProductId(productId, pageable);
   }
 }
