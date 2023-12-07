@@ -14,4 +14,5 @@ COPY --from=builder build/libs/*.jar app.jar
 
 ENTRYPOINT ["java", "-jar", \
             "-Dspring.profiles.active=${USE_PROFILE}", \
+            "-spring.config.active.on-profile=${USE_PROFILE}", \
             "/app.jar"]
