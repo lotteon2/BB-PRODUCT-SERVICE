@@ -10,10 +10,12 @@ import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
+import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItems;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductRegister;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
+import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
@@ -231,5 +233,25 @@ class ProductQueryInputPortTest {
     List<Product> all = productMongoRepository.findAll();
     assertThat(all.get(0).getIsSubscription()).isTrue();
     assertThat(all.get(0).getProductName()).isEqualTo(build.getProductName());
+  }
+
+  @Test
+  @DisplayName("메인 페이지 상품 조회 - 로그인 ")
+  void getMainPageProducts() {
+    productMongoRepository.deleteAll();
+    extracted();
+    MainPageProductItems mainPageProducts =
+        productQueryInputPort.getMainPageProducts(1L, SelectOption.RATING);
+    assertThat(mainPageProducts.getProducts().size()).isEqualTo(4);
+  }
+
+  @Test
+  @DisplayName("메인 페이지 상품 조회 - 비 로그인 ")
+  void getMainPageProductsNotLogin() {
+    productMongoRepository.deleteAll();
+    extracted();
+    MainPageProductItems mainPageProducts =
+        productQueryInputPort.getMainPageProducts(SelectOption.RATING);
+    assertThat(mainPageProducts.getProducts().size()).isEqualTo(4);
   }
 }

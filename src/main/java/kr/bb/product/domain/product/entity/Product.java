@@ -109,4 +109,8 @@ public class Product {
         .map(ProductFlowers::getFlowerId)
         .collect(Collectors.toList());
   }
+
+  public static List<String> getProductsIds(List<Product> mainPageProducts) {
+    return mainPageProducts.stream().map(Product::getProductId).collect(Collectors.toList());
+  }
 }
