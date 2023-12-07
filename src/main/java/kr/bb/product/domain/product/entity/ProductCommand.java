@@ -33,6 +33,18 @@ public class ProductCommand {
   }
 
   @Getter
+  public enum SelectOption {
+    RECOMMEND("productSaleAmount"),
+    NEW_ARRIVAL("createdAt"),
+    RATING("averageRating");
+    private final String selectOption;
+
+    SelectOption(String selectOption) {
+      this.selectOption = selectOption;
+    }
+  }
+
+  @Getter
   @Builder
   public static class StoreManagerSubscriptionProduct {
     private String productId;
