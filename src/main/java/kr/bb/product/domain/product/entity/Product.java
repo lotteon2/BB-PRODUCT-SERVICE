@@ -90,14 +90,16 @@ public class Product {
   private Boolean isSubscription = false;
 
   @NotBlank
+  @Builder.Default
   @CreatedDate
   @Field(name = "created_at")
-  private LocalDateTime createdAt;
+  private LocalDateTime createdAt = LocalDateTime.now();
 
   @NotBlank
+  @Builder.Default
   @LastModifiedDate
   @Field(name = "updated_at")
-  private LocalDateTime updatedAt;
+  private LocalDateTime updatedAt = LocalDateTime.now();
 
   @NotBlank
   @Builder.Default
