@@ -8,6 +8,7 @@ import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.review.application.port.out.ReviewQueryOutPort;
 import kr.bb.product.domain.review.application.usecase.ReviewQueryUseCase;
+import kr.bb.product.domain.review.entity.ReviewCommand;
 import kr.bb.product.domain.review.entity.ReviewCommand.SortOption;
 import kr.bb.product.domain.review.entity.ReviewCommand.StoreReview.StoreReviewItem;
 import kr.bb.product.domain.review.entity.ReviewImages;
@@ -76,5 +77,13 @@ public class ReviewQueryInputPort implements ReviewQueryUseCase {
                     .createdAt(item.getCreatedAt())
                     .build())
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public ReviewCommand.ProductDetailReviewList findReviewsByProductId(
+      String productId, Pageable pageable, SortOption sortOption) {
+    Pageable pageRequest = getPageable(pageable, sortOption);
+    return ReviewCommand.ProductDetailReviewList.getData(
+        reviewQueryOutPort.findReviewsByProductId(productId, pageRequest));
   }
 }

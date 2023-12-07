@@ -43,6 +43,36 @@ create table if not exists sales_resume
     user_name       varchar(255) null
 );
 
+create table if not exists review
+(
+    review_id      bigint auto_increment
+        primary key,
+    created_at     datetime(6)  null,
+    is_deleted     bit          null,
+    updated_at     datetime(6)  null,
+    nickname       varchar(255) null,
+    product_id     varchar(255) null,
+    profile_image  varchar(255) null,
+    review_content varchar(255) null,
+    review_rating  double       null,
+    user_id        bigint       null
+);
+
+create table if not exists review_images
+(
+    review_images_id bigint auto_increment
+        primary key,
+    created_at       datetime(6)  null,
+    is_deleted       bit          null,
+    updated_at       datetime(6)  null,
+    review_image_url varchar(255) null,
+    review_id        bigint       null,
+    constraint FKn6ocagcwsaswdoh2ntvrkk5en
+        foreign key (review_id) references review (review_id)
+);
+
+
+
 
 INSERT INTO category ( category_name)
 VALUES ('Electronics'),
