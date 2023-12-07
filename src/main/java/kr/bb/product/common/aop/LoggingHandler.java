@@ -20,7 +20,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class LoggingHandler {
   private static final Logger logger = LoggerFactory.getLogger(LoggingHandler.class);
 
-  @Value("${spring.profiles.active}")
+  @Value("${spring.config.active.on-profile}")
   private String activeProfile;
 
   @Around("within(kr.bb.product.domain..*)")

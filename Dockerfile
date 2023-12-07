@@ -1,5 +1,6 @@
 FROM adoptopenjdk:11-hotspot AS builder
 ENV USE_PROFILE local
+ENV PROFILE local
 
 COPY gradlew .
 COPY gradle gradle
@@ -12,4 +13,7 @@ RUN ./gradlew clean bootJar
 FROM adoptopenjdk:11-hotspot
 COPY --from=builder build/libs/*.jar app.jar
 
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=${USE_PROFILE}", "/app.jar"]
+ENTRYPOINT ["java", "-jar", \
+            "-Dspring.profiles.active=${USE_PROFILE}", \
+            "-Dspring.config.active.on-profile=${PROFILE}", \
+            "/app.jar"]
