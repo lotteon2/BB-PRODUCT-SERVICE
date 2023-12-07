@@ -115,4 +115,15 @@ public class ProductQueryRepository implements ProductQueryOutPort {
             .with(Sort.by(Sort.Order.desc("productSaleAmount"))),
         Product.class);
   }
+
+  /**
+   * 가게 사장 구독 상품 조회
+   *
+   * @param storeId
+   * @return
+   */
+  @Override
+  public Product findSubscriptionProductByStoreId(Long storeId) {
+    return productMongoRepository.findSubscriptionProductByStoreId(storeId);
+  }
 }

@@ -221,4 +221,15 @@ class ProductQueryInputPortTest {
     assertThat(bestSellerTopTen.getProducts().size()).isEqualTo(10);
     assertThat(bestSellerTopTen.getProducts().get(0).getData().get(0)).isEqualTo(19L);
   }
+
+  @Test
+  @DisplayName("가게 사장 구독 상품 조회")
+  void getSubscriptionProductByStoreId() {
+    productMongoRepository.deleteAll();
+    Product build = Product.builder().isSubscription(true).storeId(1L).productName("name").build();
+    productMongoRepository.save(build);
+    List<Product> all = productMongoRepository.findAll();
+    assertThat(all.get(0).getIsSubscription()).isTrue();
+    assertThat(all.get(0).getProductName()).isEqualTo(build.getProductName());
+  }
 }

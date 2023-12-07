@@ -21,4 +21,5 @@ public interface ProductQueryOutPort {
   Product findByProductId(String productId);
 
   List<Product> findBestSellerTopTen(Long storeId);
+  Product findSubscriptionProductByStoreId(Long storeId);
 }

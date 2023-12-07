@@ -39,4 +39,6 @@ public interface ProductQueryUseCase {
       Long tagId, Long categoryId, ProductCommand.SortOption sortOption, Pageable pageable);
 
   ProductCommand.BestSellerTopTen getBestSellerTopTen(Long storeId);
+
+  ProductCommand.StoreManagerSubscriptionProduct getSubscriptionProductByStoreId(Long storeId);
 }
