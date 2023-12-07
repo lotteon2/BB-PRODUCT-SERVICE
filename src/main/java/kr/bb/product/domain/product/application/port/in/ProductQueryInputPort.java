@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import kr.bb.product.domain.flower.adapter.out.jpa.FlowerJpaRepository;
 import kr.bb.product.domain.flower.application.port.out.FlowerQueryOutPort;
 import kr.bb.product.domain.flower.entity.Flower;
-import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.Product;
@@ -17,6 +16,7 @@ import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
 import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
+import kr.bb.product.domain.product.entity.ProductCommand.StoreManagerSubscriptionProduct;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProduct;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
@@ -40,7 +40,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ProductQueryInputPort implements ProductQueryUseCase {
-  private final ProductOutPort productOutPort;
   private final WishlistServiceClient wishlistServiceClient;
   private final StoreServiceClient storeServiceClient;
   private final FlowerJpaRepository flowerJpaRepository;
@@ -170,6 +169,12 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   public BestSellerTopTen getBestSellerTopTen(Long storeId) {
     List<Product> bestSellerTopTen = productQueryOutPort.findBestSellerTopTen(storeId);
     return BestSellerTopTen.getData(bestSellerTopTen);
+  }
+
+  @Override
+  public StoreManagerSubscriptionProduct getSubscriptionProductByStoreId(Long storeId) {
+    return StoreManagerSubscriptionProduct.getData(
+        productQueryOutPort.findSubscriptionProductByStoreId(storeId));
   }
 
   /**
