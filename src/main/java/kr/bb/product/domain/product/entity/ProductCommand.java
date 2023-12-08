@@ -399,4 +399,35 @@ public class ProductCommand {
       return ProductMapper.INSTANCE.getMainPageProducts(mainPageProducts);
     }
   }
+
+  @Getter
+  @Builder
+  public static class SubscriptionProductForCustomer {
+    private String productId;
+    private String productName;
+    private String productSummary;
+    private String productThumbnail;
+    private String productDetailImage;
+    private Long productPrice;
+    private ProductSaleStatus productSaleStatus;
+    private Long salesCount;
+    private Double averageRating;
+    private String storeName;
+    private Long reviewCount;
+    private Long storeId;
+
+    private Boolean isLiked;
+
+    public static SubscriptionProductForCustomer getData(
+        ProductDetailLike data, Product subscriptionProductByStoreId) {
+      SubscriptionProductForCustomer product =
+          ProductMapper.INSTANCE.getSubscriptionProductDetail(subscriptionProductByStoreId);
+      product.setLiked(data.getIsLiked());
+      return product;
+    }
+
+    public void setLiked(Boolean liked) {
+      isLiked = liked;
+    }
+  }
 }

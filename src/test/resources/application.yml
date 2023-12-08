@@ -30,7 +30,7 @@ spring:
         format_sql: true
 
 endpoint:
-  wishlist-service: "https://4c237c9c-89f1-487a-9401-9b02f965bcd5.mock.pstmn.io"
+  wishlist-service: http://localhost:9561
 
 
 cloud:
