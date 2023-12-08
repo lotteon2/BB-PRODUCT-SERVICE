@@ -15,4 +15,13 @@ public class MockingApi {
                     .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                     .withBodyFile("wishlist/product-detail-likes.json")));
   }
+  public static void setUpProductsLikes(WireMockServer mockCacheApi) {
+    mockCacheApi.stubFor(
+        WireMock.post(WireMock.urlMatching("/likes/1"))
+            .willReturn(
+                WireMock.aResponse()
+                    .withStatus(HttpStatus.OK.value())
+                    .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                    .withBodyFile("wishlist/products-likes.json")));
+  }
 }

@@ -156,6 +156,7 @@ class ProductQueryInputPortTest {
     productMongoRepository.deleteAll();
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 5);
+    MockingApi.setUpProductsLikes(mockCacheApi);
     ProductsGroupByCategory productsByTag =
         productQueryInputPort.getProductsByTag(1L, 1L, 1L, SortOption.SALE, pageRequest);
     assertThat(productsByTag.getProducts().size()).isEqualTo(5);
