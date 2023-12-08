@@ -231,6 +231,19 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   }
 
   /**
+   * 구독 상품 상세 조회 - 구매자 비로그인
+   *
+   * @param storeId
+   * @return
+   */
+  @Override
+  public SubscriptionProductForCustomer getSubscriptionProductDetail(Long storeId) {
+    Product subscriptionProductByStoreId =
+        productQueryOutPort.findSubscriptionProductByStoreId(storeId);
+    return SubscriptionProductForCustomer.getData(subscriptionProductByStoreId);
+  }
+
+  /**
    * 카테고리별 상품 리스트 조회 - 로그인
    *
    * @param userId

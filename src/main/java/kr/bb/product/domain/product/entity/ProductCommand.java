@@ -415,8 +415,7 @@ public class ProductCommand {
     private String storeName;
     private Long reviewCount;
     private Long storeId;
-
-    private Boolean isLiked;
+    @Builder.Default private Boolean isLiked = false;
 
     public static SubscriptionProductForCustomer getData(
         ProductDetailLike data, Product subscriptionProductByStoreId) {
@@ -424,6 +423,10 @@ public class ProductCommand {
           ProductMapper.INSTANCE.getSubscriptionProductDetail(subscriptionProductByStoreId);
       product.setLiked(data.getIsLiked());
       return product;
+    }
+
+    public static SubscriptionProductForCustomer getData(Product subscriptionProductByStoreId) {
+      return ProductMapper.INSTANCE.getSubscriptionProductDetail(subscriptionProductByStoreId);
     }
 
     public void setLiked(Boolean liked) {

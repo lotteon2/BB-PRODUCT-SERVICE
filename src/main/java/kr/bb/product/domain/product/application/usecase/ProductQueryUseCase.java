@@ -49,4 +49,6 @@ public interface ProductQueryUseCase {
 
   ProductCommand.SubscriptionProductForCustomer getSubscriptionProductDetail(
       Long userId, Long storeId);
+
+  ProductCommand.SubscriptionProductForCustomer getSubscriptionProductDetail(Long storeId);
 }

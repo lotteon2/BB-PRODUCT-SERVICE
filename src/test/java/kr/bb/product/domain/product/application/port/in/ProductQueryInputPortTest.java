@@ -23,20 +23,16 @@ import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProductForCustomer;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
-import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.aws.messaging.listener.SimpleMessageListenerContainer;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -267,5 +263,23 @@ class ProductQueryInputPortTest {
         productQueryInputPort.getSubscriptionProductDetail(1L, 1L);
     assertThat(subscriptionProductDetail.getProductName()).isEqualTo(build.getProductName());
     assertThat(subscriptionProductDetail.getIsLiked()).isTrue();
+  }
+  @Test
+  @DisplayName("구독 상품 상세 - 비 로그인 ")
+  void getSubscriptionProductDetailNotLogin() {
+    productMongoRepository.deleteAll();
+    Product build =
+        Product.builder()
+            .productId("123")
+            .isSubscription(true)
+            .storeId(1L)
+            .productName("name")
+            .build();
+    productMongoRepository.save(build);
+
+    SubscriptionProductForCustomer subscriptionProductDetail =
+        productQueryInputPort.getSubscriptionProductDetail(1L);
+    assertThat(subscriptionProductDetail.getProductName()).isEqualTo(build.getProductName());
+    assertThat(subscriptionProductDetail.getIsLiked()).isFalse();
   }
 }
