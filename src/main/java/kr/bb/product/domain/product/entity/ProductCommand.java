@@ -33,6 +33,18 @@ public class ProductCommand {
   }
 
   @Getter
+  public enum SelectOption {
+    RECOMMEND("productSaleAmount"),
+    NEW_ARRIVAL("createdAt"),
+    RATING("averageRating");
+    private final String selectOption;
+
+    SelectOption(String selectOption) {
+      this.selectOption = selectOption;
+    }
+  }
+
+  @Getter
   @Builder
   public static class StoreManagerSubscriptionProduct {
     private String productId;
@@ -342,6 +354,49 @@ public class ProductCommand {
                               .build())
                   .collect(Collectors.toList()))
           .build();
+    }
+  }
+
+  @Getter
+  @Builder
+  public static class MainPageProductItem {
+    @Builder.Default private Boolean isLiked = false;
+    private String key;
+    private String productName;
+    private String productSummary;
+    private String productThumbnail;
+    private Long productPrice;
+    private Long productAverageRating;
+
+    public void setLiked(Boolean liked) {
+      isLiked = liked;
+    }
+  }
+
+  @Getter
+  @Builder
+  public static class MainPageProductItems {
+    private List<MainPageProductItem> products;
+
+    public static MainPageProductItems getData(
+        List<Product> mainPageProducts, List<String> productsIsLiked) {
+      List<MainPageProductItem> items = getMainPageProductItems(mainPageProducts);
+      return MainPageProductItems.builder()
+          .products(
+              items.stream()
+                  .peek(item -> item.setLiked(productsIsLiked.contains(item.getKey())))
+                  .collect(Collectors.toList()))
+          .build();
+    }
+
+    public static MainPageProductItems getData(List<Product> mainPageProducts) {
+      List<MainPageProductItem> items = getMainPageProductItems(mainPageProducts);
+      return MainPageProductItems.builder().products(items).build();
+    }
+
+    private static List<MainPageProductItem> getMainPageProductItems(
+        List<Product> mainPageProducts) {
+      return ProductMapper.INSTANCE.getMainPageProducts(mainPageProducts);
     }
   }
 }

@@ -2,6 +2,7 @@ package kr.bb.product.domain.product.application.port.out;
 
 import java.util.List;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,4 +23,5 @@ public interface ProductQueryOutPort {
 
   List<Product> findBestSellerTopTen(Long storeId);
   Product findSubscriptionProductByStoreId(Long storeId);
+  List<Product> findMainPageProducts(ProductCommand.SelectOption selectOption);
 }
