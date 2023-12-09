@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @FeignClient(
     name = "wishlistServiceClient",
-    //    url = "${endpoint.wishlist-service}",
-    url = "https://4c237c9c-89f1-487a-9401-9b02f965bcd5.mock.pstmn.io",
+    url = "${endpoint.wishlist-service}",
     configuration = OpenFeignClientConfiguration.class)
 public interface WishlistServiceClient {
   @PostMapping("/likes/{userId}")
