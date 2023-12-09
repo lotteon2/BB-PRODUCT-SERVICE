@@ -1,5 +1,8 @@
 package kr.bb.product.domain.salesresume.infrastructure.message;
 
+import bloomingblooms.domain.notification.NotificationData;
+import bloomingblooms.domain.notification.NotificationKind;
+import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
@@ -25,9 +28,14 @@ public class SalesResumeSQSPublisher {
           new SendMessageRequest(
               productResaleNotificationQueueUrl,
               objectMapper.writeValueAsString(
-                  ResaleNotificationList.builder()
-                      .resaleNotificationData(resaleNotifications.getResaleNotificationData())
-                      .message(resaleNotifications.getMessage())
+                  NotificationData.builder()
+                      .whoToNotify(resaleNotifications)
+                      .message(
+                          PublishNotificationInformation.builder()
+                              .message("~~ 상품이 재입고 되었습니다")
+                              .notificationUrl("/products/" + resaleNotifications.getProductId())
+                              .notificationKind(NotificationKind.RESTORE)
+                              .build())
                       .build()));
       sqs.sendMessage(sendMessageRequest);
     } catch (JsonProcessingException e) {
