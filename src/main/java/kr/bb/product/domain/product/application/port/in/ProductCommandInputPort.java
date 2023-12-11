@@ -79,7 +79,7 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
       productOutPort.updateProductSaleStatus(product);
     } else if (productRequestData.getProductSaleStatus().equals(ProductSaleStatus.SALE)) {
       // sqs 재입고 알림 조회 요청
-      publishMessageToSQS.publishProductResaleNotificationCheckQueue(productId);
+      publishMessageToSQS.publishProductResaleNotificationCheckQueue(productId, product.getProductName());
       productOutPort.updateProductSaleStatus(product, productRequestData.getProductSaleStatus());
     } else {
       productOutPort.updateProductSaleStatus(product, productRequestData.getProductSaleStatus());

@@ -12,12 +12,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
+@DynamicUpdate
 @Table(name = "sales_resume")
 public class SalesResume extends BaseEntity {
   @Id
@@ -25,8 +27,9 @@ public class SalesResume extends BaseEntity {
   @Column(name = "sales_resume_id")
   private Long saleResumeId;
 
+  @Builder.Default
   @Column(name = "is_notified")
-  private Boolean isNotified;
+  private Boolean isNotified = false;
 
   @Column(name = "product_id")
   private String productId;
@@ -39,4 +42,9 @@ public class SalesResume extends BaseEntity {
 
   @Column(name = "user_name")
   private String userName;
+
+  public SalesResume setNotified() {
+    this.isNotified = true;
+    return this;
+  }
 }

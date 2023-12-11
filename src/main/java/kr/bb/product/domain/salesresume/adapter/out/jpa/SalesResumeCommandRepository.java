@@ -1,5 +1,6 @@
 package kr.bb.product.domain.salesresume.adapter.out.jpa;
 
+import java.util.List;
 import kr.bb.product.domain.salesresume.application.port.out.SalesResumeCommandOutPort;
 import kr.bb.product.domain.salesresume.entity.SalesResume;
 import lombok.RequiredArgsConstructor;
@@ -13,5 +14,10 @@ public class SalesResumeCommandRepository implements SalesResumeCommandOutPort {
   @Override
   public void save(SalesResume salesResume) {
     salesResumeJpaRepository.save(salesResume);
+  }
+
+  @Override
+  public List<SalesResume> selectAndUpdate(String productId) {
+    return salesResumeJpaRepository.findSaleResumeByProductId(productId);
   }
 }

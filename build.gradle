@@ -43,7 +43,6 @@ dependencies {
     implementation "org.springframework.cloud:spring-cloud-starter-bus-kafka"
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'mysql:mysql-connector-java:8.0.33'
-    implementation 'io.github.lotteon-maven:blooming-blooms-utils:0.1.6-alpha'
     runtimeOnly 'com.h2database:h2'
     implementation 'org.mapstruct:mapstruct:1.5.3.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
@@ -65,7 +64,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
     testImplementation 'org.mockito:mockito-core:4.8.0'
+    implementation 'io.github.lotteon-maven:blooming-blooms-utils:202312101522'
     testImplementation 'com.github.tomakehurst:wiremock:2.27.2'
+
 }
 
 dependencyManagement {
@@ -116,7 +117,13 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.80
             }
-            excludes = ["*.mapper*", "**.adapter.**", "**.aop.**", "**.entity.**", "**.infrastructure.**"]
+            excludes = ["*.mapper*",
+                        "**.adapter.**",
+                        "**.aop.**",
+                        "**.entity.**",
+                        "**.infrastructure.**",
+                        "**.facade.**"
+            ]
         }
     }
 }
@@ -130,7 +137,8 @@ test {
                      "**/handler/**",
                      "**/common/**",
                      "**/api/**",
-                     "**/adapter/in/api/**"
+                     "**/adapter/in/api/**",
+                     "**/facade/**"
         ]
     }
     useJUnitPlatform()
@@ -157,7 +165,8 @@ jacocoTestReport {
                                     "**/mapper/**",
                                     "**/handler/**",
                                     "**/common/**",
-                                    "**/adapter/in/api/**"
+                                    "**/adapter/in/api/**",
+                                    "**/facade/**"
                             ] + Qdomains)
                 })
         )

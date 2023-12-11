@@ -46,6 +46,13 @@ public class ProductCommand {
 
   @Getter
   @Builder
+  public static class ResaleCheckRequest {
+    private String productId;
+    private String productName;
+  }
+
+  @Getter
+  @Builder
   public static class StoreManagerSubscriptionProduct {
     private String productId;
     private Double averageRating;

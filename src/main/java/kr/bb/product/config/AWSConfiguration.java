@@ -25,11 +25,13 @@ public class AWSConfiguration {
   @Value("${cloud.aws.credentials.SECRET_ACCESS_KEY}")
   private String secretAccessKey;
 
+  // java1
   @NotNull
   private BasicAWSCredentials getBasicAWSCredentials() {
     return new BasicAWSCredentials(accessKeyId, secretAccessKey);
   }
 
+  // java2
   public AwsCredentialsProvider getAwsCredentials() {
     AwsBasicCredentials awsBasicCredentials =
         AwsBasicCredentials.create(accessKeyId, secretAccessKey);
