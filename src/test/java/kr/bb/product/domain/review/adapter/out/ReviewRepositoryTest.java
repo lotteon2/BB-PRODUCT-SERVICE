@@ -1,7 +1,7 @@
 package kr.bb.product.domain.review.adapter.out;
 
 import java.util.List;
-import kr.bb.product.domain.review.adapter.out.jpa.ReviewRepository;
+import kr.bb.product.domain.review.adapter.out.jpa.ReviewCommandRepository;
 import kr.bb.product.domain.review.entity.Review;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class ReviewRepositoryTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
-  @Autowired ReviewRepository reviewRepositoryImpl;
+  @Autowired
+  ReviewCommandRepository reviewRepositoryImpl;
 
   @Test
   @DisplayName("review repository adapter test")

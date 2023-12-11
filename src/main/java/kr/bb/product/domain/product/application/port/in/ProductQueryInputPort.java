@@ -6,17 +6,19 @@ import java.util.stream.Collectors;
 import kr.bb.product.domain.flower.adapter.out.jpa.FlowerJpaRepository;
 import kr.bb.product.domain.flower.application.port.out.FlowerQueryOutPort;
 import kr.bb.product.domain.flower.entity.Flower;
-import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
+import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItems;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
+import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
+import kr.bb.product.domain.product.entity.ProductCommand.StoreManagerSubscriptionProduct;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProduct;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
@@ -40,7 +42,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ProductQueryInputPort implements ProductQueryUseCase {
-  private final ProductOutPort productOutPort;
   private final WishlistServiceClient wishlistServiceClient;
   private final StoreServiceClient storeServiceClient;
   private final FlowerJpaRepository flowerJpaRepository;
@@ -64,6 +65,11 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
   private static ProductDetail getProductDetail(Product byProductId) {
     return ProductDetail.fromEntity(byProductId);
+  }
+
+  private static List<String> getProductIdsFromProducts(List<Product> mainPageProducts) {
+    List<String> productsIds = Product.getProductsIds(mainPageProducts);
+    return productsIds;
   }
 
   private Page<Product> getProductsByCategoryId(Long categoryId, Long storeId, Pageable pageable) {
@@ -172,6 +178,38 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     return BestSellerTopTen.getData(bestSellerTopTen);
   }
 
+  @Override
+  public StoreManagerSubscriptionProduct getSubscriptionProductByStoreId(Long storeId) {
+    return StoreManagerSubscriptionProduct.getData(
+        productQueryOutPort.findSubscriptionProductByStoreId(storeId));
+  }
+
+  /**
+   * 메인 페이지 상품 리스트 조회 4개 - 비로그인
+   *
+   * @param selectOption
+   * @return
+   */
+  @Override
+  public MainPageProductItems getMainPageProducts(SelectOption selectOption) {
+    List<Product> mainPageProducts = productQueryOutPort.findMainPageProducts(selectOption);
+    return MainPageProductItems.getData(mainPageProducts);
+  }
+
+  /**
+   * 메인 페이지 상품 리스트 조회 4개 - 로그인
+   *
+   * @param userId
+   * @param selectOption
+   * @return
+   */
+  @Override
+  public MainPageProductItems getMainPageProducts(Long userId, SelectOption selectOption) {
+    List<Product> mainPageProducts = productQueryOutPort.findMainPageProducts(selectOption);
+    return MainPageProductItems.getData(
+        mainPageProducts, getProductsIsLiked(userId, getProductIdsFromProducts(mainPageProducts)));
+  }
+
   /**
    * 카테고리별 상품 리스트 조회 - 로그인
    *
@@ -189,10 +227,16 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
       Pageable pageable) {
     Pageable pageRequest = getPageable(pageable, sortOption);
     Page<Product> byCategory = getProductsByCategoryId(categoryId, storeId, pageRequest);
+    List<String> ids = getProductIdsFromProducts(byCategory.getContent());
+
     List<ProductListItem> productByCategories = getProduct(byCategory);
-    List<String> ids = ProductCommand.ProductListItem.getProductIds(productByCategories);
-    List<String> data = wishlistServiceClient.getProductsMemberLikes(userId, ids).getData();
+    List<String> data = getProductsIsLiked(userId, ids);
     return ProductList.getData(productByCategories, data, byCategory.getTotalPages());
+  }
+
+  private List<String> getProductsIsLiked(Long userId, List<String> ids) {
+    List<String> data = wishlistServiceClient.getProductsMemberLikes(userId, ids).getData();
+    return data;
   }
 
   /**
@@ -254,7 +298,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     if (userId == null) return ProductList.getData(product, productsByTag.getTotalPages());
 
     List<String> ids = ProductListItem.getProductIds(product);
-    List<String> data = wishlistServiceClient.getProductsMemberLikes(userId, ids).getData();
+    List<String> data = getProductsIsLiked(userId, ids);
     return ProductList.getData(product, data, productsByTag.getTotalPages());
   }
 

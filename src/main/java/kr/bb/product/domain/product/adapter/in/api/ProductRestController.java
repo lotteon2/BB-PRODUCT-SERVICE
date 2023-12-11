@@ -7,6 +7,7 @@ import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
+import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
@@ -168,5 +169,44 @@ public class ProductRestController {
   public CommonResponse<BestSellerTopTen> getBestSellerTopTen(@PathVariable Long storeId) {
     return CommonResponse.success(
         productQueryUseCase.getBestSellerTopTen(storeId), "베스트 셀러 top 10 상품 조회");
+  }
+
+  @GetMapping("store/{storeId}/subscribe-product")
+  public CommonResponse<ProductCommand.StoreManagerSubscriptionProduct>
+      getStoreManagerSubscriptionProduct(@PathVariable Long storeId) {
+    return CommonResponse.success(productQueryUseCase.getSubscriptionProductByStoreId(storeId));
+  }
+
+  @GetMapping("main/recommend")
+  public CommonResponse<ProductCommand.MainPageProductItems> getMainPageProductsRecommend(
+      @RequestHeader Optional<Long> userId) {
+    if (userId.isPresent())
+      return CommonResponse.success(
+          productQueryUseCase.getMainPageProducts(userId.get(), SelectOption.RECOMMEND));
+    else
+      return CommonResponse.success(
+          productQueryUseCase.getMainPageProducts(SelectOption.RECOMMEND));
+  }
+
+  @GetMapping("main/new-arrival")
+  public CommonResponse<ProductCommand.MainPageProductItems> getMainPageProductsNewArrival(
+      @RequestHeader Optional<Long> userId) {
+    if (userId.isPresent())
+      return CommonResponse.success(
+          productQueryUseCase.getMainPageProducts(userId.get(), SelectOption.NEW_ARRIVAL));
+    else
+      return CommonResponse.success(
+          productQueryUseCase.getMainPageProducts(SelectOption.NEW_ARRIVAL));
+  }
+
+  @GetMapping("main/rating")
+  public CommonResponse<ProductCommand.MainPageProductItems> getMainPageProductsRating(
+      @RequestHeader Optional<Long> userId) {
+    if (userId.isPresent())
+      return CommonResponse.success(
+          productQueryUseCase.getMainPageProducts(userId.get(), SelectOption.RATING));
+    else
+      return CommonResponse.success(
+          productQueryUseCase.getMainPageProducts(SelectOption.RATING));
   }
 }

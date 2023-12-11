@@ -3,6 +3,7 @@ package kr.bb.product.domain.product.adapter.out.mongo;
 import java.util.List;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.exception.errors.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -114,5 +115,25 @@ public class ProductQueryRepository implements ProductQueryOutPort {
             .limit(10)
             .with(Sort.by(Sort.Order.desc("productSaleAmount"))),
         Product.class);
+  }
+
+  /**
+   * 가게 사장 구독 상품 조회
+   *
+   * @param storeId
+   * @return
+   */
+  @Override
+  public Product findSubscriptionProductByStoreId(Long storeId) {
+    return productMongoRepository.findSubscriptionProductByStoreId(storeId);
+  }
+
+  @Override
+  public List<Product> findMainPageProducts(SelectOption selectOption) {
+    Query query =
+        new Query(
+            Criteria.where("is_subscription").is(false).and("product_sale_status").is("SALE"));
+    query.limit(4).with(Sort.by(Sort.Order.desc(selectOption.getSelectOption())));
+    return mongoTemplate.find(query, Product.class);
   }
 }

@@ -5,8 +5,10 @@ import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
+import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItem;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.entity.ProductCommand.StoreManagerSubscriptionProduct;
 import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProduct;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
@@ -113,4 +115,17 @@ public interface ProductMapper {
     @Mapping(target = "isDeleted", ignore = true)
   })
   Product subscriptionToEntity(SubscriptionProduct subscriptionProduct, Long storeId);
+
+  StoreManagerSubscriptionProduct getStoreSubscriptionProduct(Product subscriptionProductByStoreId);
+
+  @Named("MAIN")
+  @Mappings({
+    @Mapping(target = "key", source = "productId"),
+    @Mapping(target = "productAverageRating", source = "averageRating"),
+    @Mapping(target = "isLiked", ignore = true),
+  })
+  MainPageProductItem getMainPageProduct(Product product);
+
+  @IterableMapping(qualifiedByName = "MAIN")
+  List<MainPageProductItem> getMainPageProducts(List<Product> mainPageProducts);
 }

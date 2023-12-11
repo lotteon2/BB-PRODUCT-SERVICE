@@ -2,12 +2,14 @@ package kr.bb.product.domain.product.adapter.out.mongo;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.tag.entity.Tag;
@@ -125,10 +127,12 @@ class ProductQueryRepositoryTest {
               .productDescriptionImage("description image")
               .productFlowers(list)
               .tag(tagList)
+              .averageRating(1.0 + i)
               .productSaleStatus(ProductSaleStatus.SALE)
               .productPrice(100000L + i)
               .productSaleAmount(10L + i)
               .storeId(1L)
+              .createdAt(LocalDateTime.now())
               .isSubscription(false)
               .build();
       productMongoRepository.save(build);
@@ -152,6 +156,29 @@ class ProductQueryRepositoryTest {
     assertThat(bestSellerTopTen.size()).isEqualTo(10);
     assertThat(
             bestSellerTopTen.get(0).getProductPrice() > bestSellerTopTen.get(1).getProductPrice())
+        .isTrue();
+  }
+
+  @Test
+  @DisplayName("가게 사장 구독 상품 조회")
+  void findSubscriptionProductByStoreId() {
+    productMongoRepository.deleteAll();
+    Product build = Product.builder().productName("name").isSubscription(true).storeId(1L).build();
+    productMongoRepository.save(build);
+    Product subscriptionProductByStoreId =
+        productMongoRepository.findSubscriptionProductByStoreId(1L);
+    assertThat(subscriptionProductByStoreId.getProductName()).isEqualTo(build.getProductName());
+  }
+
+  @Test
+  @DisplayName("메인 페이지 상품 조회 ")
+  void findMainPageProductsByRating() {
+    productMongoRepository.deleteAll();
+    createProducts();
+    List<Product> mainPageProducts =
+        productQueryRepository.findMainPageProducts(SelectOption.RATING);
+    assertThat(
+            mainPageProducts.get(0).getAverageRating() > mainPageProducts.get(1).getAverageRating())
         .isTrue();
   }
 }
