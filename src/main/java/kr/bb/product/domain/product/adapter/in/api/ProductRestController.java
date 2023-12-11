@@ -206,7 +206,15 @@ public class ProductRestController {
       return CommonResponse.success(
           productQueryUseCase.getMainPageProducts(userId.get(), SelectOption.RATING));
     else
+      return CommonResponse.success(productQueryUseCase.getMainPageProducts(SelectOption.RATING));
+  }
+
+  @GetMapping("subscription/{storeId}")
+  public CommonResponse<ProductCommand.SubscriptionProductForCustomer> getSubscriptionProductDetail(
+      @PathVariable Long storeId, @RequestHeader Optional<Long> userId) {
+    if (userId.isPresent())
       return CommonResponse.success(
-          productQueryUseCase.getMainPageProducts(SelectOption.RATING));
+          productQueryUseCase.getSubscriptionProductDetail(userId.get(), storeId));
+    else return CommonResponse.success(productQueryUseCase.getSubscriptionProductDetail(storeId));
   }
 }

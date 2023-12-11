@@ -1,10 +1,12 @@
 package kr.bb.product.domain.product.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import java.util.ArrayList;
 import java.util.List;
+import kr.bb.product.config.MockingTestConfiguration;
+import kr.bb.product.config.mock.MockingApi;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.entity.Product;
@@ -19,42 +21,29 @@ import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
+import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProductForCustomer;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
-import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.aws.messaging.listener.SimpleMessageListenerContainer;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-@AutoConfigureWebTestClient
-@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {MockingTestConfiguration.class})
 class ProductQueryInputPortTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired ProductCommandInputPort productCommandInputPort;
-  @Autowired private ProductCommandInputPort productStoreInputPort;
+  @Autowired WireMockServer mockCacheApi;
   @Autowired private ProductMongoRepository productMongoRepository;
   @Autowired private ProductQueryInputPort productQueryInputPort;
-  private WebTestClient webTestClient;
-  @Mock private WishlistServiceClient wishlistServiceClient;
-
-  @BeforeEach
-  void beforeEach() {
-    this.webTestClient = WebTestClient.bindToController(this.wishlistServiceClient).build();
-  }
 
   private void extracted() {
     for (int i = 0; i < 10; i++) {
@@ -82,7 +71,7 @@ class ProductQueryInputPortTest {
               .productPrice(100L + i)
               .productDescriptionImage("image_url")
               .build();
-      productStoreInputPort.createProduct(product);
+      productCommandInputPort.createProduct(product);
     }
   }
 
@@ -167,6 +156,7 @@ class ProductQueryInputPortTest {
     productMongoRepository.deleteAll();
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 5);
+    MockingApi.setUpProductsLikes(mockCacheApi);
     ProductsGroupByCategory productsByTag =
         productQueryInputPort.getProductsByTag(1L, 1L, 1L, SortOption.SALE, pageRequest);
     assertThat(productsByTag.getProducts().size()).isEqualTo(5);
@@ -253,5 +243,44 @@ class ProductQueryInputPortTest {
     MainPageProductItems mainPageProducts =
         productQueryInputPort.getMainPageProducts(SelectOption.RATING);
     assertThat(mainPageProducts.getProducts().size()).isEqualTo(4);
+  }
+
+  @Test
+  @DisplayName("구독 상품 상세 - 로그인 ")
+  void getSubscriptionProductDetail() {
+    productMongoRepository.deleteAll();
+    Product build =
+        Product.builder()
+            .productId("123")
+            .isSubscription(true)
+            .storeId(1L)
+            .productName("name")
+            .build();
+    productMongoRepository.save(build);
+    // mocking
+    MockingApi.setUpProductDetailLikes(mockCacheApi);
+
+    SubscriptionProductForCustomer subscriptionProductDetail =
+        productQueryInputPort.getSubscriptionProductDetail(1L, 1L);
+    assertThat(subscriptionProductDetail.getProductName()).isEqualTo(build.getProductName());
+    assertThat(subscriptionProductDetail.getIsLiked()).isTrue();
+  }
+  @Test
+  @DisplayName("구독 상품 상세 - 비 로그인 ")
+  void getSubscriptionProductDetailNotLogin() {
+    productMongoRepository.deleteAll();
+    Product build =
+        Product.builder()
+            .productId("123")
+            .isSubscription(true)
+            .storeId(1L)
+            .productName("name")
+            .build();
+    productMongoRepository.save(build);
+
+    SubscriptionProductForCustomer subscriptionProductDetail =
+        productQueryInputPort.getSubscriptionProductDetail(1L);
+    assertThat(subscriptionProductDetail.getProductName()).isEqualTo(build.getProductName());
+    assertThat(subscriptionProductDetail.getIsLiked()).isFalse();
   }
 }

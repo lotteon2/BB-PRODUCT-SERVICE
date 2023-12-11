@@ -65,6 +65,8 @@ dependencies {
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
     testImplementation 'org.mockito:mockito-core:4.8.0'
     implementation 'io.github.lotteon-maven:blooming-blooms-utils:202312101522'
+    testImplementation 'com.github.tomakehurst:wiremock:2.27.2'
+
 }
 
 dependencyManagement {

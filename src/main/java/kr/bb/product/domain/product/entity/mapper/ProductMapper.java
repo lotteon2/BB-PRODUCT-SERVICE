@@ -10,6 +10,7 @@ import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreManagerSubscriptionProduct;
 import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProduct;
+import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProductForCustomer;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
@@ -128,4 +129,10 @@ public interface ProductMapper {
 
   @IterableMapping(qualifiedByName = "MAIN")
   List<MainPageProductItem> getMainPageProducts(List<Product> mainPageProducts);
+
+  @Mapping(target = "isLiked", ignore = true)
+  @Mapping(target = "productDetailImage", source = "productDescriptionImage")
+  @Mapping(target = "salesCount", source = "productSaleAmount")
+  @Mapping(target = "storeName", ignore = true)
+  SubscriptionProductForCustomer getSubscriptionProductDetail(Product subscriptionProductByStoreId);
 }
