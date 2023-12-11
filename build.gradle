@@ -57,7 +57,7 @@ dependencies {
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.4.RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.4.RELEASE'
-
+    implementation 'org.springframework.kafka:spring-kafka'
     implementation 'software.amazon.awssdk:sns:2.21.37'
 
 
