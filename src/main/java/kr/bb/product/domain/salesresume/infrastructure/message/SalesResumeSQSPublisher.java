@@ -22,7 +22,6 @@ public class SalesResumeSQSPublisher {
   private String productResaleNotificationQueueUrl;
 
   public void publishProductResaleNotificationQueueUrl(ResaleNotificationList resaleNotifications) {
-    // TODO: publish v2 고려해보기
     try {
       SendMessageRequest sendMessageRequest =
           new SendMessageRequest(
@@ -30,9 +29,9 @@ public class SalesResumeSQSPublisher {
               objectMapper.writeValueAsString(
                   NotificationData.builder()
                       .whoToNotify(resaleNotifications)
-                      .message(
+                      .publishInformation(
                           PublishNotificationInformation.builder()
-                              .message("~~ 상품이 재입고 되었습니다")
+                              .message(resaleNotifications.getMessage())
                               .notificationUrl("/products/" + resaleNotifications.getProductId())
                               .notificationKind(NotificationKind.RESTORE)
                               .build())
