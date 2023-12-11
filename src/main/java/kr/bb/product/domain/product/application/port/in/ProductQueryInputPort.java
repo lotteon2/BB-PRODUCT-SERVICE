@@ -13,6 +13,7 @@ import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
 import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItems;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductDetailLike;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
@@ -22,6 +23,7 @@ import kr.bb.product.domain.product.entity.ProductCommand.StoreManagerSubscripti
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProduct;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
+import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProductForCustomer;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
@@ -208,6 +210,37 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     List<Product> mainPageProducts = productQueryOutPort.findMainPageProducts(selectOption);
     return MainPageProductItems.getData(
         mainPageProducts, getProductsIsLiked(userId, getProductIdsFromProducts(mainPageProducts)));
+  }
+
+  /**
+   * 구독 상품 상세 조회 - 구매자
+   *
+   * @param userId
+   * @param storeId
+   * @return
+   */
+  @Override
+  public SubscriptionProductForCustomer getSubscriptionProductDetail(Long userId, Long storeId) {
+    Product subscriptionProductByStoreId =
+        productQueryOutPort.findSubscriptionProductByStoreId(storeId);
+    ProductDetailLike isLiked =
+        wishlistServiceClient
+            .getProductDetailLikes(subscriptionProductByStoreId.getProductId(), userId)
+            .getData();
+    return SubscriptionProductForCustomer.getData(isLiked, subscriptionProductByStoreId);
+  }
+
+  /**
+   * 구독 상품 상세 조회 - 구매자 비로그인
+   *
+   * @param storeId
+   * @return
+   */
+  @Override
+  public SubscriptionProductForCustomer getSubscriptionProductDetail(Long storeId) {
+    Product subscriptionProductByStoreId =
+        productQueryOutPort.findSubscriptionProductByStoreId(storeId);
+    return SubscriptionProductForCustomer.getData(subscriptionProductByStoreId);
   }
 
   /**
