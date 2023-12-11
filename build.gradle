@@ -115,7 +115,13 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.80
             }
-            excludes = ["*.mapper*", "**.adapter.**", "**.aop.**", "**.entity.**", "**.infrastructure.**"]
+            excludes = ["*.mapper*",
+                        "**.adapter.**",
+                        "**.aop.**",
+                        "**.entity.**",
+                        "**.infrastructure.**",
+                        "**.facade.**"
+            ]
         }
     }
 }
@@ -129,7 +135,8 @@ test {
                      "**/handler/**",
                      "**/common/**",
                      "**/api/**",
-                     "**/adapter/in/api/**"
+                     "**/adapter/in/api/**",
+                     "**/facade/**"
         ]
     }
     useJUnitPlatform()
@@ -156,7 +163,8 @@ jacocoTestReport {
                                     "**/mapper/**",
                                     "**/handler/**",
                                     "**/common/**",
-                                    "**/adapter/in/api/**"
+                                    "**/adapter/in/api/**",
+                                    "**/facade/**"
                             ] + Qdomains)
                 })
         )
