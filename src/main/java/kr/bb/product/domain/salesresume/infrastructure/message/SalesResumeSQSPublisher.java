@@ -32,7 +32,8 @@ public class SalesResumeSQSPublisher {
                       .publishInformation(
                           PublishNotificationInformation.builder()
                               .message(resaleNotifications.getMessage())
-                              .notificationUrl("/products/" + resaleNotifications.getProductId())
+                              .notificationUrl(
+                                  "/products/detail/" + resaleNotifications.getProductId())
                               .notificationKind(NotificationKind.RESTORE)
                               .build())
                       .build()));
