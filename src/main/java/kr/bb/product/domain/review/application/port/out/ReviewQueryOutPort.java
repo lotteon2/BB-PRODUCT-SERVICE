@@ -23,4 +23,6 @@ public interface ReviewQueryOutPort {
   Page<Review> findReviewsByProductId(String productId, Pageable pageable);
 
   Page<Review> findReviewsByUserId(Long userId, Pageable pageable);
+
+  Long findReviewCountByProductId(String productId);
 }
