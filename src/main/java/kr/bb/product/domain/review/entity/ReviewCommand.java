@@ -2,6 +2,7 @@ package kr.bb.product.domain.review.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import kr.bb.product.domain.review.entity.mapper.ReviewImageMapper;
@@ -46,13 +47,13 @@ public class ReviewCommand {
   @Getter
   @Builder
   public static class ProductDetailReviewList {
-    @Nullable private List<ProductDetailReview> productReview;
+    @Nullable private List<ProductDetailReview> reviews;
     private int totalCnt;
 
     public static ProductDetailReviewList getData(Page<Review> reviewsByProductId) {
       List<Review> content = reviewsByProductId.getContent();
       return ProductDetailReviewList.builder()
-          .productReview(ProductDetailReview.getData(content))
+          .reviews(ProductDetailReview.getData(content))
           .totalCnt(reviewsByProductId.getTotalPages())
           .build();
     }
@@ -87,19 +88,48 @@ public class ReviewCommand {
 
   @Getter
   @Builder
-  public static class StoreReview {
-    @Getter
-    @Builder
-    public static class StoreReviewItem {
-      private Long reviewId;
-      private LocalDateTime createdAt;
-      private String profileImage;
-      private Double rating;
-      private String nickname;
-      private String productName;
-      private String content;
-      private List<String> reviewImages;
+  public static class StoreReviewList {
+    private List<StoreReviewItem> reviews;
+    private int totalCnt;
+
+    public static StoreReviewList getData(
+        Page<Review> reviewByProductId, Map<String, String> productName) {
+      List<StoreReviewItem> reviewItems =
+          reviewByProductId.getContent().stream()
+              .map(
+                  item ->
+                      StoreReviewItem.builder()
+                          .reviewId(item.getReviewId())
+                          .content(item.getReviewContent())
+                          .createdAt(item.getCreatedAt())
+                          .nickname(item.getNickname())
+                          .productName(productName.get(item.getProductId()))
+                          .profileImage(item.getProfileImage())
+                          .rating(item.getReviewRating())
+                          .reviewImages(
+                              item.getReviewImages().stream()
+                                  .map(ReviewImages::getReviewImageUrl)
+                                  .collect(Collectors.toList()))
+                          .build())
+              .collect(Collectors.toList());
+      return StoreReviewList.builder()
+          .reviews(reviewItems)
+          .totalCnt(reviewByProductId.getTotalPages())
+          .build();
     }
+  }
+
+  @Getter
+  @Builder
+  public static class StoreReviewItem {
+    private Long reviewId;
+    private LocalDateTime createdAt;
+    private String profileImage;
+    private Double rating;
+    private String nickname;
+    private String productName;
+    private String content;
+    private List<String> reviewImages;
   }
 
   @Getter

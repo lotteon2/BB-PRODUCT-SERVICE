@@ -45,7 +45,7 @@ class ReviewJpaRepositoryTest {
     List<String> id = new ArrayList<>();
     id.add("5678i");
     PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Direction.DESC, "createdAt"));
-    List<Review> reviewByProductId = reviewJpaRepository.findReviewByProductIds(id, pageRequest);
+    Page<Review> reviewByProductId = reviewJpaRepository.findReviewByProductIds(id, pageRequest);
     System.out.println(reviewByProductId.toString());
   }
 
