@@ -9,6 +9,7 @@ import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.review.application.port.out.ReviewQueryOutPort;
 import kr.bb.product.domain.review.application.usecase.ReviewQueryUseCase;
 import kr.bb.product.domain.review.entity.ReviewCommand;
+import kr.bb.product.domain.review.entity.ReviewCommand.ReviewList;
 import kr.bb.product.domain.review.entity.ReviewCommand.SortOption;
 import kr.bb.product.domain.review.entity.ReviewCommand.StoreReview.StoreReviewItem;
 import kr.bb.product.domain.review.entity.ReviewImages;
@@ -85,5 +86,12 @@ public class ReviewQueryInputPort implements ReviewQueryUseCase {
     Pageable pageRequest = getPageable(pageable, sortOption);
     return ReviewCommand.ProductDetailReviewList.getData(
         reviewQueryOutPort.findReviewsByProductId(productId, pageRequest));
+  }
+
+  @Override
+  public ReviewList findReviewsByUserId(Long userId, Pageable pageable, SortOption sortOption) {
+    Pageable pageRequest = getPageable(pageable, sortOption);
+    return ReviewCommand.ReviewList.getData(
+        reviewQueryOutPort.findReviewsByUserId(userId, pageRequest));
   }
 }

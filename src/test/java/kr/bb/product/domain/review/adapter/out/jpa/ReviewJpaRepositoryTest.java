@@ -62,10 +62,7 @@ class ReviewJpaRepositoryTest {
               .build();
       for (int j = 0; j < 3; j++) {
         ReviewImages reviewImages =
-            ReviewImages.builder()
-                .reviewImageUrl("url" + j)
-                .review(reviewContent)
-                .build();
+            ReviewImages.builder().reviewImageUrl("url" + j).review(reviewContent).build();
         reviewContent.getReviewImages().add(reviewImages);
       }
       reviewJpaRepository.save(reviewContent);

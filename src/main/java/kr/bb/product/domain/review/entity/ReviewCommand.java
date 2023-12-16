@@ -8,7 +8,6 @@ import kr.bb.product.domain.review.entity.mapper.ReviewImageMapper;
 import kr.bb.product.domain.review.entity.mapper.ReviewMapper;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 import org.springframework.data.domain.Page;
 
 public class ReviewCommand {
@@ -101,35 +100,47 @@ public class ReviewCommand {
       private String content;
       private List<String> reviewImages;
     }
+  }
 
-    @Getter
-    @Builder
-    @ToString
-    public static class Review {
-      private Long reviewId;
-      private LocalDateTime createdAt;
-      private Double reviewRating;
-      private String reviewContent;
-      private List<String> reviewImages;
-      private String nickname;
-      private String profileImage;
+  @Getter
+  @Builder
+  public static class ReviewItem {
+    private Long reviewId;
+    private LocalDateTime createdAt;
+    private Double reviewRating;
+    private String reviewContent;
+    private List<String> reviewImages;
+    private String nickname;
+    private String profileImage;
+  }
 
-      public Review(
-          Long reviewId,
-          LocalDateTime createdAt,
-          Double reviewRating,
-          String reviewContent,
-          List<String> reviewImages,
-          String nickname,
-          String profileImage) {
-        this.reviewId = reviewId;
-        this.createdAt = createdAt;
-        this.reviewRating = reviewRating;
-        this.reviewContent = reviewContent;
-        this.reviewImages = reviewImages;
-        this.nickname = nickname;
-        this.profileImage = profileImage;
-      }
+  @Getter
+  @Builder
+  public static class ReviewList {
+    private List<ReviewItem> reviews;
+    private int totalCnt;
+
+    public static ReviewList getData(Page<Review> reviewsByUserId) {
+      return ReviewList.builder()
+          .reviews(
+              reviewsByUserId.getContent().stream()
+                  .map(
+                      item ->
+                          ReviewItem.builder()
+                              .reviewId(item.getReviewId())
+                              .createdAt(item.getCreatedAt())
+                              .nickname(item.getNickname())
+                              .profileImage(item.getProfileImage())
+                              .reviewContent(item.getReviewContent())
+                              .reviewImages(
+                                  item.getReviewImages().stream()
+                                      .map(ReviewImages::getReviewImageUrl)
+                                      .collect(Collectors.toList()))
+                              .reviewRating(item.getReviewRating())
+                              .build())
+                  .collect(Collectors.toList()))
+          .totalCnt(reviewsByUserId.getTotalPages())
+          .build();
     }
   }
 }

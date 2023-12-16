@@ -60,4 +60,18 @@ public class ReviewRestController {
     return CommonResponse.success(
         reviewQueryUseCase.findReviewsByProductId(productId, pageable, sortOption));
   }
+
+  @GetMapping("reviews/mypage")
+  public CommonResponse<ReviewCommand.ReviewList> getReviewByUserId(
+      @RequestHeader Long userId,
+      @PageableDefault(
+              page = 0,
+              size = 10,
+              sort = {"createdAt"},
+              direction = Sort.Direction.DESC)
+          Pageable pageable,
+      @RequestParam("sort-option") SortOption sortOption) {
+    return CommonResponse.success(
+        reviewQueryUseCase.findReviewsByUserId(userId, pageable, sortOption));
+  }
 }

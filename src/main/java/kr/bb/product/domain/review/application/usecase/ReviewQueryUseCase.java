@@ -11,4 +11,7 @@ public interface ReviewQueryUseCase {
 
   ReviewCommand.ProductDetailReviewList findReviewsByProductId(
       String productId, Pageable pageable, ReviewCommand.SortOption sortOption);
+
+  ReviewCommand.ReviewList findReviewsByUserId(
+      Long userId, Pageable pageable, SortOption sortOption);
 }
