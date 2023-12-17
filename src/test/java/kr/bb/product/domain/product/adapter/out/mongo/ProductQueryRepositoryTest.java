@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
+import kr.bb.product.common.dto.IsProductPriceValid;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
@@ -180,5 +181,22 @@ class ProductQueryRepositoryTest {
     assertThat(
             mainPageProducts.get(0).getAverageRating() > mainPageProducts.get(1).getAverageRating())
         .isTrue();
+  }
+
+  @Test
+  @DisplayName("상품 가격 유효성 검사 ")
+  void findProductPriceValid() {
+    for (int i = 0; i < 4; i++) {
+      Product product = Product.builder().productId("1" + i).productPrice(1L + i).build();
+      productMongoRepository.save(product);
+    }
+    List<IsProductPriceValid> productPriceValids = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      IsProductPriceValid isProductPriceValid =
+          IsProductPriceValid.builder().productPrice(1L + i).productId("1" + i).build();
+      productPriceValids.add(isProductPriceValid);
+    }
+    boolean productPriceValid = productQueryOutPort.findProductPriceValid(productPriceValids);
+    assertThat(productPriceValid).isTrue();
   }
 }
