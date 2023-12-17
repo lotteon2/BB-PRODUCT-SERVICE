@@ -17,7 +17,7 @@ public interface StoreServiceClient {
   @CircuitBreaker(
       name = "getStoreNameOfProductDetailFallback",
       fallbackMethod = "getStoreNameOfProductDetailFallback")
-  @GetMapping("/store/{storeId}/name")
+  @GetMapping("/stores/{storeId}/name")
   CommonResponse<ProductCommand.StoreName> getStoreNameOfProductDetail(@PathVariable Long storeId);
 
   default CommonResponse<ProductCommand.StoreName> getStoreNameOfProductDetailFallback(
