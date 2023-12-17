@@ -6,6 +6,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import java.util.ArrayList;
 import java.util.List;
 import kr.bb.product.common.dto.StoreSubscriptionProductId;
+import kr.bb.product.common.dto.SubscriptionProductInformation;
 import kr.bb.product.config.MockingTestConfiguration;
 import kr.bb.product.config.mock.MockingApi;
 import kr.bb.product.domain.category.entity.Category;
@@ -297,5 +298,24 @@ class ProductQueryInputPortTest {
         productQueryInputPort.getStoreSubscriptionProductId(1L);
     assertThat(storeSubscriptionProductId.getSubscriptionProductId())
         .isEqualTo(product.getProductId());
+  }
+
+  @Test
+  @DisplayName("구독 상품 정보 요청")
+  void getSubscriptionProductInformation() {
+    productMongoRepository.deleteAll();
+    Product product =
+        Product.builder()
+            .productName("name")
+            .productThumbnail("thumbnail")
+            .productPrice(123L)
+            .storeId(1L)
+            .isSubscription(true)
+            .productId("123")
+            .build();
+    productMongoRepository.save(product);
+    SubscriptionProductInformation subscriptionProductInformation =
+        productQueryInputPort.getSubscriptionProductInformation("123");
+    assertThat(subscriptionProductInformation.getUnitPrice()).isEqualTo(product.getProductPrice());
   }
 }
