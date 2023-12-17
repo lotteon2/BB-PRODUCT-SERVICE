@@ -3,6 +3,7 @@ package kr.bb.product.domain.product.application.port.in;
 import bloomingblooms.errors.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
+import kr.bb.product.common.dto.StoreSubscriptionProductId;
 import kr.bb.product.domain.flower.adapter.out.jpa.FlowerJpaRepository;
 import kr.bb.product.domain.flower.application.port.out.FlowerQueryOutPort;
 import kr.bb.product.domain.flower.entity.Flower;
@@ -241,6 +242,12 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     Product subscriptionProductByStoreId =
         productQueryOutPort.findSubscriptionProductByStoreId(storeId);
     return SubscriptionProductForCustomer.getData(subscriptionProductByStoreId);
+  }
+
+  @Override
+  public StoreSubscriptionProductId getStoreSubscriptionProductId(Long storeId) {
+    return StoreSubscriptionProductId.getData(
+        productQueryOutPort.findSubscriptionProductByStoreId(storeId));
   }
 
   /**
