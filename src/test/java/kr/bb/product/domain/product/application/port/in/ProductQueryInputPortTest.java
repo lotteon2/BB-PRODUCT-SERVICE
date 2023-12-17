@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import java.util.ArrayList;
 import java.util.List;
+import kr.bb.product.common.dto.IsProductPriceValid;
 import kr.bb.product.config.MockingTestConfiguration;
 import kr.bb.product.config.mock.MockingApi;
 import kr.bb.product.domain.category.entity.Category;
@@ -265,6 +266,7 @@ class ProductQueryInputPortTest {
     assertThat(subscriptionProductDetail.getProductName()).isEqualTo(build.getProductName());
     assertThat(subscriptionProductDetail.getIsLiked()).isTrue();
   }
+
   @Test
   @DisplayName("구독 상품 상세 - 비 로그인 ")
   void getSubscriptionProductDetailNotLogin() {
@@ -282,5 +284,23 @@ class ProductQueryInputPortTest {
         productQueryInputPort.getSubscriptionProductDetail(1L);
     assertThat(subscriptionProductDetail.getProductName()).isEqualTo(build.getProductName());
     assertThat(subscriptionProductDetail.getIsLiked()).isFalse();
+  }
+
+  @Test
+  @DisplayName("상품 가격 유효성 검사")
+  void getProductPriceValidation() {
+    for (int i = 0; i < 4; i++) {
+      Product product = Product.builder().productId("1" + i).productPrice(1L + i).build();
+      productMongoRepository.save(product);
+    }
+    List<IsProductPriceValid> productPriceValids = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      IsProductPriceValid isProductPriceValid =
+          IsProductPriceValid.builder().productPrice(1L + i).productId("1" + i).build();
+      productPriceValids.add(isProductPriceValid);
+    }
+    boolean productPriceValidation =
+        productQueryInputPort.getProductPriceValidation(productPriceValids);
+    assertThat(productPriceValidation).isTrue();
   }
 }
