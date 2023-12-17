@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import java.util.ArrayList;
 import java.util.List;
+import kr.bb.product.common.dto.ProductThumbnail;
 import kr.bb.product.config.MockingTestConfiguration;
 import kr.bb.product.config.mock.MockingApi;
 import kr.bb.product.domain.category.entity.Category;
@@ -265,6 +266,7 @@ class ProductQueryInputPortTest {
     assertThat(subscriptionProductDetail.getProductName()).isEqualTo(build.getProductName());
     assertThat(subscriptionProductDetail.getIsLiked()).isTrue();
   }
+
   @Test
   @DisplayName("구독 상품 상세 - 비 로그인 ")
   void getSubscriptionProductDetailNotLogin() {
@@ -282,5 +284,14 @@ class ProductQueryInputPortTest {
         productQueryInputPort.getSubscriptionProductDetail(1L);
     assertThat(subscriptionProductDetail.getProductName()).isEqualTo(build.getProductName());
     assertThat(subscriptionProductDetail.getIsLiked()).isFalse();
+  }
+
+  @Test
+  @DisplayName("상품 썸네일 조회")
+  void getProductThumbnail() {
+    Product product = Product.builder().productThumbnail("thumbnail").productId("123").build();
+    productMongoRepository.save(product);
+    ProductThumbnail productThumbnail = productQueryInputPort.getProductThumbnail("123");
+    assertThat(productThumbnail.getProductThumbnail()).isEqualTo(product.getProductThumbnail());
   }
 }
