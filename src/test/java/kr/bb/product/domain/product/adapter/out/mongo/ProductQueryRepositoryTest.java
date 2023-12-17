@@ -181,4 +181,21 @@ class ProductQueryRepositoryTest {
             mainPageProducts.get(0).getAverageRating() > mainPageProducts.get(1).getAverageRating())
         .isTrue();
   }
+
+  @Test
+  @DisplayName("상품 정보 조회 요청 repo test")
+  void findProductByProductIds() {
+    List<String> productIds = new ArrayList<>();
+    for (int i = 0; i < 5; i++) {
+      productIds.add("i" + i);
+      Product product =
+          Product.builder()
+              .productId("i" + i)
+              .productName("product" + i)
+              .productThumbnail("thumbnail" + i)
+              .build();
+      productMongoRepository.save(product);
+    }
+    productQueryOutPort.findProductByProductIds(productIds);
+  }
 }

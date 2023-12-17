@@ -26,4 +26,6 @@ public interface ProductQueryOutPort {
   Product findSubscriptionProductByStoreId(Long storeId);
 
   List<Product> findMainPageProducts(ProductCommand.SelectOption selectOption);
+
+  List<Product> findProductByProductIds(List<String> productIds);
 }
