@@ -54,7 +54,6 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   private final FlowerQueryOutPort flowerQueryOutPort;
   private final ReviewQueryOutPort reviewQueryOutPort;
 
-
   @NotNull
   private static Pageable getPageable(Pageable pageable, ProductCommand.SortOption sortOption) {
     Direction direction = Direction.DESC;
@@ -82,14 +81,10 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   }
 
   private String getProductDetailStoreName(Product byProductId) {
-    try {
-      return storeServiceClient
-          .getStoreNameOfProductDetail(byProductId.getStoreId())
-          .getData()
-          .getStoreName();
-    } catch (Exception e) {
-      return "가게명";
-    }
+    return storeServiceClient
+        .getStoreNameOfProductDetail(byProductId.getStoreId())
+        .getData()
+        .getStoreName();
   }
 
   private Flower getFlowerById(Long flowerId) {
@@ -100,7 +95,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     return reviewQueryOutPort.findReviewCountByProductId(productId);
   }
 
-    private List<String> getProductsIsLiked(Long userId, List<String> ids) {
+  private List<String> getProductsIsLiked(Long userId, List<String> ids) {
 
     return wishlistServiceClient.getProductsMemberLikes(userId, ids).getData();
   }
@@ -281,8 +276,6 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     List<String> data = getProductsIsLiked(userId, ids);
     return ProductList.getData(productByCategories, data, byCategory.getTotalPages());
   }
-
-
 
   /**
    * 카테고리별 상품 리스트 조회 - 비로그인

@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.PostMapping;
     configuration = OpenFeignClientConfiguration.class)
 public interface WishlistServiceClient {
 
-  @CircuitBreaker(name = "wishlistFallback", fallbackMethod = "getProductsMemberLikesFallback")
+  @CircuitBreaker(name = "getProductsMemberLikesFallback", fallbackMethod = "getProductsMemberLikesFallback")
   @PostMapping("/likes/{userId}")
   CommonResponse<List<String>> getProductsMemberLikes(
       @PathVariable Long userId, List<String> productIds);
 
-  @CircuitBreaker(name = "wishlistFallback", fallbackMethod = "getProductDetailLikesFallback")
+  @CircuitBreaker(name = "getProductDetailLikesFallback", fallbackMethod = "getProductDetailLikesFallback")
   @GetMapping("/likes/{userId}/product/{productId}")
   CommonResponse<ProductDetailLike> getProductDetailLikes(
       @PathVariable String productId, @PathVariable Long userId);
