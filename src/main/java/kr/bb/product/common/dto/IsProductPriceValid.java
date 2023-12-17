@@ -7,5 +7,5 @@ import lombok.Getter;
 @Builder
 public class IsProductPriceValid {
   private String productId;
-  private Long productPrice;
+  private Long price;
 }

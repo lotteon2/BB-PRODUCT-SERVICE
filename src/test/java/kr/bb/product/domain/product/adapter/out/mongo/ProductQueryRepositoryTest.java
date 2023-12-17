@@ -193,7 +193,7 @@ class ProductQueryRepositoryTest {
     List<IsProductPriceValid> productPriceValids = new ArrayList<>();
     for (int i = 0; i < 4; i++) {
       IsProductPriceValid isProductPriceValid =
-          IsProductPriceValid.builder().productPrice(1L + i).productId("1" + i).build();
+          IsProductPriceValid.builder().price(1L + i).productId("1" + i).build();
       productPriceValids.add(isProductPriceValid);
     }
     boolean productPriceValid = productQueryOutPort.findProductPriceValid(productPriceValids);

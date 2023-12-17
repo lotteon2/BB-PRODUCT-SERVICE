@@ -153,6 +153,6 @@ public class ProductQueryRepository implements ProductQueryOutPort {
             .collect(Collectors.toMap(Product::getProductId, Product::getProductPrice));
    return
         productPriceValids.stream()
-            .allMatch(item -> item.getProductPrice().equals(collect1.get(item.getProductId())));
+            .allMatch(item -> item.getPrice().equals(collect1.get(item.getProductId())));
   }
 }

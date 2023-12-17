@@ -29,6 +29,7 @@ import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import kr.bb.product.domain.product.vo.ProductFlowers;
+import kr.bb.product.exception.errors.ProductPriceValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -245,8 +246,9 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   }
 
   @Override
-  public boolean getProductPriceValidation(List<IsProductPriceValid> productPriceValids) {
-    return productQueryOutPort.findProductPriceValid(productPriceValids);
+  public void getProductPriceValidation(List<IsProductPriceValid> productPriceValids) {
+    if (!productQueryOutPort.findProductPriceValid(productPriceValids))
+      throw new ProductPriceValidationException();
   }
 
   /**

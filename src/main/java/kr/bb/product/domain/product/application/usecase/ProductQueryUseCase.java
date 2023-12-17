@@ -54,5 +54,5 @@ public interface ProductQueryUseCase {
 
   ProductCommand.SubscriptionProductForCustomer getSubscriptionProductDetail(Long storeId);
 
-  boolean getProductPriceValidation(List<IsProductPriceValid> productPriceValids);
+  void getProductPriceValidation(List<IsProductPriceValid> productPriceValids);
 }
