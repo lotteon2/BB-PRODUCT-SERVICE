@@ -1,5 +1,7 @@
 package kr.bb.product.domain.product.application.usecase;
 
+import java.util.List;
+import kr.bb.product.common.dto.ProductInformation;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
@@ -51,4 +53,6 @@ public interface ProductQueryUseCase {
       Long userId, Long storeId);
 
   ProductCommand.SubscriptionProductForCustomer getSubscriptionProductDetail(Long storeId);
+
+  List<ProductInformation> getProductInformation(List<String> productIds);
 }

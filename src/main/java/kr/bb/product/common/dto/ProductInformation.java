@@ -1,5 +1,8 @@
 package kr.bb.product.common.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import kr.bb.product.domain.product.entity.Product;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,4 +12,16 @@ public class ProductInformation {
   private String productId;
   private String productName;
   private String productThumbnail;
+
+  public static List<ProductInformation> getData(List<Product> productByProductIds) {
+    return productByProductIds.stream()
+        .map(
+            item ->
+                ProductInformation.builder()
+                    .productId(item.getProductId())
+                    .productName(item.getProductName())
+                    .productThumbnail(item.getProductThumbnail())
+                    .build())
+        .collect(Collectors.toList());
+  }
 }
