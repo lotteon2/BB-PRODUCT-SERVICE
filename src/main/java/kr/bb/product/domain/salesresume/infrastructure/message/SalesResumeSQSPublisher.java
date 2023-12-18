@@ -2,6 +2,7 @@ package kr.bb.product.domain.salesresume.infrastructure.message;
 
 import bloomingblooms.domain.notification.NotificationData;
 import bloomingblooms.domain.notification.NotificationKind;
+import bloomingblooms.domain.notification.NotificationURL;
 import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import com.amazonaws.services.sqs.AmazonSQS;
@@ -27,15 +28,10 @@ public class SalesResumeSQSPublisher {
           new SendMessageRequest(
               productResaleNotificationQueueUrl,
               objectMapper.writeValueAsString(
-                  NotificationData.builder()
-                      .whoToNotify(resaleNotifications)
-                      .publishInformation(
-                          PublishNotificationInformation.builder()
-                              .message(resaleNotifications.getMessage())
-                              .notificationUrl("/products/" + resaleNotifications.getProductId())
-                              .notificationKind(NotificationKind.RESTORE)
-                              .build())
-                      .build()));
+                  NotificationData.notifyData(
+                      resaleNotifications,
+                      PublishNotificationInformation.getData(
+                          NotificationURL.RESALE, NotificationKind.RESALE))));
       sqs.sendMessage(sendMessageRequest);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
