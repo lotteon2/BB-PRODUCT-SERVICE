@@ -31,9 +31,7 @@ public class SalesResumeSQSPublisher {
                   NotificationData.notifyData(
                       resaleNotifications,
                       PublishNotificationInformation.getData(
-                          NotificationURL.RESALE,
-                          NotificationKind.RESALE,
-                          resaleNotifications.getProductName() + " 상품이 재입고 되었습니다."))));
+                          NotificationURL.RESALE, NotificationKind.RESALE))));
       sqs.sendMessage(sendMessageRequest);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
