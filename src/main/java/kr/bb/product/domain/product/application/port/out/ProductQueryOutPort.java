@@ -28,5 +28,7 @@ public interface ProductQueryOutPort {
 
   List<Product> findMainPageProducts(ProductCommand.SelectOption selectOption);
 
+  List<Product> findProductByProductIds(List<String> productIds);
+
   boolean findProductPriceValid(List<IsProductPriceValid> productPriceValids);
 }
