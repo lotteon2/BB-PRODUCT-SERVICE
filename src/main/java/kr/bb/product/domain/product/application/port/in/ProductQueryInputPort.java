@@ -30,6 +30,7 @@ import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import kr.bb.product.domain.product.vo.ProductFlowers;
+import kr.bb.product.domain.review.application.port.out.ReviewQueryOutPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -48,10 +49,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductQueryInputPort implements ProductQueryUseCase {
   private final WishlistServiceClient wishlistServiceClient;
   private final StoreServiceClient storeServiceClient;
+
   private final FlowerJpaRepository flowerJpaRepository;
 
   private final ProductQueryOutPort productQueryOutPort;
   private final FlowerQueryOutPort flowerQueryOutPort;
+  private final ReviewQueryOutPort reviewQueryOutPort;
 
   @NotNull
   private static Pageable getPageable(Pageable pageable, ProductCommand.SortOption sortOption) {
@@ -72,8 +75,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   }
 
   private static List<String> getProductIdsFromProducts(List<Product> mainPageProducts) {
-    List<String> productsIds = Product.getProductsIds(mainPageProducts);
-    return productsIds;
+    return Product.getProductsIds(mainPageProducts);
   }
 
   private Page<Product> getProductsByCategoryId(Long categoryId, Long storeId, Pageable pageable) {
@@ -91,6 +93,15 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     return flowerJpaRepository.findById(flowerId).orElseThrow(EntityNotFoundException::new);
   }
 
+  private Long getReviewCnt(String productId) {
+    return reviewQueryOutPort.findReviewCountByProductId(productId);
+  }
+
+  private List<String> getProductsIsLiked(Long userId, List<String> ids) {
+
+    return wishlistServiceClient.getProductsMemberLikes(userId, ids).getData();
+  }
+
   /**
    * 상품 상세 조회 - 로그인 시
    *
@@ -100,14 +111,13 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
    */
   @Override
   public ProductDetail getProductDetail(Long userId, String productId) {
+    Long reviewCnt = getReviewCnt(productId);
     Product byProductId = productQueryOutPort.findByProductId(productId);
     ProductDetail productDetail = getProductDetail(byProductId);
     ProductCommand.ProductDetailLike isLiked =
         wishlistServiceClient.getProductDetailLikes(productId, userId).getData();
     String storeName = getProductDetailStoreName(byProductId);
-    productDetail.setLiked(isLiked.getIsLiked());
-    productDetail.setStoreName(storeName);
-    return productDetail;
+    return ProductDetail.getData(productDetail, storeName, reviewCnt, isLiked);
   }
 
   /**
@@ -118,11 +128,11 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
    */
   @Override
   public ProductDetail getProductDetail(String productId) {
+    Long reviewCnt = getReviewCnt(productId);
     Product byProductId = productQueryOutPort.findByProductId(productId);
     ProductDetail productDetail = getProductDetail(byProductId);
     String storeName = getProductDetailStoreName(byProductId);
-    productDetail.setStoreName(storeName);
-    return productDetail;
+    return ProductDetail.getData(productDetail, storeName, reviewCnt);
   }
 
   /**
@@ -278,11 +288,6 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     List<ProductListItem> productByCategories = getProduct(byCategory);
     List<String> data = getProductsIsLiked(userId, ids);
     return ProductList.getData(productByCategories, data, byCategory.getTotalPages());
-  }
-
-  private List<String> getProductsIsLiked(Long userId, List<String> ids) {
-    List<String> data = wishlistServiceClient.getProductsMemberLikes(userId, ids).getData();
-    return data;
   }
 
   /**

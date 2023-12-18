@@ -14,12 +14,22 @@ public class ReviewQueryRepository implements ReviewQueryOutPort {
   private final ReviewJpaRepository reviewJpaRepository;
 
   @Override
-  public List<Review> findReviewByProductId(List<String> productId, Pageable pageable) {
+  public Page<Review> findReviewByProductId(List<String> productId, Pageable pageable) {
     return reviewJpaRepository.findReviewByProductIds(productId, pageable);
   }
 
   @Override
   public Page<Review> findReviewsByProductId(String productId, Pageable pageable) {
     return reviewJpaRepository.findReviewsByProductId(productId, pageable);
+  }
+
+  @Override
+  public Page<Review> findReviewsByUserId(Long userId, Pageable pageable) {
+    return reviewJpaRepository.findReviewsByUserId(userId, pageable);
+  }
+
+  @Override
+  public Long findReviewCountByProductId(String productId) {
+    return reviewJpaRepository.findReviewCountByProductId(productId);
   }
 }

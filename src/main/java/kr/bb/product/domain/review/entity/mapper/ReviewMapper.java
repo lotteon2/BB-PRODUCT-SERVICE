@@ -1,5 +1,7 @@
 package kr.bb.product.domain.review.entity.mapper;
 
+import java.util.Collection;
+import java.util.List;
 import kr.bb.product.domain.review.entity.Review;
 import kr.bb.product.domain.review.entity.ReviewCommand;
 import org.mapstruct.Mapper;
@@ -7,7 +9,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+    imports = {List.class, Collection.class})
 public interface ReviewMapper {
   ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
 

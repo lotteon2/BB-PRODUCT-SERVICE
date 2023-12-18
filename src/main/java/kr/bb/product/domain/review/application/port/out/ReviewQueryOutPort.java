@@ -16,8 +16,13 @@ public interface ReviewQueryOutPort {
    * @return
    * @throws EntityNotFoundException
    */
-  List<Review> findReviewByProductId(List<String> productId, Pageable pageable)
+
+  Page<Review> findReviewByProductId(List<String> productId, Pageable pageable)
       throws EntityNotFoundException;
 
   Page<Review> findReviewsByProductId(String productId, Pageable pageable);
+
+  Page<Review> findReviewsByUserId(Long userId, Pageable pageable);
+
+  Long findReviewCountByProductId(String productId);
 }
