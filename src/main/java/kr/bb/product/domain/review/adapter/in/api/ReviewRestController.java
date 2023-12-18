@@ -1,13 +1,10 @@
 package kr.bb.product.domain.review.adapter.in.api;
 
 import bloomingblooms.response.CommonResponse;
-import java.util.List;
 import kr.bb.product.domain.review.application.usecase.ReviewCommandUseCase;
 import kr.bb.product.domain.review.application.usecase.ReviewQueryUseCase;
 import kr.bb.product.domain.review.entity.ReviewCommand;
 import kr.bb.product.domain.review.entity.ReviewCommand.SortOption;
-import kr.bb.product.domain.review.entity.ReviewCommand.StoreReview.StoreReviewItem;
-import kr.bb.product.exception.errors.ReviewNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,7 +24,7 @@ public class ReviewRestController {
   private final ReviewQueryUseCase reviewQueryUseCase;
 
   @GetMapping("stores/{storeId}/reviews")
-  public CommonResponse<List<StoreReviewItem>> getStoreReviews(
+  public CommonResponse<ReviewCommand.StoreReviewList> getStoreReviews(
       @PathVariable Long storeId,
       @PageableDefault(
               page = 0,
@@ -36,9 +33,7 @@ public class ReviewRestController {
               direction = Sort.Direction.DESC)
           Pageable pageable,
       @RequestParam("sort-option") SortOption sortOption) {
-    if (reviewQueryUseCase.findReviewByStoreId(storeId, pageable, sortOption).isEmpty())
-      throw new ReviewNotFoundException();
-    return CommonResponse.<List<StoreReviewItem>>builder()
+    return CommonResponse.<ReviewCommand.StoreReviewList>builder()
         .message("가세 사장 리뷰 조회")
         .data(reviewQueryUseCase.findReviewByStoreId(storeId, pageable, sortOption))
         .build();
@@ -55,9 +50,28 @@ public class ReviewRestController {
   @GetMapping("{productId}/reviews")
   public CommonResponse<ReviewCommand.ProductDetailReviewList> getProductDetailReviews(
       @PathVariable String productId,
-      Pageable pageable,
+      @PageableDefault(
+              page = 0,
+              size = 10,
+              sort = {"createdAt"},
+              direction = Sort.Direction.DESC)
+          Pageable pageable,
       @RequestParam("sort-option") SortOption sortOption) {
     return CommonResponse.success(
         reviewQueryUseCase.findReviewsByProductId(productId, pageable, sortOption));
+  }
+
+  @GetMapping("reviews/mypage")
+  public CommonResponse<ReviewCommand.ReviewList> getReviewByUserId(
+      @RequestHeader Long userId,
+      @PageableDefault(
+              page = 0,
+              size = 10,
+              sort = {"createdAt"},
+              direction = Sort.Direction.DESC)
+          Pageable pageable,
+      @RequestParam("sort-option") SortOption sortOption) {
+    return CommonResponse.success(
+        reviewQueryUseCase.findReviewsByUserId(userId, pageable, sortOption));
   }
 }

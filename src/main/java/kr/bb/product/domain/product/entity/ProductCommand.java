@@ -179,6 +179,16 @@ public class ProductCommand {
       return ProductMapper.INSTANCE.entityToDetail(product);
     }
 
+    public static ProductDetail getData(
+        ProductDetail productDetail, String storeName, Long reviewCnt) {
+      return ProductMapper.INSTANCE.getProductDetail(productDetail, storeName, reviewCnt);
+    }
+
+    public static ProductDetail getData(
+        ProductDetail productDetail, String storeName, Long reviewCnt, ProductDetailLike isLiked) {
+      return ProductMapper.INSTANCE.getProductDetail(productDetail, storeName, reviewCnt, isLiked);
+    }
+
     public void setStoreName(String storeName) {
       this.storeName = storeName;
     }
