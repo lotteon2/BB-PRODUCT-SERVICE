@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
+import kr.bb.product.common.dto.IsProductPriceValid;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
@@ -180,5 +181,39 @@ class ProductQueryRepositoryTest {
     assertThat(
             mainPageProducts.get(0).getAverageRating() > mainPageProducts.get(1).getAverageRating())
         .isTrue();
+  }
+
+  @Test
+  @DisplayName("상품 정보 조회 요청 repo test")
+  void findProductByProductIds() {
+    List<String> productIds = new ArrayList<>();
+    for (int i = 0; i < 5; i++) {
+      productIds.add("i" + i);
+      Product product =
+          Product.builder()
+              .productId("i" + i)
+              .productName("product" + i)
+              .productThumbnail("thumbnail" + i)
+              .build();
+      productMongoRepository.save(product);
+    }
+    productQueryOutPort.findProductByProductIds(productIds);
+  }
+
+  @Test
+  @DisplayName("상품 가격 유효성 검사 ")
+  void findProductPriceValid() {
+    for (int i = 0; i < 4; i++) {
+      Product product = Product.builder().productId("1" + i).productPrice(1L + i).build();
+      productMongoRepository.save(product);
+    }
+    List<IsProductPriceValid> productPriceValids = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      IsProductPriceValid isProductPriceValid =
+          IsProductPriceValid.builder().price(1L + i).productId("1" + i).build();
+      productPriceValids.add(isProductPriceValid);
+    }
+    boolean productPriceValid = productQueryOutPort.findProductPriceValid(productPriceValids);
+    assertThat(productPriceValid).isTrue();
   }
 }

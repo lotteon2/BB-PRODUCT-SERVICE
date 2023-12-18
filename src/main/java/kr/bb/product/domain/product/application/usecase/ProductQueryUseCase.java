@@ -1,6 +1,11 @@
 package kr.bb.product.domain.product.application.usecase;
 
+import java.util.List;
+import kr.bb.product.common.dto.IsProductPriceValid;
+import kr.bb.product.common.dto.ProductInformation;
 import kr.bb.product.common.dto.ProductThumbnail;
+import kr.bb.product.common.dto.StoreSubscriptionProductId;
+import kr.bb.product.common.dto.SubscriptionProductInformation;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
@@ -53,5 +58,11 @@ public interface ProductQueryUseCase {
 
   ProductCommand.SubscriptionProductForCustomer getSubscriptionProductDetail(Long storeId);
 
-  ProductThumbnail getProductThumbnail(String productId);
+ ProductThumbnail getProductThumbnail(String productId);
+  List<ProductInformation> getProductInformation(List<String> productIds);
+  void getProductPriceValidation(List<IsProductPriceValid> productPriceValids);
+
+  StoreSubscriptionProductId getStoreSubscriptionProductId(Long storeId);
+
+  SubscriptionProductInformation getSubscriptionProductInformation(String productId);
 }

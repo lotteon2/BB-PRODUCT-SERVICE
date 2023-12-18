@@ -26,7 +26,7 @@ class SalesResumeQueryRepositoryTest {
   void findNeedToSendResaleNotification() {
     for (int i = 0; i < 10; i++) {
       SalesResume build =
-          SalesResume.builder().userId(1L).productId("123").isNotified(true).build();
+          SalesResume.builder().userId(1L).productId("123").isNotified(false).build();
       salesResumeJpaRepository.save(build);
     }
     List<SalesResume> needToSendResaleNotification =
