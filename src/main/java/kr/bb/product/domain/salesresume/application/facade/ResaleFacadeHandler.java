@@ -9,8 +9,10 @@ import kr.bb.product.domain.salesresume.entity.SalesResume;
 import kr.bb.product.domain.salesresume.entity.mapper.SalesResumeMapper;
 import kr.bb.product.domain.salesresume.infrastructure.message.SalesResumeSQSPublisher;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ResaleFacadeHandler {
@@ -28,7 +30,7 @@ public class ResaleFacadeHandler {
           ResaleNotificationList.builder()
               .resaleNotificationData(resaleNotificationList)
               .productId(resaleCheckRequest.getProductId())
-              .message(String.format("%s이 판매 시작되었습니다.", resaleCheckRequest.getProductName()))
+              .productName(resaleCheckRequest.getProductName())
               .build());
     }
   }

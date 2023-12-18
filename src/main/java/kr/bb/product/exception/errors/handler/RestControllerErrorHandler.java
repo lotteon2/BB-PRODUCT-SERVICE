@@ -4,6 +4,7 @@ import bloomingblooms.response.CommonResponse;
 import com.amazonaws.services.sns.model.AmazonSNSException;
 import java.util.HashMap;
 import java.util.Map;
+import kr.bb.product.exception.errors.ProductPriceValidationException;
 import kr.bb.product.exception.errors.ProductNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
@@ -14,6 +15,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestControllerAdvice
 public class RestControllerErrorHandler extends ResponseEntityExceptionHandler {
+  @ExceptionHandler(ProductPriceValidationException.class)
+  protected CommonResponse productPriceValidationException(
+      ProductPriceValidationException productPriceValidationException) {
+    return CommonResponse.fail(productPriceValidationException.getMessage(), "EPC01");
+  }
+
   @ExceptionHandler(AmazonSNSException.class)
   protected CommonResponse resaleSubscribeException(AmazonSNSException amazonSNSException) {
     return CommonResponse.fail(amazonSNSException.getMessage(), "EP01");

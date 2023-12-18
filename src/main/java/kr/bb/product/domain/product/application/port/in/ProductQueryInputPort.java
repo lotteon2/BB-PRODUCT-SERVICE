@@ -3,6 +3,7 @@ package kr.bb.product.domain.product.application.port.in;
 import bloomingblooms.errors.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
+import kr.bb.product.common.dto.IsProductPriceValid;
 import kr.bb.product.common.dto.StoreSubscriptionProductId;
 import kr.bb.product.common.dto.SubscriptionProductInformation;
 import kr.bb.product.domain.flower.adapter.out.jpa.FlowerJpaRepository;
@@ -31,6 +32,7 @@ import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.review.application.port.out.ReviewQueryOutPort;
+import kr.bb.product.exception.errors.ProductPriceValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -253,6 +255,12 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     Product subscriptionProductByStoreId =
         productQueryOutPort.findSubscriptionProductByStoreId(storeId);
     return SubscriptionProductForCustomer.getData(subscriptionProductByStoreId);
+  }
+
+  @Override
+  public void getProductPriceValidation(List<IsProductPriceValid> productPriceValids) {
+    if (!productQueryOutPort.findProductPriceValid(productPriceValids))
+      throw new ProductPriceValidationException();
   }
 
   @Override

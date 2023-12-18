@@ -1,6 +1,7 @@
 package kr.bb.product.domain.product.application.port.out;
 
 import java.util.List;
+import kr.bb.product.common.dto.IsProductPriceValid;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
@@ -26,4 +27,6 @@ public interface ProductQueryOutPort {
   Product findSubscriptionProductByStoreId(Long storeId);
 
   List<Product> findMainPageProducts(ProductCommand.SelectOption selectOption);
+
+  boolean findProductPriceValid(List<IsProductPriceValid> productPriceValids);
 }
