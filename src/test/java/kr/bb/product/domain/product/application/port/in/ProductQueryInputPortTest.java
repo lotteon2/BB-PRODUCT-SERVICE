@@ -6,8 +6,9 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import kr.bb.product.common.dto.ProductInformation;
 import kr.bb.product.common.dto.IsProductPriceValid;
+import kr.bb.product.common.dto.ProductInformation;
+import kr.bb.product.common.dto.ProductThumbnail;
 import kr.bb.product.common.dto.StoreSubscriptionProductId;
 import kr.bb.product.common.dto.SubscriptionProductInformation;
 import kr.bb.product.config.MockingTestConfiguration;
@@ -290,6 +291,13 @@ class ProductQueryInputPortTest {
     assertThat(subscriptionProductDetail.getIsLiked()).isFalse();
   }
 
+  @Test
+  @DisplayName("상품 썸네일 조회")
+  void getProductThumbnail() {
+    Product product = Product.builder().productThumbnail("thumbnail").productId("123").build();
+    productMongoRepository.save(product);
+    ProductThumbnail productThumbnail = productQueryInputPort.getProductThumbnail("123");
+    assertThat(productThumbnail.getProductThumbnail()).isEqualTo(product.getProductThumbnail());}
   @Test
   @DisplayName("상품 정보 요청 feign ")
   void getProductInformation() {

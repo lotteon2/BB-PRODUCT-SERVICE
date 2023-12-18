@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kr.bb.product.common.dto.IsProductPriceValid;
 import kr.bb.product.common.dto.ProductInformation;
+import kr.bb.product.common.dto.ProductThumbnail;
 import kr.bb.product.common.dto.StoreSubscriptionProductId;
 import kr.bb.product.common.dto.SubscriptionProductInformation;
 import kr.bb.product.domain.flower.adapter.out.jpa.FlowerJpaRepository;
@@ -256,6 +257,11 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     Product subscriptionProductByStoreId =
         productQueryOutPort.findSubscriptionProductByStoreId(storeId);
     return SubscriptionProductForCustomer.getData(subscriptionProductByStoreId);
+  }
+
+  @Override
+  public ProductThumbnail getProductThumbnail(String productId) {
+    return ProductThumbnail.getData(productQueryOutPort.findByProductId(productId));
   }
 
   @Override
