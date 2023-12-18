@@ -141,6 +141,11 @@ public class ProductQueryRepository implements ProductQueryOutPort {
   }
 
   @Override
+  public List<Product> findProductByProductIds(List<String> productIds) {
+    return mongoTemplate.find(Query.query(Criteria.where("_id").in(productIds)), Product.class);
+  }
+
+  @Override
   public boolean findProductPriceValid(List<IsProductPriceValid> productPriceValids) {
     List<String> collect =
         productPriceValids.stream()
@@ -151,8 +156,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
     Map<String, Long> collect1 =
         products.stream()
             .collect(Collectors.toMap(Product::getProductId, Product::getProductPrice));
-   return
-        productPriceValids.stream()
-            .allMatch(item -> item.getPrice().equals(collect1.get(item.getProductId())));
+    return productPriceValids.stream()
+        .allMatch(item -> item.getPrice().equals(collect1.get(item.getProductId())));
   }
 }
