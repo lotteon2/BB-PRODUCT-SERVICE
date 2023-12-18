@@ -5,12 +5,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import java.util.ArrayList;
 import java.util.List;
-<<<<<<< HEAD
 import kr.bb.product.common.dto.IsProductPriceValid;
-=======
 import kr.bb.product.common.dto.StoreSubscriptionProductId;
 import kr.bb.product.common.dto.SubscriptionProductInformation;
->>>>>>> origin/develop
 import kr.bb.product.config.MockingTestConfiguration;
 import kr.bb.product.config.mock.MockingApi;
 import kr.bb.product.domain.category.entity.Category;
@@ -292,7 +289,6 @@ class ProductQueryInputPortTest {
   }
 
   @Test
-<<<<<<< HEAD
   @DisplayName("상품 가격 유효성 검사")
   void getProductPriceValidation() {
     for (int i = 0; i < 4; i++) {
@@ -306,7 +302,9 @@ class ProductQueryInputPortTest {
       productPriceValids.add(isProductPriceValid);
     }
     productQueryInputPort.getProductPriceValidation(productPriceValids);
-=======
+  }
+
+  @Test
   @DisplayName("구독 상품 id 조회 ")
   void getStoreSubscriptionProductId() {
     productMongoRepository.deleteAll();
@@ -336,6 +334,5 @@ class ProductQueryInputPortTest {
     SubscriptionProductInformation subscriptionProductInformation =
         productQueryInputPort.getSubscriptionProductInformation("123");
     assertThat(subscriptionProductInformation.getUnitPrice()).isEqualTo(product.getProductPrice());
->>>>>>> origin/develop
   }
 }
