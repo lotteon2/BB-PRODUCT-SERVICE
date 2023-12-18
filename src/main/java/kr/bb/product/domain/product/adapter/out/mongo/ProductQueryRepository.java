@@ -1,6 +1,9 @@
 package kr.bb.product.domain.product.adapter.out.mongo;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import kr.bb.product.common.dto.IsProductPriceValid;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
@@ -140,5 +143,20 @@ public class ProductQueryRepository implements ProductQueryOutPort {
   @Override
   public List<Product> findProductByProductIds(List<String> productIds) {
     return mongoTemplate.find(Query.query(Criteria.where("_id").in(productIds)), Product.class);
+  }
+
+  @Override
+  public boolean findProductPriceValid(List<IsProductPriceValid> productPriceValids) {
+    List<String> collect =
+        productPriceValids.stream()
+            .map(IsProductPriceValid::getProductId)
+            .collect(Collectors.toList());
+    List<Product> products =
+        mongoTemplate.find(Query.query(Criteria.where("_id").in(collect)), Product.class);
+    Map<String, Long> collect1 =
+        products.stream()
+            .collect(Collectors.toMap(Product::getProductId, Product::getProductPrice));
+    return productPriceValids.stream()
+        .allMatch(item -> item.getPrice().equals(collect1.get(item.getProductId())));
   }
 }

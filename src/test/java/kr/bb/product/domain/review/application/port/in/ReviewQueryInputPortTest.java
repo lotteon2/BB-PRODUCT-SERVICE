@@ -14,9 +14,11 @@ import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.domain.review.adapter.out.jpa.ReviewJpaRepository;
 import kr.bb.product.domain.review.entity.Review;
+import kr.bb.product.domain.review.entity.ReviewCommand;
 import kr.bb.product.domain.review.entity.ReviewCommand.ProductDetailReviewList;
+import kr.bb.product.domain.review.entity.ReviewCommand.ReviewItem;
+import kr.bb.product.domain.review.entity.ReviewCommand.ReviewList;
 import kr.bb.product.domain.review.entity.ReviewCommand.SortOption;
-import kr.bb.product.domain.review.entity.ReviewCommand.StoreReview.StoreReviewItem;
 import kr.bb.product.domain.review.entity.ReviewImages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,10 +72,10 @@ class ReviewQueryInputPortTest {
     productCommandInputPort.createProduct(getProductRequestData());
     createReviews();
 
-    List<StoreReviewItem> reviewByStoreId =
+    ReviewCommand.StoreReviewList reviewByStoreId =
         reviewQueryInputPort.findReviewByStoreId(1L, pageRequest, SortOption.LOW);
-    assertThat(reviewByStoreId.size()).isEqualTo(5);
-    assertThat(reviewByStoreId.get(0).getRating()).isEqualTo(4.5);
+    assertThat(reviewByStoreId.getReviews().size()).isEqualTo(5);
+    assertThat(reviewByStoreId.getReviews().get(0).getRating()).isEqualTo(4.5);
   }
 
   @Test
@@ -84,10 +86,10 @@ class ReviewQueryInputPortTest {
     productCommandInputPort.createProduct(getProductRequestData());
     createReviews();
 
-    List<StoreReviewItem> reviewByStoreId =
+    ReviewCommand.StoreReviewList reviewByStoreId =
         reviewQueryInputPort.findReviewByStoreId(1L, pageRequest, SortOption.HIGH);
-    assertThat(reviewByStoreId.size()).isEqualTo(5);
-    assertThat(reviewByStoreId.get(0).getRating()).isEqualTo(13.5);
+    assertThat(reviewByStoreId.getReviews().size()).isEqualTo(5);
+    assertThat(reviewByStoreId.getReviews().get(0).getRating()).isEqualTo(13.5);
   }
 
   private void createReviews() {
@@ -146,7 +148,34 @@ class ReviewQueryInputPortTest {
     PageRequest pageRequest = PageRequest.of(0, 5);
     ProductDetailReviewList reviewsByProductId =
         reviewQueryInputPort.findReviewsByProductId("123", pageRequest, SortOption.DATE);
-    assertThat(reviewsByProductId.getProductReview().size()).isEqualTo(5);
-    assertThat(reviewsByProductId.getProductReview().get(0).getReviewImages().size()).isEqualTo(3);
+    assertThat(reviewsByProductId.getReviews().size()).isEqualTo(5);
+    assertThat(reviewsByProductId.getReviews().get(0).getReviewImages().size()).isEqualTo(3);
+  }
+
+  @Test
+  @DisplayName("마이페이지 리뷰 조회")
+  void findReviewsByUserId() {
+    for (int i = 0; i < 4; i++) {
+      Review reviewContent =
+          Review.builder()
+              .reviewId(999L + i)
+              .reviewRating(1.0 + i)
+              .userId(123L)
+              .reviewContent("reviewContent")
+              .build();
+      for (int j = 0; j < 3; j++) {
+        ReviewImages reviewImages =
+            ReviewImages.builder().reviewImageUrl("url" + j).review(reviewContent).build();
+        reviewContent.getReviewImages().add(reviewImages);
+      }
+      reviewJpaRepository.save(reviewContent);
+    }
+    PageRequest pageRequest = PageRequest.of(0, 5);
+    ReviewList reviewsByUserId =
+        reviewQueryInputPort.findReviewsByUserId(123L, pageRequest, SortOption.LOW);
+    List<ReviewItem> reviews = reviewsByUserId.getReviews();
+    int totalCnt = reviewsByUserId.getTotalCnt();
+    assertThat(reviews.size()).isEqualTo(4);
+    assertThat(totalCnt).isEqualTo(1);
   }
 }

@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kr.bb.product.common.dto.ProductInformation;
+import kr.bb.product.common.dto.IsProductPriceValid;
+import kr.bb.product.common.dto.StoreSubscriptionProductId;
+import kr.bb.product.common.dto.SubscriptionProductInformation;
 import kr.bb.product.config.MockingTestConfiguration;
 import kr.bb.product.config.mock.MockingApi;
 import kr.bb.product.domain.category.entity.Category;
@@ -310,5 +313,53 @@ class ProductQueryInputPortTest {
 
     assertThat(productInformation.size()).isEqualTo(3);
     assertThat(productInformation.get(0).getProductThumbnail()).contains(collect);
+  }
+
+  @Test
+  @DisplayName("상품 가격 유효성 검사")
+  void getProductPriceValidation() {
+    for (int i = 0; i < 4; i++) {
+      Product product = Product.builder().productId("1" + i).productPrice(1L + i).build();
+      productMongoRepository.save(product);
+    }
+    List<IsProductPriceValid> productPriceValids = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      IsProductPriceValid isProductPriceValid =
+          IsProductPriceValid.builder().price(1L + i).productId("1" + i).build();
+      productPriceValids.add(isProductPriceValid);
+    }
+    productQueryInputPort.getProductPriceValidation(productPriceValids);
+  }
+
+  @Test
+  @DisplayName("구독 상품 id 조회 ")
+  void getStoreSubscriptionProductId() {
+    productMongoRepository.deleteAll();
+    Product product = Product.builder().productId("123").storeId(1L).isSubscription(true).build();
+    productMongoRepository.save(product);
+
+    StoreSubscriptionProductId storeSubscriptionProductId =
+        productQueryInputPort.getStoreSubscriptionProductId(1L);
+    assertThat(storeSubscriptionProductId.getSubscriptionProductId())
+        .isEqualTo(product.getProductId());
+  }
+
+  @Test
+  @DisplayName("구독 상품 정보 요청")
+  void getSubscriptionProductInformation() {
+    productMongoRepository.deleteAll();
+    Product product =
+        Product.builder()
+            .productName("name")
+            .productThumbnail("thumbnail")
+            .productPrice(123L)
+            .storeId(1L)
+            .isSubscription(true)
+            .productId("123")
+            .build();
+    productMongoRepository.save(product);
+    SubscriptionProductInformation subscriptionProductInformation =
+        productQueryInputPort.getSubscriptionProductInformation("123");
+    assertThat(subscriptionProductInformation.getUnitPrice()).isEqualTo(product.getProductPrice());
   }
 }
