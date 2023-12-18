@@ -7,6 +7,7 @@ import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItem;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductDetailLike;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreManagerSubscriptionProduct;
 import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProduct;
@@ -135,4 +136,18 @@ public interface ProductMapper {
   @Mapping(target = "salesCount", source = "productSaleAmount")
   @Mapping(target = "storeName", ignore = true)
   SubscriptionProductForCustomer getSubscriptionProductDetail(Product subscriptionProductByStoreId);
+
+  @Mappings({
+    @Mapping(target = "storeName", source = "storeName"),
+    @Mapping(target = "reviewCount", source = "reviewCnt")
+  })
+  ProductDetail getProductDetail(ProductDetail productDetail, String storeName, Long reviewCnt);
+
+  @Mappings({
+    @Mapping(target = "storeName", source = "storeName"),
+    @Mapping(target = "reviewCount", source = "reviewCnt"),
+    @Mapping(target = "isLiked", source = "isLiked.isLiked")
+  })
+  ProductDetail getProductDetail(
+      ProductDetail productDetail, String storeName, Long reviewCnt, ProductDetailLike isLiked);
 }

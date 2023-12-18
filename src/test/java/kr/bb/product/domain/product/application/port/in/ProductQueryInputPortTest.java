@@ -5,6 +5,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import kr.bb.product.common.dto.IsProductPriceValid;
+import kr.bb.product.common.dto.ProductInformation;
+import kr.bb.product.common.dto.ProductThumbnail;
 import kr.bb.product.common.dto.StoreSubscriptionProductId;
 import kr.bb.product.common.dto.SubscriptionProductInformation;
 import kr.bb.product.config.MockingTestConfiguration;
@@ -285,6 +289,54 @@ class ProductQueryInputPortTest {
         productQueryInputPort.getSubscriptionProductDetail(1L);
     assertThat(subscriptionProductDetail.getProductName()).isEqualTo(build.getProductName());
     assertThat(subscriptionProductDetail.getIsLiked()).isFalse();
+  }
+
+  @Test
+  @DisplayName("상품 썸네일 조회")
+  void getProductThumbnail() {
+    Product product = Product.builder().productThumbnail("thumbnail").productId("123").build();
+    productMongoRepository.save(product);
+    ProductThumbnail productThumbnail = productQueryInputPort.getProductThumbnail("123");
+    assertThat(productThumbnail.getProductThumbnail()).isEqualTo(product.getProductThumbnail());}
+  @Test
+  @DisplayName("상품 정보 요청 feign ")
+  void getProductInformation() {
+    List<String> productIds = new ArrayList<>();
+    List<Product> list = new ArrayList<>();
+    for (int i = 0; i < 3; i++) {
+      productIds.add(i + "i");
+      Product build =
+          Product.builder()
+              .productName("name")
+              .productThumbnail("image")
+              .productId(i + "i")
+              .build();
+      list.add(build);
+      productMongoRepository.save(build);
+    }
+    List<ProductInformation> productInformation =
+        productQueryInputPort.getProductInformation(productIds);
+    List<String> collect =
+        list.stream().map(Product::getProductThumbnail).collect(Collectors.toList());
+
+    assertThat(productInformation.size()).isEqualTo(3);
+    assertThat(productInformation.get(0).getProductThumbnail()).contains(collect);
+  }
+
+  @Test
+  @DisplayName("상품 가격 유효성 검사")
+  void getProductPriceValidation() {
+    for (int i = 0; i < 4; i++) {
+      Product product = Product.builder().productId("1" + i).productPrice(1L + i).build();
+      productMongoRepository.save(product);
+    }
+    List<IsProductPriceValid> productPriceValids = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      IsProductPriceValid isProductPriceValid =
+          IsProductPriceValid.builder().price(1L + i).productId("1" + i).build();
+      productPriceValids.add(isProductPriceValid);
+    }
+    productQueryInputPort.getProductPriceValidation(productPriceValids);
   }
 
   @Test
