@@ -1,8 +1,8 @@
 package kr.bb.product.domain.flower.adapter.in.client;
 
+import bloomingblooms.domain.flower.FlowerInformation;
 import bloomingblooms.response.CommonResponse;
 import java.util.List;
-import kr.bb.product.common.dto.FlowerInformation;
 import kr.bb.product.domain.flower.application.usecase.FlowerQueryUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

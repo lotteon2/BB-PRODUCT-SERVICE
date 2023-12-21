@@ -142,6 +142,7 @@ public class ReviewCommand {
     private List<String> reviewImages;
     private String nickname;
     private String profileImage;
+    private String productName;
   }
 
   @Getter
@@ -150,7 +151,8 @@ public class ReviewCommand {
     private List<ReviewItem> reviews;
     private int totalCnt;
 
-    public static ReviewList getData(Page<Review> reviewsByUserId) {
+    public static ReviewList getData(
+        Page<Review> reviewsByUserId, Map<String, String> productNames) {
       return ReviewList.builder()
           .reviews(
               reviewsByUserId.getContent().stream()
@@ -160,6 +162,7 @@ public class ReviewCommand {
                               .reviewId(item.getReviewId())
                               .createdAt(item.getCreatedAt())
                               .nickname(item.getNickname())
+                              .productName(productNames.get(item.getProductId()))
                               .profileImage(item.getProfileImage())
                               .reviewContent(item.getReviewContent())
                               .reviewImages(
