@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 public class MockingApi {
   public static void setUpProductDetailLikes(WireMockServer mockCacheApi) {
     mockCacheApi.stubFor(
-        WireMock.get(WireMock.urlMatching("/likes/1/product/123"))
+        WireMock.get(WireMock.urlMatching("/client/likes/1/product/123"))
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(HttpStatus.OK.value())
@@ -17,7 +17,7 @@ public class MockingApi {
   }
   public static void setUpProductsLikes(WireMockServer mockCacheApi) {
     mockCacheApi.stubFor(
-        WireMock.post(WireMock.urlMatching("/likes/1"))
+        WireMock.post(WireMock.urlMatching("/client/likes/1"))
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(HttpStatus.OK.value())
