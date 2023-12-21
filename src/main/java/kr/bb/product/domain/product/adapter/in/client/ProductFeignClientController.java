@@ -1,12 +1,12 @@
 package kr.bb.product.domain.product.adapter.in.client;
 
+import bloomingblooms.domain.product.IsProductPriceValid;
+import bloomingblooms.domain.product.ProductInformation;
+import bloomingblooms.domain.product.ProductThumbnail;
+import bloomingblooms.domain.product.StoreSubscriptionProductId;
+import bloomingblooms.domain.product.SubscriptionProductInformation;
 import bloomingblooms.response.CommonResponse;
 import java.util.List;
-import kr.bb.product.common.dto.IsProductPriceValid;
-import kr.bb.product.common.dto.ProductInformation;
-import kr.bb.product.common.dto.ProductThumbnail;
-import kr.bb.product.common.dto.StoreSubscriptionProductId;
-import kr.bb.product.common.dto.SubscriptionProductInformation;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

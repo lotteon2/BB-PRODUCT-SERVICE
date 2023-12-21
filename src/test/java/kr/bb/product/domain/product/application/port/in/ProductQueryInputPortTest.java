@@ -2,15 +2,15 @@ package kr.bb.product.domain.product.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import bloomingblooms.domain.product.IsProductPriceValid;
+import bloomingblooms.domain.product.ProductInformation;
+import bloomingblooms.domain.product.ProductThumbnail;
+import bloomingblooms.domain.product.StoreSubscriptionProductId;
+import bloomingblooms.domain.product.SubscriptionProductInformation;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import kr.bb.product.common.dto.IsProductPriceValid;
-import kr.bb.product.common.dto.ProductInformation;
-import kr.bb.product.common.dto.ProductThumbnail;
-import kr.bb.product.common.dto.StoreSubscriptionProductId;
-import kr.bb.product.common.dto.SubscriptionProductInformation;
 import kr.bb.product.config.MockingTestConfiguration;
 import kr.bb.product.config.mock.MockingApi;
 import kr.bb.product.domain.category.entity.Category;

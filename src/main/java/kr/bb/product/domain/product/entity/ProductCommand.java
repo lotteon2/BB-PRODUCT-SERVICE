@@ -1,5 +1,9 @@
 package kr.bb.product.domain.product.entity;
 
+import bloomingblooms.domain.product.ProductInformation;
+import bloomingblooms.domain.product.ProductThumbnail;
+import bloomingblooms.domain.product.StoreSubscriptionProductId;
+import bloomingblooms.domain.product.SubscriptionProductInformation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +20,37 @@ import lombok.Builder;
 import lombok.Getter;
 
 public class ProductCommand {
+    public static List<ProductInformation> getProductInformationListData(List<Product> productByProductIds) {
+    return productByProductIds.stream()
+        .map(
+            item ->
+                ProductInformation.builder()
+                    .productId(item.getProductId())
+                    .productName(item.getProductName())
+                    .productThumbnail(item.getProductThumbnail())
+                    .build())
+        .collect(Collectors.toList());
+  }
+
+    public static ProductThumbnail getProductThumbnailData(Product byProductId) {
+    return ProductThumbnail.builder().productThumbnail(byProductId.getProductThumbnail()).build();
+  }
+
+    public static StoreSubscriptionProductId getStoreSubscriptionProductIdData(Product subscriptionProductByStoreId) {
+    return StoreSubscriptionProductId.builder()
+        .subscriptionProductId(subscriptionProductByStoreId.getProductId())
+        .build();
+  }
+
+    public static SubscriptionProductInformation getSubscriptionProductInformationData(Product product) {
+    return SubscriptionProductInformation.builder()
+        .productName(product.getProductName())
+        .productThumbnail(product.getProductThumbnail())
+        .unitPrice(product.getProductPrice())
+        .storeId(product.getStoreId())
+        .build();
+  }
+
   @Getter
   public enum SortOption {
     SALE("productSaleAmount"),
@@ -472,4 +507,5 @@ public class ProductCommand {
       return RepresentativeFlowerId.builder().flowerId(flowerId).build();
     }
   }
+
 }

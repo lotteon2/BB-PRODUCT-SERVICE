@@ -78,7 +78,13 @@ public class ReviewQueryInputPort implements ReviewQueryUseCase {
   @Override
   public ReviewList findReviewsByUserId(Long userId, Pageable pageable, SortOption sortOption) {
     Pageable pageRequest = getPageable(pageable, sortOption);
+    Page<Review> reviewsByUserId = reviewQueryOutPort.findReviewsByUserId(userId, pageRequest);
+    List<String> productIds =
+        reviewsByUserId.getContent().stream()
+            .map(Review::getProductId)
+            .collect(Collectors.toList());
     return ReviewCommand.ReviewList.getData(
-        reviewQueryOutPort.findReviewsByUserId(userId, pageRequest));
+        reviewsByUserId,
+        productQueryOutPort.findProductNameByProductIdsForReviewByUserId(productIds));
   }
 }

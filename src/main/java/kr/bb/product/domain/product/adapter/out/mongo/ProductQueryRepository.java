@@ -1,9 +1,9 @@
 package kr.bb.product.domain.product.adapter.out.mongo;
 
+import bloomingblooms.domain.product.IsProductPriceValid;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import kr.bb.product.common.dto.IsProductPriceValid;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
@@ -178,5 +178,15 @@ public class ProductQueryRepository implements ProductQueryOutPort {
             .map(ProductFlowers::getFlowerId)
             .findFirst()
             .orElse(null));
+  }
+
+  @Override
+  public Map<String, String> findProductNameByProductIdsForReviewByUserId(List<String> productIds) {
+
+    List<Product> products =
+        mongoTemplate.find(Query.query(Criteria.where("_id").in(productIds)), Product.class);
+
+    return products.stream()
+        .collect(Collectors.toMap(Product::getProductId, Product::getProductName));
   }
 }
