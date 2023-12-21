@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FlowerFeignClientController {
   private final FlowerQueryUseCase flowerQueryUseCase;
 
-  @GetMapping("flowers")
+  @GetMapping("/client/flowers")
   public CommonResponse<List<FlowerInformation>> getAllFlowerInformation() {
     return CommonResponse.success(flowerQueryUseCase.getAllFlowers());
   }
