@@ -217,4 +217,10 @@ public class ProductRestController {
           productQueryUseCase.getSubscriptionProductDetail(userId.get(), storeId));
     else return CommonResponse.success(productQueryUseCase.getSubscriptionProductDetail(storeId));
   }
+
+  @GetMapping("{productId}/language-of-flowers")
+  public CommonResponse<ProductCommand.LanguageOfFlower> getLanguageOfFlower(
+      @PathVariable String productId) {
+    return CommonResponse.success(productQueryUseCase.getLanguageOfFlower(productId));
+  }
 }
