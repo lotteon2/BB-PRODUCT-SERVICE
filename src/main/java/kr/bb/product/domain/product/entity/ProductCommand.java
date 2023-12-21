@@ -20,6 +20,37 @@ import lombok.Builder;
 import lombok.Getter;
 
 public class ProductCommand {
+    public static List<ProductInformation> getProductInformationListData(List<Product> productByProductIds) {
+    return productByProductIds.stream()
+        .map(
+            item ->
+                ProductInformation.builder()
+                    .productId(item.getProductId())
+                    .productName(item.getProductName())
+                    .productThumbnail(item.getProductThumbnail())
+                    .build())
+        .collect(Collectors.toList());
+  }
+
+    public static ProductThumbnail getProductThumbnailData(Product byProductId) {
+    return ProductThumbnail.builder().productThumbnail(byProductId.getProductThumbnail()).build();
+  }
+
+    public static StoreSubscriptionProductId getStoreSubscriptionProductIdData(Product subscriptionProductByStoreId) {
+    return StoreSubscriptionProductId.builder()
+        .subscriptionProductId(subscriptionProductByStoreId.getProductId())
+        .build();
+  }
+
+    public static SubscriptionProductInformation getSubscriptionProductInformationData(Product product) {
+    return SubscriptionProductInformation.builder()
+        .productName(product.getProductName())
+        .productThumbnail(product.getProductThumbnail())
+        .unitPrice(product.getProductPrice())
+        .storeId(product.getStoreId())
+        .build();
+  }
+
   @Getter
   public enum SortOption {
     SALE("productSaleAmount"),
@@ -454,32 +485,27 @@ public class ProductCommand {
       isLiked = liked;
     }
   }
-    public static List<ProductInformation> getProductInformationListData(List<Product> productByProductIds) {
-    return productByProductIds.stream()
-        .map(
-            item ->
-                ProductInformation.builder()
-                    .productId(item.getProductId())
-                    .productName(item.getProductName())
-                    .productThumbnail(item.getProductThumbnail())
-                    .build())
-        .collect(Collectors.toList());
+
+  @Getter
+  @Builder
+  public static class LanguageOfFlower {
+    private String languageOfFlower;
+
+    public static LanguageOfFlower getData(Flower languageOfFlowerByFlowerId) {
+      return LanguageOfFlower.builder()
+          .languageOfFlower(languageOfFlowerByFlowerId.getLanguageOfFlower())
+          .build();
+    }
   }
-    public static ProductThumbnail getProductThumbnailData(Product byProductId) {
-    return ProductThumbnail.builder().productThumbnail(byProductId.getProductThumbnail()).build();
-  }
-    public static StoreSubscriptionProductId getStoreSubscriptionProductIdData(Product subscriptionProductByStoreId) {
-    return StoreSubscriptionProductId.builder()
-        .subscriptionProductId(subscriptionProductByStoreId.getProductId())
-        .build();
-  }
-    public static SubscriptionProductInformation getSubscriptionProductInformationData(Product product) {
-    return SubscriptionProductInformation.builder()
-        .productName(product.getProductName())
-        .productThumbnail(product.getProductThumbnail())
-        .unitPrice(product.getProductPrice())
-        .storeId(product.getStoreId())
-        .build();
+
+  @Getter
+  @Builder
+  public static class RepresentativeFlowerId {
+    private Long flowerId;
+
+    public static RepresentativeFlowerId getData(Long flowerId) {
+      return RepresentativeFlowerId.builder().flowerId(flowerId).build();
+    }
   }
 
 }

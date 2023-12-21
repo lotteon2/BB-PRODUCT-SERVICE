@@ -18,6 +18,7 @@ import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
+import kr.bb.product.domain.product.entity.ProductCommand.LanguageOfFlower;
 import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItems;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
@@ -297,7 +298,9 @@ class ProductQueryInputPortTest {
     Product product = Product.builder().productThumbnail("thumbnail").productId("123").build();
     productMongoRepository.save(product);
     ProductThumbnail productThumbnail = productQueryInputPort.getProductThumbnail("123");
-    assertThat(productThumbnail.getProductThumbnail()).isEqualTo(product.getProductThumbnail());}
+    assertThat(productThumbnail.getProductThumbnail()).isEqualTo(product.getProductThumbnail());
+  }
+
   @Test
   @DisplayName("상품 정보 요청 feign ")
   void getProductInformation() {
@@ -369,5 +372,18 @@ class ProductQueryInputPortTest {
     SubscriptionProductInformation subscriptionProductInformation =
         productQueryInputPort.getSubscriptionProductInformation("123");
     assertThat(subscriptionProductInformation.getUnitPrice()).isEqualTo(product.getProductPrice());
+  }
+
+  @Test
+  @DisplayName("꽃말 조회")
+  void testGetLanguageOfFlower() {
+    productMongoRepository.deleteAll();
+    ProductFlowers productFlowers =
+        ProductFlowers.builder().isRepresentative(true).flowerName("sdf").flowerId(1L).build();
+    Product product =
+        Product.builder().productId("123").productFlowers(List.of(productFlowers)).build();
+    productMongoRepository.save(product);
+    LanguageOfFlower languageOfFlower = productQueryInputPort.getLanguageOfFlower("123");
+    assertThat(languageOfFlower.getLanguageOfFlower()).isEqualTo("장미 꽃말");
   }
 }

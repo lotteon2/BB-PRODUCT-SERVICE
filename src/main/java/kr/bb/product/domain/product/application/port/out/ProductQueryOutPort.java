@@ -33,5 +33,7 @@ public interface ProductQueryOutPort {
 
   boolean findProductPriceValid(List<IsProductPriceValid> productPriceValids);
 
+  ProductCommand.RepresentativeFlowerId findRepresentativeFlower(String productId);
+
   Map<String, String> findProductNameByProductIdsForReviewByUserId(List<String> productIds);
 }
