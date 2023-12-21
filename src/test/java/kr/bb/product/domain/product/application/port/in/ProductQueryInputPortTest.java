@@ -20,6 +20,7 @@ import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
 import kr.bb.product.domain.product.entity.ProductCommand.LanguageOfFlower;
 import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItems;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductInformationForLikes;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductRegister;
@@ -385,5 +386,29 @@ class ProductQueryInputPortTest {
     productMongoRepository.save(product);
     LanguageOfFlower languageOfFlower = productQueryInputPort.getLanguageOfFlower("123");
     assertThat(languageOfFlower.getLanguageOfFlower()).isEqualTo("장미 꽃말");
+  }
+
+  @Test
+  @DisplayName("찜 상품 정보 조회 ")
+  void getProductInformationForLikes() {
+    productMongoRepository.deleteAll();
+    List<String> productIds = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      productIds.add(i + "1");
+      Product product =
+          Product.builder()
+              .productId(i + "1")
+              .productName("name" + i)
+              .productSummary("summary" + i)
+              .averageRating(0.1 + i)
+              .productPrice(1L + i)
+              .productThumbnail("thumbnail" + i)
+              .build();
+      productMongoRepository.save(product);
+    }
+    List<ProductInformationForLikes> productInformationForLikes =
+        productQueryInputPort.getProductInformationForLikes(productIds);
+    assertThat(productInformationForLikes.size()).isEqualTo(4);
+    assertThat(productInformationForLikes.get(0).getProductId()).isEqualTo(productIds.get(0));
   }
 }

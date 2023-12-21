@@ -20,7 +20,8 @@ import lombok.Builder;
 import lombok.Getter;
 
 public class ProductCommand {
-    public static List<ProductInformation> getProductInformationListData(List<Product> productByProductIds) {
+  public static List<ProductInformation> getProductInformationListData(
+      List<Product> productByProductIds) {
     return productByProductIds.stream()
         .map(
             item ->
@@ -32,23 +33,41 @@ public class ProductCommand {
         .collect(Collectors.toList());
   }
 
-    public static ProductThumbnail getProductThumbnailData(Product byProductId) {
+  public static ProductThumbnail getProductThumbnailData(Product byProductId) {
     return ProductThumbnail.builder().productThumbnail(byProductId.getProductThumbnail()).build();
   }
 
-    public static StoreSubscriptionProductId getStoreSubscriptionProductIdData(Product subscriptionProductByStoreId) {
+  public static StoreSubscriptionProductId getStoreSubscriptionProductIdData(
+      Product subscriptionProductByStoreId) {
     return StoreSubscriptionProductId.builder()
         .subscriptionProductId(subscriptionProductByStoreId.getProductId())
         .build();
   }
 
-    public static SubscriptionProductInformation getSubscriptionProductInformationData(Product product) {
+  public static SubscriptionProductInformation getSubscriptionProductInformationData(
+      Product product) {
     return SubscriptionProductInformation.builder()
         .productName(product.getProductName())
         .productThumbnail(product.getProductThumbnail())
         .unitPrice(product.getProductPrice())
         .storeId(product.getStoreId())
         .build();
+  }
+
+  public static List<ProductInformationForLikes> getProductInformationForLikesData(
+      List<Product> productByProductIds) {
+    return productByProductIds.stream()
+        .map(
+            item ->
+                ProductInformationForLikes.builder()
+                    .productName(item.getProductName())
+                    .productId(item.getProductId())
+                    .averageRating(item.getAverageRating())
+                    .productThumbnail(item.getProductThumbnail())
+                    .productPrice(item.getProductPrice())
+                    .productSummary(item.getProductSummary())
+                    .build())
+        .collect(Collectors.toList());
   }
 
   @Getter
@@ -508,4 +527,14 @@ public class ProductCommand {
     }
   }
 
+  @Getter
+  @Builder
+  public static class ProductInformationForLikes {
+    private String productId;
+    private String productName;
+    private String productSummary;
+    private String productThumbnail;
+    private Long productPrice;
+    private Double averageRating;
+  }
 }
