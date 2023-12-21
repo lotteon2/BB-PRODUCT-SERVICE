@@ -144,7 +144,10 @@ public class ProductQueryRepository implements ProductQueryOutPort {
 
   @Override
   public List<Product> findProductByProductIds(List<String> productIds) {
-    return mongoTemplate.find(Query.query(Criteria.where("_id").in(productIds)), Product.class);
+    Query query = new Query(Criteria.where("_id").in(productIds));
+    query.with(Sort.by(Sort.Order.desc("created_at")));
+
+    return mongoTemplate.find(query, Product.class);
   }
 
   @Override
