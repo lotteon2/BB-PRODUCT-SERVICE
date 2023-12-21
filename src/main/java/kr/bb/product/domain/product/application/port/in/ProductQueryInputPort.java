@@ -1,13 +1,13 @@
 package kr.bb.product.domain.product.application.port.in;
 
+import bloomingblooms.domain.product.IsProductPriceValid;
+import bloomingblooms.domain.product.ProductInformation;
+import bloomingblooms.domain.product.ProductThumbnail;
+import bloomingblooms.domain.product.StoreSubscriptionProductId;
+import bloomingblooms.domain.product.SubscriptionProductInformation;
 import bloomingblooms.errors.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
-import kr.bb.product.common.dto.IsProductPriceValid;
-import kr.bb.product.common.dto.ProductInformation;
-import kr.bb.product.common.dto.ProductThumbnail;
-import kr.bb.product.common.dto.StoreSubscriptionProductId;
-import kr.bb.product.common.dto.SubscriptionProductInformation;
 import kr.bb.product.domain.flower.adapter.out.jpa.FlowerJpaRepository;
 import kr.bb.product.domain.flower.application.port.out.FlowerQueryOutPort;
 import kr.bb.product.domain.flower.entity.Flower;
@@ -261,13 +261,13 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
   @Override
   public ProductThumbnail getProductThumbnail(String productId) {
-    return ProductThumbnail.getData(productQueryOutPort.findByProductId(productId));
+    return ProductCommand.getProductThumbnailData(productQueryOutPort.findByProductId(productId));
   }
 
   @Override
   public List<ProductInformation> getProductInformation(List<String> productIds) {
     List<Product> productByProductIds = productQueryOutPort.findProductByProductIds(productIds);
-    return ProductInformation.getData(productByProductIds);
+    return ProductCommand.getProductInformationListData(productByProductIds);
   }
 
   @Override
@@ -278,13 +278,14 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
   @Override
   public StoreSubscriptionProductId getStoreSubscriptionProductId(Long storeId) {
-    return StoreSubscriptionProductId.getData(
+    return ProductCommand.getStoreSubscriptionProductIdData(
         productQueryOutPort.findSubscriptionProductByStoreId(storeId));
   }
 
   @Override
   public SubscriptionProductInformation getSubscriptionProductInformation(String productId) {
-    return SubscriptionProductInformation.getData(productQueryOutPort.findByProductId(productId));
+    return ProductCommand.getSubscriptionProductInformationData(
+        productQueryOutPort.findByProductId(productId));
   }
 
   /**

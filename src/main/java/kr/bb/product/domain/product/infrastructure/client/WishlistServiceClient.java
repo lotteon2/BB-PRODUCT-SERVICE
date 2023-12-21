@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface WishlistServiceClient {
 
   @CircuitBreaker(name = "getProductsMemberLikesFallback", fallbackMethod = "getProductsMemberLikesFallback")
-  @PostMapping("/likes/{userId}")
+  @PostMapping("/client/likes/{userId}")
   CommonResponse<List<String>> getProductsMemberLikes(
       @PathVariable Long userId, List<String> productIds);
 
   @CircuitBreaker(name = "getProductDetailLikesFallback", fallbackMethod = "getProductDetailLikesFallback")
-  @GetMapping("/likes/{userId}/product/{productId}")
+  @GetMapping("/client/likes/{userId}/product/{productId}")
   CommonResponse<ProductDetailLike> getProductDetailLikes(
       @PathVariable String productId, @PathVariable Long userId);
 

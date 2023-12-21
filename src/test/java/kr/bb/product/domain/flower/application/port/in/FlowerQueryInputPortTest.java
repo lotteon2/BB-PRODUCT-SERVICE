@@ -1,10 +1,9 @@
 package kr.bb.product.domain.flower.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
+import bloomingblooms.domain.flower.FlowerInformation;
 import java.util.List;
-import kr.bb.product.common.dto.FlowerInformation;
 import kr.bb.product.domain.flower.application.usecase.FlowerQueryUseCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

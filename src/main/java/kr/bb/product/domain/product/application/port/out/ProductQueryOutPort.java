@@ -1,7 +1,8 @@
 package kr.bb.product.domain.product.application.port.out;
 
+import bloomingblooms.domain.product.IsProductPriceValid;
 import java.util.List;
-import kr.bb.product.common.dto.IsProductPriceValid;
+import java.util.Map;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
@@ -31,4 +32,6 @@ public interface ProductQueryOutPort {
   List<Product> findProductByProductIds(List<String> productIds);
 
   boolean findProductPriceValid(List<IsProductPriceValid> productPriceValids);
+
+  Map<String, String> findProductNameByProductIdsForReviewByUserId(List<String> productIds);
 }

@@ -1,8 +1,8 @@
 package kr.bb.product.domain.flower.application.port.in;
 
+import bloomingblooms.domain.flower.FlowerInformation;
 import java.util.List;
 import java.util.stream.Collectors;
-import kr.bb.product.common.dto.FlowerInformation;
 import kr.bb.product.domain.flower.application.port.out.FlowerQueryOutPort;
 import kr.bb.product.domain.flower.application.usecase.FlowerQueryUseCase;
 import lombok.RequiredArgsConstructor;
