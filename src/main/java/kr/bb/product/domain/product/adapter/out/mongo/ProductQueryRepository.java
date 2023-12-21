@@ -6,8 +6,10 @@ import java.util.stream.Collectors;
 import kr.bb.product.common.dto.IsProductPriceValid;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
+import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.exception.errors.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -158,5 +160,23 @@ public class ProductQueryRepository implements ProductQueryOutPort {
             .collect(Collectors.toMap(Product::getProductId, Product::getProductPrice));
     return productPriceValids.stream()
         .allMatch(item -> item.getPrice().equals(collect1.get(item.getProductId())));
+  }
+
+  @Override
+  public ProductCommand.RepresentativeFlowerId findRepresentativeFlower(String productId) {
+    return ProductCommand.RepresentativeFlowerId.getData(
+        mongoTemplate
+            .findOne(
+                Query.query(
+                    Criteria.where("_id")
+                        .is(productId)
+                        .and("product_flowers.isRepresentative")
+                        .is(true)),
+                Product.class)
+            .getProductFlowers()
+            .stream()
+            .map(ProductFlowers::getFlowerId)
+            .findFirst()
+            .orElse(null));
   }
 }

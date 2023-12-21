@@ -370,4 +370,10 @@ class ProductQueryInputPortTest {
         productQueryInputPort.getSubscriptionProductInformation("123");
     assertThat(subscriptionProductInformation.getUnitPrice()).isEqualTo(product.getProductPrice());
   }
+
+  @Test
+  @DisplayName("꽃말 조회")
+  void getLanguageOfFlower() {
+
+  }
 }

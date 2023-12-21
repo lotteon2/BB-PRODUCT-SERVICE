@@ -58,11 +58,15 @@ public interface ProductQueryUseCase {
 
   ProductCommand.SubscriptionProductForCustomer getSubscriptionProductDetail(Long storeId);
 
- ProductThumbnail getProductThumbnail(String productId);
+  ProductThumbnail getProductThumbnail(String productId);
+
   List<ProductInformation> getProductInformation(List<String> productIds);
+
   void getProductPriceValidation(List<IsProductPriceValid> productPriceValids);
 
   StoreSubscriptionProductId getStoreSubscriptionProductId(Long storeId);
 
   SubscriptionProductInformation getSubscriptionProductInformation(String productId);
+
+  ProductCommand.LanguageOfFlower getLanguageOfFlower(String productId);
 }

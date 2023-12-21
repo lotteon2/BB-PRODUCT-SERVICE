@@ -4,8 +4,9 @@ import bloomingblooms.response.CommonResponse;
 import com.amazonaws.services.sns.model.AmazonSNSException;
 import java.util.HashMap;
 import java.util.Map;
-import kr.bb.product.exception.errors.ProductPriceValidationException;
+import kr.bb.product.exception.errors.FlowerIdNotMatchException;
 import kr.bb.product.exception.errors.ProductNotFoundException;
+import kr.bb.product.exception.errors.ProductPriceValidationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.validation.FieldError;
@@ -15,6 +16,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestControllerAdvice
 public class RestControllerErrorHandler extends ResponseEntityExceptionHandler {
+  @ExceptionHandler(FlowerIdNotMatchException.class)
+  protected CommonResponse productPriceValidationException(
+      FlowerIdNotMatchException productPriceValidationException) {
+    return CommonResponse.fail(productPriceValidationException.getMessage(), "EFC01");
+  }
+
   @ExceptionHandler(ProductPriceValidationException.class)
   protected CommonResponse productPriceValidationException(
       ProductPriceValidationException productPriceValidationException) {
@@ -23,13 +30,13 @@ public class RestControllerErrorHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(AmazonSNSException.class)
   protected CommonResponse resaleSubscribeException(AmazonSNSException amazonSNSException) {
-    return CommonResponse.fail(amazonSNSException.getMessage(), "EP01");
+    return CommonResponse.fail(amazonSNSException.getMessage(), "EA01");
   }
 
   @ExceptionHandler(ProductNotFoundException.class)
   protected CommonResponse productNotFoundException(
       ProductNotFoundException productNotFoundException) {
-    return CommonResponse.fail(productNotFoundException.getMessage(), "PE001");
+    return CommonResponse.fail(productNotFoundException.getMessage(), "EP02");
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)

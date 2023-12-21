@@ -450,4 +450,26 @@ public class ProductCommand {
       isLiked = liked;
     }
   }
+
+  @Getter
+  @Builder
+  public static class LanguageOfFlower {
+    private String languageOfFlower;
+
+    public static LanguageOfFlower getData(Flower languageOfFlowerByFlowerId) {
+      return LanguageOfFlower.builder()
+          .languageOfFlower(languageOfFlowerByFlowerId.getLanguageOfFlower())
+          .build();
+    }
+  }
+
+  @Getter
+  @Builder
+  public static class RepresentativeFlowerId {
+    private Long flowerId;
+
+    public static RepresentativeFlowerId getData(Long flowerId) {
+      return RepresentativeFlowerId.builder().flowerId(flowerId).build();
+    }
+  }
 }

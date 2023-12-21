@@ -16,12 +16,14 @@ import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
+import kr.bb.product.domain.product.entity.ProductCommand.LanguageOfFlower;
 import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItems;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetailLike;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
+import kr.bb.product.domain.product.entity.ProductCommand.RepresentativeFlowerId;
 import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
 import kr.bb.product.domain.product.entity.ProductCommand.StoreManagerSubscriptionProduct;
@@ -285,6 +287,14 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   @Override
   public SubscriptionProductInformation getSubscriptionProductInformation(String productId) {
     return SubscriptionProductInformation.getData(productQueryOutPort.findByProductId(productId));
+  }
+
+  @Override
+  public LanguageOfFlower getLanguageOfFlower(String productId) {
+    RepresentativeFlowerId representativeFlower =
+        productQueryOutPort.findRepresentativeFlower(productId);
+    return LanguageOfFlower.getData(
+        flowerQueryOutPort.findLanguageOfFlowerByFlowerId(representativeFlower.getFlowerId()));
   }
 
   /**

@@ -10,10 +10,12 @@ import kr.bb.product.common.dto.IsProductPriceValid;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductCommand.RepresentativeFlowerId;
 import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.tag.entity.Tag;
+import kr.bb.product.exception.errors.ProductNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -215,5 +217,36 @@ class ProductQueryRepositoryTest {
     }
     boolean productPriceValid = productQueryOutPort.findProductPriceValid(productPriceValids);
     assertThat(productPriceValid).isTrue();
+  }
+
+  @Test
+  @DisplayName("대표꽃 id 조회")
+  void findRepresentativeFlower() {
+    productMongoRepository.deleteAll();
+    ProductFlowers productFlowers =
+        ProductFlowers.builder().isRepresentative(true).flowerName("sdf").flowerId(1L).build();
+    Product product =
+        Product.builder().productId("123").productFlowers(List.of(productFlowers)).build();
+    productMongoRepository.save(product);
+    Product product1 =
+        productMongoRepository.findByProductId("123").orElseThrow(ProductNotFoundException::new);
+    assertThat(product1.getProductId()).isEqualTo(product.getProductId());
+  }
+
+  @Test
+  void testFindRepresentativeFlower() {
+    productMongoRepository.deleteAll();
+    ProductFlowers productFlowers =
+        ProductFlowers.builder().isRepresentative(true).flowerName("sdf").flowerId(1L).build();
+    Product product =
+        Product.builder().productId("123").productFlowers(List.of(productFlowers)).build();
+    productMongoRepository.save(product);
+    Product product1 =
+        productMongoRepository.findByProductId("123").orElseThrow(ProductNotFoundException::new);
+    RepresentativeFlowerId representativeFlower =
+        productQueryOutPort.findRepresentativeFlower(product1.getProductId());
+    Long flowerId = product1.getProductFlowers().get(0).getFlowerId();
+    assertThat(representativeFlower.getFlowerId()).isNotNull();
+    assertThat(representativeFlower.getFlowerId()).isEqualTo(flowerId);
   }
 }
