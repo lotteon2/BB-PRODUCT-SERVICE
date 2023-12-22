@@ -69,4 +69,6 @@ public interface ProductQueryUseCase {
   SubscriptionProductInformation getSubscriptionProductInformation(String productId);
 
   ProductCommand.LanguageOfFlower getLanguageOfFlower(String productId);
+
+  List<ProductCommand.ProductInformationForLikes> getProductInformationForLikes(List<String> productIds);
 }

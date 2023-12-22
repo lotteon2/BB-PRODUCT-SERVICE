@@ -20,6 +20,7 @@ import kr.bb.product.domain.product.entity.ProductCommand.LanguageOfFlower;
 import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItems;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetailLike;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductInformationForLikes;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
@@ -296,6 +297,12 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
         productQueryOutPort.findRepresentativeFlower(productId);
     return LanguageOfFlower.getData(
         flowerQueryOutPort.findLanguageOfFlowerByFlowerId(representativeFlower.getFlowerId()));
+  }
+
+  @Override
+  public List<ProductInformationForLikes> getProductInformationForLikes(List<String> productIds) {
+    return ProductCommand.getProductInformationForLikesData(
+        productQueryOutPort.findProductByProductIds(productIds));
   }
 
   /**

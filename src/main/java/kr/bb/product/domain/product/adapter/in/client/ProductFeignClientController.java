@@ -8,9 +8,11 @@ import bloomingblooms.domain.product.SubscriptionProductInformation;
 import bloomingblooms.response.CommonResponse;
 import java.util.List;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
+import kr.bb.product.domain.product.entity.ProductCommand.ProductInformationForLikes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,5 +53,11 @@ public class ProductFeignClientController {
   public CommonResponse<SubscriptionProductInformation> getSubscriptionProductInformation(
       @PathVariable String productId) {
     return CommonResponse.success(productQueryUseCase.getSubscriptionProductInformation(productId));
+  }
+
+  @PostMapping("product/likes")
+  public CommonResponse<List<ProductInformationForLikes>> getProductInformationForLikes(
+      @RequestBody List<String> productId) {
+    return CommonResponse.success(productQueryUseCase.getProductInformationForLikes(productId));
   }
 }
