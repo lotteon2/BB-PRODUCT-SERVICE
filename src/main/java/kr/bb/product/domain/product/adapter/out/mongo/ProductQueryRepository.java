@@ -194,7 +194,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
   }
 
   @Override
-  public Map<Long, List<Product>> findProductsByProductIds(List<String> productId) {
+  public Map<Long, List<Product>> findProductsByProductIdsForCartItem(List<String> productId) {
     Query query = Query.query(Criteria.where("_id").in(productId));
     List<Product> products = mongoTemplate.find(query, Product.class);
     return products.stream()

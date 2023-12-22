@@ -4,11 +4,15 @@ import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
 import bloomingblooms.domain.product.SubscriptionProductInformation;
+import bloomingblooms.domain.wishlist.cart.CartProductItemInfo;
+import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
+import bloomingblooms.domain.wishlist.cart.ProductInfoDto;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import kr.bb.product.common.dto.StorePolicy;
 import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
 import kr.bb.product.domain.flower.entity.Flower;
 import kr.bb.product.domain.product.entity.mapper.ProductMapper;
@@ -72,6 +76,42 @@ public class ProductCommand {
 
   public static List<Long> getStoreIds(List<Product> productByProductIds) {
     return productByProductIds.stream().map(Product::getStoreId).collect(Collectors.toList());
+  }
+
+  public static GetUserCartItemsResponse getUserCartItemResponse(
+      Map<String, Long> productIds,
+      Map<Long, List<Product>> productsByProductIdsForCartItem,
+      Map<Long, StorePolicy> storePolicies) {
+    List<CartProductItemInfo> collect =
+        productsByProductIdsForCartItem.keySet().stream()
+            .map(
+                item ->
+                    CartProductItemInfo.builder()
+                        .storeId(item)
+                        .storeName(storePolicies.get(item).getStoreName())
+                        .freeDeliveryMinCost(storePolicies.get(item).getFreeDeliveryMinCost())
+                        .deliveryCost(storePolicies.get(item).getDeliveryCost())
+                        .productInfoList(
+                            ProductCommand.getProductInfoDto(
+                                productsByProductIdsForCartItem.get(item), productIds))
+                        .build())
+            .collect(Collectors.toList());
+    return GetUserCartItemsResponse.builder().cartProductItemInfoList(collect).build();
+  }
+
+  private static List<ProductInfoDto> getProductInfoDto(
+      List<Product> products, Map<String, Long> productIds) {
+    return products.stream()
+        .map(
+            item ->
+                ProductInfoDto.builder()
+                    .productName(item.getProductName())
+                    .productId(item.getProductId())
+                    .productThumbnailImage(item.getProductThumbnail())
+                    .price(item.getProductPrice())
+                    .quantity(productIds.get(item.getProductId()))
+                    .build())
+        .collect(Collectors.toList());
   }
 
   @Getter

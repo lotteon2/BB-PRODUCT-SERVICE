@@ -31,24 +31,22 @@ public class LoggingHandler {
     long startAt = System.currentTimeMillis();
 
     try {
+      logger.info(
+          "[REQUEST] : {}({}) = {}",
+          pjp.getSignature().getDeclaringTypeName(),
+          pjp.getSignature().getName(),
+          params);
+
       Object result = pjp.proceed();
 
-      if (!"prod".equals(activeProfile)) {
-        logger.debug(
-            "[REQUEST] : {}({}) = {}",
-            pjp.getSignature().getDeclaringTypeName(),
-            pjp.getSignature().getName(),
-            params);
+      long endAt = System.currentTimeMillis();
 
-        long endAt = System.currentTimeMillis();
-
-        logger.debug(
-            "[RESPONSE] : {}({}) = {} ({}ms)",
-            pjp.getSignature().getDeclaringTypeName(),
-            pjp.getSignature().getName(),
-            result,
-            endAt - startAt);
-      }
+      logger.info(
+          "[RESPONSE] : {}({}) = {} ({}ms)",
+          pjp.getSignature().getDeclaringTypeName(),
+          pjp.getSignature().getName(),
+          result,
+          endAt - startAt);
 
       return result;
     } catch (Exception e) {

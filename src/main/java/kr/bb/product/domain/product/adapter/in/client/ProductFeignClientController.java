@@ -12,6 +12,7 @@ import java.util.Map;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductInformationForLikes;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("client")
@@ -65,7 +67,7 @@ public class ProductFeignClientController {
 
   @PostMapping("products/carts")
   public CommonResponse<GetUserCartItemsResponse> getUserCartItemsResponseCommonResponse(
-      Map<String, Long> productIdWithSelectedQuantity) {
+      @RequestBody Map<String, Long> productIdWithSelectedQuantity) {
     return CommonResponse.success(
         productQueryUseCase.getCartItemProductInformations(productIdWithSelectedQuantity));
   }

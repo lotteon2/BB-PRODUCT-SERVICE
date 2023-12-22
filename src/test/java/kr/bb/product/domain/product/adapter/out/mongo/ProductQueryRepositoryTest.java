@@ -275,7 +275,7 @@ class ProductQueryRepositoryTest {
       productIds.add("id" + i);
     }
     Map<Long, List<Product>> productsByProductIds =
-        productQueryOutPort.findProductsByProductIds(productIds);
+        productQueryOutPort.findProductsByProductIdsForCartItem(productIds);
     System.out.println(productsByProductIds.keySet());
     assertThat(productsByProductIds.size()).isEqualTo(1);
     assertThat(productsByProductIds.get(1L).size()).isEqualTo(2);

@@ -313,15 +313,18 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
   @Override
   public GetUserCartItemsResponse getCartItemProductInformations(Map<String, Long> productIds) {
-    List<Product> productByProductIds =
-        productQueryOutPort.findProductByProductIds(new ArrayList<>(productIds.keySet()));
+    Map<Long, List<Product>> productsByProductIdsForCartItem =
+        productQueryOutPort.findProductsByProductIdsForCartItem(
+            new ArrayList<>(productIds.keySet()));
 
-    List<Long> storeId = ProductCommand.getStoreIds(productByProductIds);
-    log.info(storeId.toString());
     Map<Long, StorePolicy> storePolicies =
-        storeServiceClient.getCartItemProductInformation(storeId).getData();
+        storeServiceClient
+            .getCartItemProductInformation(
+                new ArrayList<>(productsByProductIdsForCartItem.keySet()))
+            .getData();
 
-    return null;
+    return ProductCommand.getUserCartItemResponse(
+        productIds, productsByProductIdsForCartItem, storePolicies);
   }
 
   /**
