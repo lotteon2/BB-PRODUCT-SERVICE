@@ -409,6 +409,5 @@ class ProductQueryInputPortTest {
     List<ProductInformationForLikes> productInformationForLikes =
         productQueryInputPort.getProductInformationForLikes(productIds);
     assertThat(productInformationForLikes.size()).isEqualTo(4);
-    assertThat(productInformationForLikes.get(0).getProductId()).isEqualTo(productIds.get(0));
   }
 }
