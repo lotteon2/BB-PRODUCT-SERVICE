@@ -1,10 +1,11 @@
 package kr.bb.product.domain.product.application.port.in;
 
 import bloomingblooms.domain.product.IsProductPriceValid;
+import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
-import bloomingblooms.domain.product.SubscriptionProductInformation;
+import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import bloomingblooms.errors.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -286,7 +287,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   }
 
   @Override
-  public SubscriptionProductInformation getSubscriptionProductInformation(String productId) {
+  public ProductInfoDto getSubscriptionProductInformation(String productId) {
     return ProductCommand.getSubscriptionProductInformationData(
         productQueryOutPort.findByProductId(productId));
   }
@@ -300,7 +301,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   }
 
   @Override
-  public List<ProductInformationForLikes> getProductInformationForLikes(List<String> productIds) {
+  public List<LikedProductInfoResponse> getProductInformationForLikes(List<String> productIds) {
     return ProductCommand.getProductInformationForLikesData(
         productQueryOutPort.findProductByProductIds(productIds));
   }

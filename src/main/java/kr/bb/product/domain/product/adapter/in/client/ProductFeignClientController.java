@@ -1,14 +1,14 @@
 package kr.bb.product.domain.product.adapter.in.client;
 
 import bloomingblooms.domain.product.IsProductPriceValid;
+import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
-import bloomingblooms.domain.product.SubscriptionProductInformation;
+import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import bloomingblooms.response.CommonResponse;
 import java.util.List;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductInformationForLikes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,13 +50,13 @@ public class ProductFeignClientController {
   }
 
   @GetMapping("product/{productId}")
-  public CommonResponse<SubscriptionProductInformation> getSubscriptionProductInformation(
+  public CommonResponse<ProductInfoDto> getSubscriptionProductInformation(
       @PathVariable String productId) {
     return CommonResponse.success(productQueryUseCase.getSubscriptionProductInformation(productId));
   }
 
   @PostMapping("product/likes")
-  public CommonResponse<List<ProductInformationForLikes>> getProductInformationForLikes(
+  public CommonResponse<List<LikedProductInfoResponse>> getProductInformationForLikes(
       @RequestBody List<String> productId) {
     return CommonResponse.success(productQueryUseCase.getProductInformationForLikes(productId));
   }

@@ -3,10 +3,10 @@ package kr.bb.product.domain.product.application.port.in;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import bloomingblooms.domain.product.IsProductPriceValid;
+import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
-import bloomingblooms.domain.product.SubscriptionProductInformation;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import java.util.ArrayList;
 import java.util.List;
@@ -370,7 +370,7 @@ class ProductQueryInputPortTest {
             .productId("123")
             .build();
     productMongoRepository.save(product);
-    SubscriptionProductInformation subscriptionProductInformation =
+    ProductInfoDto subscriptionProductInformation =
         productQueryInputPort.getSubscriptionProductInformation("123");
     assertThat(subscriptionProductInformation.getUnitPrice()).isEqualTo(product.getProductPrice());
   }

@@ -1,6 +1,6 @@
 package kr.bb.product.domain.flower.application.port.in;
 
-import bloomingblooms.domain.flower.FlowerInformation;
+import bloomingblooms.domain.flower.FlowerDto;
 import java.util.List;
 import java.util.stream.Collectors;
 import kr.bb.product.domain.flower.application.port.out.FlowerQueryOutPort;
@@ -14,14 +14,11 @@ public class FlowerQueryInputPort implements FlowerQueryUseCase {
   private final FlowerQueryOutPort flowerQueryOutPort;
 
   @Override
-  public List<FlowerInformation> getAllFlowers() {
+  public List<FlowerDto> getAllFlowers() {
     return flowerQueryOutPort.findAllFlowers().stream()
         .map(
             item ->
-                FlowerInformation.builder()
-                    .flowerId(item.getId())
-                    .flowerName(item.getFlowerName())
-                    .build())
+                FlowerDto.builder().flowerId(item.getId()).flowerName(item.getFlowerName()).build())
         .collect(Collectors.toList());
   }
 }

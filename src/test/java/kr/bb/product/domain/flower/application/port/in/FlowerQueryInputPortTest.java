@@ -2,7 +2,7 @@ package kr.bb.product.domain.flower.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import bloomingblooms.domain.flower.FlowerInformation;
+import bloomingblooms.domain.flower.FlowerDto;
 import java.util.List;
 import kr.bb.product.domain.flower.application.usecase.FlowerQueryUseCase;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +22,7 @@ class FlowerQueryInputPortTest {
   @Test
   @DisplayName("전체 꽃 조회 ")
   void getAllFlowers() {
-    List<FlowerInformation> allFlowers = flowerQueryUseCase.getAllFlowers();
+    List<FlowerDto> allFlowers = flowerQueryUseCase.getAllFlowers();
     assertThat(allFlowers.size()).isEqualTo(4);
   }
 }

@@ -1,9 +1,10 @@
 package kr.bb.product.domain.product.entity;
 
+import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
-import bloomingblooms.domain.product.SubscriptionProductInformation;
+import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,9 +45,8 @@ public class ProductCommand {
         .build();
   }
 
-  public static SubscriptionProductInformation getSubscriptionProductInformationData(
-      Product product) {
-    return SubscriptionProductInformation.builder()
+  public static ProductInfoDto getSubscriptionProductInformationData(Product product) {
+    return ProductInfoDto.builder()
         .productName(product.getProductName())
         .productThumbnail(product.getProductThumbnail())
         .unitPrice(product.getProductPrice())
@@ -54,15 +54,15 @@ public class ProductCommand {
         .build();
   }
 
-  public static List<ProductInformationForLikes> getProductInformationForLikesData(
+  public static List<LikedProductInfoResponse> getProductInformationForLikesData(
       List<Product> productByProductIds) {
     return productByProductIds.stream()
         .map(
             item ->
-                ProductInformationForLikes.builder()
+                LikedProductInfoResponse.builder()
                     .productName(item.getProductName())
                     .productId(item.getProductId())
-                    .averageRating(item.getAverageRating())
+                    .averageRating(item.getAverageRating().floatValue())
                     .productThumbnail(item.getProductThumbnail())
                     .productPrice(item.getProductPrice())
                     .productSummary(item.getProductSummary())

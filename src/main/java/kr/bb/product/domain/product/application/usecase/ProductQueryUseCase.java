@@ -1,10 +1,11 @@
 package kr.bb.product.domain.product.application.usecase;
 
 import bloomingblooms.domain.product.IsProductPriceValid;
+import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
-import bloomingblooms.domain.product.SubscriptionProductInformation;
+import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import java.util.List;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
@@ -66,9 +67,9 @@ public interface ProductQueryUseCase {
 
   StoreSubscriptionProductId getStoreSubscriptionProductId(Long storeId);
 
-  SubscriptionProductInformation getSubscriptionProductInformation(String productId);
+  ProductInfoDto getSubscriptionProductInformation(String productId);
 
   ProductCommand.LanguageOfFlower getLanguageOfFlower(String productId);
 
-  List<ProductCommand.ProductInformationForLikes> getProductInformationForLikes(List<String> productIds);
+  List<LikedProductInfoResponse> getProductInformationForLikes(List<String> productIds);
 }
