@@ -5,8 +5,10 @@ import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
 import bloomingblooms.domain.product.SubscriptionProductInformation;
+import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
 import bloomingblooms.response.CommonResponse;
 import java.util.List;
+import java.util.Map;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductInformationForLikes;
 import lombok.RequiredArgsConstructor;
@@ -59,5 +61,12 @@ public class ProductFeignClientController {
   public CommonResponse<List<ProductInformationForLikes>> getProductInformationForLikes(
       @RequestBody List<String> productId) {
     return CommonResponse.success(productQueryUseCase.getProductInformationForLikes(productId));
+  }
+
+  @PostMapping("products/carts")
+  public CommonResponse<GetUserCartItemsResponse> getUserCartItemsResponseCommonResponse(
+      Map<String, Long> productIdWithSelectedQuantity) {
+    return CommonResponse.success(
+        productQueryUseCase.getCartItemProductInformations(productIdWithSelectedQuantity));
   }
 }

@@ -5,7 +5,9 @@ import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
 import bloomingblooms.domain.product.SubscriptionProductInformation;
+import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
 import java.util.List;
+import java.util.Map;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
@@ -70,5 +72,8 @@ public interface ProductQueryUseCase {
 
   ProductCommand.LanguageOfFlower getLanguageOfFlower(String productId);
 
-  List<ProductCommand.ProductInformationForLikes> getProductInformationForLikes(List<String> productIds);
+  List<ProductCommand.ProductInformationForLikes> getProductInformationForLikes(
+      List<String> productIds);
+
+  GetUserCartItemsResponse getCartItemProductInformations(Map<String, Long> productIds);
 }

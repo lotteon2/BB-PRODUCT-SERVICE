@@ -5,9 +5,14 @@ import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
 import bloomingblooms.domain.product.SubscriptionProductInformation;
+import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
 import bloomingblooms.errors.EntityNotFoundException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import kr.bb.product.common.dto.StorePolicy;
 import kr.bb.product.domain.flower.adapter.out.jpa.FlowerJpaRepository;
 import kr.bb.product.domain.flower.application.port.out.FlowerQueryOutPort;
 import kr.bb.product.domain.flower.entity.Flower;
@@ -62,6 +67,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   private final ProductQueryOutPort productQueryOutPort;
   private final FlowerQueryOutPort flowerQueryOutPort;
   private final ReviewQueryOutPort reviewQueryOutPort;
+  private final ObjectMapper objectMapper;
 
   @NotNull
   private static Pageable getPageable(Pageable pageable, ProductCommand.SortOption sortOption) {
@@ -303,6 +309,19 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   public List<ProductInformationForLikes> getProductInformationForLikes(List<String> productIds) {
     return ProductCommand.getProductInformationForLikesData(
         productQueryOutPort.findProductByProductIds(productIds));
+  }
+
+  @Override
+  public GetUserCartItemsResponse getCartItemProductInformations(Map<String, Long> productIds) {
+    List<Product> productByProductIds =
+        productQueryOutPort.findProductByProductIds(new ArrayList<>(productIds.keySet()));
+
+    List<Long> storeId = ProductCommand.getStoreIds(productByProductIds);
+    log.info(storeId.toString());
+    Map<Long, StorePolicy> storePolicies =
+        storeServiceClient.getCartItemProductInformation(storeId).getData();
+
+    return null;
   }
 
   /**

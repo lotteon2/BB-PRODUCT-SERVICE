@@ -70,6 +70,10 @@ public class ProductCommand {
         .collect(Collectors.toList());
   }
 
+  public static List<Long> getStoreIds(List<Product> productByProductIds) {
+    return productByProductIds.stream().map(Product::getStoreId).collect(Collectors.toList());
+  }
+
   @Getter
   public enum SortOption {
     SALE("productSaleAmount"),

@@ -1,0 +1,12 @@
+{
+  "data": {
+    "1": {
+      "storeName": "꽃가게",
+      "deliveryCost": 3000,
+      "deliveryMinCost": 20000
+    }
+  },
+  "message": null,
+  "errorCode": null,
+  "result": "SUCCESS"
+}

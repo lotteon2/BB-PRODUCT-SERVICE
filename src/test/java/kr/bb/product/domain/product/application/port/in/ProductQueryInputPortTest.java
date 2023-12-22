@@ -410,4 +410,34 @@ class ProductQueryInputPortTest {
         productQueryInputPort.getProductInformationForLikes(productIds);
     assertThat(productInformationForLikes.size()).isEqualTo(4);
   }
+
+//  @Test
+//  @DisplayName("장바구니 상품 정보 조회")
+//  void getCartItemProductInformations() {
+//    productMongoRepository.deleteAll();
+//    Map<String, Long> products = new HashMap<>();
+//
+//    for (int i = 0; i < 2; i++) {
+//      products.put("uyf" + i, 3L + i);
+//      Product product =
+//          Product.builder()
+//              .productId("uyf" + i)
+//              .productName("name" + i)
+//              .productThumbnail("thumbnail" + i)
+//              .productPrice(1L + i)
+//              .storeId(1L)
+//              .build();
+//      productMongoRepository.save(product);
+//    }
+//    MockingApi.setUpStorePolicy(mockCacheApi);
+//    GetUserCartItemsResponse cartItemProductInformations =
+//        productQueryInputPort.getCartItemProductInformations(products);
+//    assertThat(cartItemProductInformations.getCartProductItemInfoList().size()).isEqualTo(2);
+//    assertThat(
+//            cartItemProductInformations
+//                .getCartProductItemInfoList()
+//                .get(0)
+//                .getFreeDeliveryMinCost())
+//        .isEqualTo(3000);
+//  }
 }

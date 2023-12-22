@@ -192,4 +192,12 @@ public class ProductQueryRepository implements ProductQueryOutPort {
     return products.stream()
         .collect(Collectors.toMap(Product::getProductId, Product::getProductName));
   }
+
+  @Override
+  public Map<Long, List<Product>> findProductsByProductIds(List<String> productId) {
+    Query query = Query.query(Criteria.where("_id").in(productId));
+    List<Product> products = mongoTemplate.find(query, Product.class);
+    return products.stream()
+        .collect(Collectors.groupingBy(Product::getStoreId, Collectors.toList()));
+  }
 }
