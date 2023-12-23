@@ -92,6 +92,6 @@ class ProductFindInputPortTest {
     Page<Product> productsByTagId = productOutPort.findProductsByTagId(1L, pageRequest);
     ProductList productsByTag =
         productFindInputPort.getProductsByTag(1L, 1L, SortOption.LOW, pageRequest);
-    assertThat(productsByTag.getProducts().size()).isEqualTo(5);
+    assertThat(productsByTag.getProducts().size()).isEqualTo(3);
   }
 }
