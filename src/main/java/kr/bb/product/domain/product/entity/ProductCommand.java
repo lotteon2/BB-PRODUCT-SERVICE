@@ -203,10 +203,6 @@ public class ProductCommand {
   @Builder
   public static class ProductsGroupByCategory {
     @Builder.Default private Map<Long, ProductList> products = new HashMap<>();
-
-    public void setProducts(Long categoryId, ProductList productList) {
-      this.products.put(categoryId, productList);
-    }
   }
 
   @Builder
@@ -241,16 +237,7 @@ public class ProductCommand {
         ProductDetail productDetail, String storeName, Long reviewCnt, ProductDetailLike isLiked) {
       return ProductMapper.INSTANCE.getProductDetail(productDetail, storeName, reviewCnt, isLiked);
     }
-
-    public void setStoreName(String storeName) {
-      this.storeName = storeName;
-    }
-
-    public void setLiked(Boolean liked) {
-      isLiked = liked;
-    }
   }
-
 
   @Getter
   @Builder
@@ -519,16 +506,5 @@ public class ProductCommand {
     public static RepresentativeFlowerId getData(Long flowerId) {
       return RepresentativeFlowerId.builder().flowerId(flowerId).build();
     }
-  }
-
-  @Getter
-  @Builder
-  public static class ProductInformationForLikes {
-    private String productId;
-    private String productName;
-    private String productSummary;
-    private String productThumbnail;
-    private Long productPrice;
-    private Double averageRating;
   }
 }
