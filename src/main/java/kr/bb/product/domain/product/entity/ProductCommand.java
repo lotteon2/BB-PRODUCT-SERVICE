@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
 import kr.bb.product.domain.flower.entity.Flower;
 import kr.bb.product.domain.product.entity.mapper.ProductMapper;
 import kr.bb.product.domain.product.vo.ProductFlowers;
@@ -226,7 +225,7 @@ public class ProductCommand {
     private Long storeId;
     private Long reviewCount;
     @Builder.Default private Boolean isLiked = false;
-    private CategoryForProductList category;
+    private Long category;
     private List<TagForProductList> tag;
 
     public static ProductDetail fromEntity(Product product) {
@@ -322,7 +321,7 @@ public class ProductCommand {
     private String productName;
     private String productSummary;
     private Long productPrice;
-    private String category;
+    private Long category;
     private List<String> tag;
     private String productDescriptionImage;
     private Long productSaleAmount;
@@ -354,7 +353,7 @@ public class ProductCommand {
           .productName(product.getProductName())
           .productSummary(product.getProductSummary())
           .productPrice(product.getProductPrice())
-          .category(product.getCategory().getCategoryName())
+          .category(product.getCategory().getCategoryId())
           .tag(tagNames)
           .productDescriptionImage(product.getProductDescriptionImage())
           .productSaleAmount(product.getProductSaleAmount())
@@ -373,7 +372,7 @@ public class ProductCommand {
     private String productThumbnail;
     private String productName;
     private String representativeFlower;
-    private String category;
+    private Long category;
     private Long productPrice;
     private Long productSaleAmount;
     private Double averageRating;
@@ -382,7 +381,7 @@ public class ProductCommand {
     public static StoreProduct fromEntity(Product product, String representativeFlower) {
       return StoreProduct.builder()
           .averageRating(product.getAverageRating())
-          .category(product.getCategory().getCategoryName())
+          .category(product.getCategory().getCategoryId())
           .key(product.getProductId())
           .productName(product.getProductName())
           .productPrice(product.getProductPrice())
@@ -404,7 +403,7 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class BestSellerTopTenItem {
-    private String productName;
+    private String name;
     private List<Long> data;
   }
 
@@ -420,7 +419,7 @@ public class ProductCommand {
                   .map(
                       item ->
                           BestSellerTopTenItem.builder()
-                              .productName(item.getProductName())
+                              .name(item.getProductName())
                               .data(List.of(item.getProductSaleAmount()))
                               .build())
                   .collect(Collectors.toList()))

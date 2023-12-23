@@ -19,7 +19,10 @@ public interface ReviewJpaRepository extends JpaRepository<Review, Long> {
       countQuery = "SELECT COUNT(DISTINCT r) FROM Review r WHERE r.productId = :productId")
   Page<Review> findReviewsByProductId(@Param("productId") String productId, Pageable pageable);
 
-  @Query(value = "SELECT r FROM Review r LEFT JOIN r.reviewImages i WHERE r.userId = :userId")
+  @Query(
+      value = "SELECT r FROM Review r LEFT JOIN r.reviewImages i WHERE r.userId = :userId",
+      countQuery =
+          "SELECT count(DISTINCT r) FROM Review r LEFT JOIN r.reviewImages i WHERE r.userId = :userId")
   Page<Review> findReviewsByUserId(@Param("userId") Long userId, Pageable pageable);
 
   @Query("select count(r) from Review r where r.productId=:productId")
