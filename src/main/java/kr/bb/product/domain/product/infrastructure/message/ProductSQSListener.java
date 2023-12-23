@@ -22,7 +22,7 @@ public class ProductSQSListener {
   private final ProductHandler productHandler;
 
   @SqsListener(
-      value = "${cloud.aws.sqs.product-resale-notification-check-queue.name}",
+      value = "${cloud.aws.sqs.product-review-data-update-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
   public void consumeProductResaleNotificationCheckQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
