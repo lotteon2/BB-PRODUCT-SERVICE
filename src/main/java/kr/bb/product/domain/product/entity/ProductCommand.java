@@ -181,22 +181,22 @@ public class ProductCommand {
   @Getter
   public static class ProductList {
     private List<ProductListItem> products;
-    private int totalCnt;
+    private long totalCnt;
 
     public static List<ProductListItem> fromEntity(List<Product> products) {
       return ProductMapper.INSTANCE.entityToList(products);
     }
 
     public static ProductList getData(
-        List<ProductListItem> productListItem, List<String> data, int totalPages) {
+        List<ProductListItem> productListItem, List<String> data, long totalElements) {
       for (ProductListItem p : productListItem) {
         if (data.contains(p.key)) p.setLiked(true);
       }
-      return ProductList.builder().products(productListItem).totalCnt(totalPages).build();
+      return ProductList.builder().products(productListItem).totalCnt(totalElements).build();
     }
 
-    public static ProductList getData(List<ProductListItem> productListItem, int totalPages) {
-      return ProductList.builder().products(productListItem).totalCnt(totalPages).build();
+    public static ProductList getData(List<ProductListItem> productListItem, long totalElements) {
+      return ProductList.builder().products(productListItem).totalCnt(totalElements).build();
     }
   }
 
@@ -398,7 +398,7 @@ public class ProductCommand {
   @Builder
   public static class StoreProductList {
     private List<StoreProduct> products;
-    private int totalCnt;
+    private long totalCnt;
   }
 
   @Getter

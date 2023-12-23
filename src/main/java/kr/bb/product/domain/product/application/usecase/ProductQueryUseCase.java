@@ -39,10 +39,10 @@ public interface ProductQueryUseCase {
   ProductList getProductsByCategory(
       Long categoryId, Long storeId, ProductCommand.SortOption sortOption, Pageable pageable);
 
-  ProductCommand.ProductsGroupByCategory getProductsByTag(
+  ProductList getProductsByTag(
       Long userId, Long tagId, Long categoryId, SortOption sortOption, Pageable pageable);
 
-  ProductCommand.ProductsGroupByCategory getProductsByTag(
+  ProductList getProductsByTag(
       Long tagId, Long categoryId, ProductCommand.SortOption sortOption, Pageable pageable);
 
   ProductCommand.BestSellerTopTen getBestSellerTopTen(Long storeId);

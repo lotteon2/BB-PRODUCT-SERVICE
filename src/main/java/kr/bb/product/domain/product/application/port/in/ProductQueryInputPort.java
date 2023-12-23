@@ -21,10 +21,8 @@ import kr.bb.product.domain.product.entity.ProductCommand.LanguageOfFlower;
 import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItems;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductDetailLike;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductInformationForLikes;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
 import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
 import kr.bb.product.domain.product.entity.ProductCommand.RepresentativeFlowerId;
 import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
@@ -190,7 +188,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
                       return StoreProduct.fromEntity(product, flowerName);
                     })
                 .collect(Collectors.toList()))
-        .totalCnt(productByStoreId.getTotalPages())
+        .totalCnt(productByStoreId.getTotalElements())
         .build();
   }
 
@@ -327,7 +325,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
     List<ProductListItem> productByCategories = getProduct(byCategory);
     List<String> data = getProductsIsLiked(userId, ids);
-    return ProductList.getData(productByCategories, data, byCategory.getTotalPages());
+    return ProductList.getData(productByCategories, data, byCategory.getTotalElements());
   }
 
   /**
@@ -345,7 +343,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     Pageable pageRequest = getPageable(pageable, sortOption);
     Page<Product> byCategory = getProductsByCategoryId(categoryId, storeId, pageRequest);
     List<ProductListItem> productByCategories = getProduct(byCategory);
-    return ProductList.getData(productByCategories, byCategory.getTotalPages());
+    return ProductList.getData(productByCategories, byCategory.getTotalElements());
   }
 
   /**
@@ -359,23 +357,16 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
    * @return
    */
   @Override
-  public ProductCommand.ProductsGroupByCategory getProductsByTag(
+  public ProductList getProductsByTag(
       Long userId, Long tagId, Long categoryId, SortOption sortOption, Pageable pageable) {
     return getProductsGroupByCategory(userId, tagId, categoryId, sortOption, pageable);
   }
 
   // 태그 조회 카테고리별 묶음
   @NotNull
-  private ProductsGroupByCategory getProductsGroupByCategory(
+  private ProductList getProductsGroupByCategory(
       Long userId, Long tagId, Long categoryId, SortOption sortOption, Pageable pageable) {
-    ProductsGroupByCategory productsGroupByCategory = ProductsGroupByCategory.builder().build();
-    for (int i = 0; i < 5; i++) {
-      ProductList productWithLikes =
-          getProductListByTagId(userId, categoryId, tagId, sortOption, pageable);
-      productsGroupByCategory.setProducts(categoryId, productWithLikes);
-      categoryId++;
-    }
-    return productsGroupByCategory;
+    return getProductListByTagId(userId, categoryId, tagId, sortOption, pageable);
   }
 
   // 태그별 조회 응답 생성 - 찜 포함
@@ -386,11 +377,11 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
         productQueryOutPort.findProductsByTag(tagId, categoryId, pageRequest);
     List<ProductListItem> product = getProduct(productsByTag);
 
-    if (userId == null) return ProductList.getData(product, productsByTag.getTotalPages());
+    if (userId == null) return ProductList.getData(product, productsByTag.getTotalElements());
 
     List<String> ids = ProductListItem.getProductIds(product);
     List<String> data = getProductsIsLiked(userId, ids);
-    return ProductList.getData(product, data, productsByTag.getTotalPages());
+    return ProductList.getData(product, data, productsByTag.getTotalElements());
   }
 
   /**
@@ -403,7 +394,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
    * @return
    */
   @Override
-  public ProductCommand.ProductsGroupByCategory getProductsByTag(
+  public ProductList getProductsByTag(
       Long tagId, Long categoryId, SortOption sortOption, Pageable pageable) {
     return getProductsGroupByCategory(null, tagId, categoryId, sortOption, pageable);
   }
