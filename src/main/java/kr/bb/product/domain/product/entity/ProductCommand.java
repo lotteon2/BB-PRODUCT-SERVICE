@@ -251,11 +251,6 @@ public class ProductCommand {
     }
   }
 
-  @Getter
-  @Builder
-  public static class StoreName {
-    private String storeName;
-  }
 
   @Getter
   @Builder
