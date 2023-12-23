@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductFeignClientController {
   private final ProductQueryUseCase productQueryUseCase;
 
-  @GetMapping("product/")
+  @GetMapping("product")
   public CommonResponse<ProductThumbnail> getProductThumbnail(
       @RequestParam("product-id") String productId) {
     return CommonResponse.success(productQueryUseCase.getProductThumbnail(productId));
