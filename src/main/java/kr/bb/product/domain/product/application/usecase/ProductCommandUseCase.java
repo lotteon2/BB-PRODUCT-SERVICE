@@ -1,5 +1,6 @@
 package kr.bb.product.domain.product.application.usecase;
 
+import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.product.entity.ProductCommand;
 
 public interface ProductCommandUseCase {
@@ -9,5 +10,8 @@ public interface ProductCommandUseCase {
 
   void createSubscriptionProduct(Long storeId, ProductCommand.SubscriptionProduct product);
 
-  void updateSubscriptionProduct(String productId, ProductCommand.UpdateSubscriptionProduct product);
+  void updateSubscriptionProduct(
+      String productId, ProductCommand.UpdateSubscriptionProduct product);
+
+  void updateProductReviewData(ReviewRegisterEvent reviewRegisterEvent);
 }

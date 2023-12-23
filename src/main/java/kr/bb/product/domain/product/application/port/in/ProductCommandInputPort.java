@@ -1,6 +1,7 @@
 package kr.bb.product.domain.product.application.port.in;
 
 import java.util.List;
+import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.category.repository.jpa.CategoryRepository;
 import kr.bb.product.domain.product.application.port.out.ProductCommandOutPort;
@@ -79,7 +80,8 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
       productOutPort.updateProductSaleStatus(product);
     } else if (productRequestData.getProductSaleStatus().equals(ProductSaleStatus.SALE)) {
       // sqs 재입고 알림 조회 요청
-      publishMessageToSQS.publishProductResaleNotificationCheckQueue(productId, product.getProductName());
+      publishMessageToSQS.publishProductResaleNotificationCheckQueue(
+          productId, product.getProductName());
       productOutPort.updateProductSaleStatus(product, productRequestData.getProductSaleStatus());
     } else {
       productOutPort.updateProductSaleStatus(product, productRequestData.getProductSaleStatus());
@@ -126,5 +128,15 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
   public void updateSubscriptionProduct(String storeId, UpdateSubscriptionProduct product) {
     product.setProductId(storeId);
     productCommandOutPort.updateSubscriptionProduct(product);
+  }
+
+  /**
+   * 리뷰 작성 시 상품 리뷰 정보 수정
+   *
+   * @param reviewRegisterEvent
+   */
+  @Override
+  public void updateProductReviewData(ReviewRegisterEvent reviewRegisterEvent) {
+    productCommandOutPort.updateProductReviewData(reviewRegisterEvent);
   }
 }
