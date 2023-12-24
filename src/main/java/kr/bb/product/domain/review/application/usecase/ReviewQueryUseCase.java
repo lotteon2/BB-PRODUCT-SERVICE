@@ -1,7 +1,7 @@
 package kr.bb.product.domain.review.application.usecase;
 
-import kr.bb.product.domain.review.entity.ReviewCommand;
-import kr.bb.product.domain.review.entity.ReviewCommand.SortOption;
+import kr.bb.product.domain.review.mapper.ReviewCommand;
+import kr.bb.product.domain.review.mapper.ReviewCommand.SortOption;
 import org.springframework.data.domain.Pageable;
 
 public interface ReviewQueryUseCase {

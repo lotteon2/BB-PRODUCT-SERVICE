@@ -1,6 +1,7 @@
 package kr.bb.product.domain.product.application.port.in;
 
 import java.util.List;
+import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.category.repository.jpa.CategoryRepository;
 import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowers;
@@ -127,5 +128,15 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
   public void updateSubscriptionProduct(String storeId, UpdateSubscriptionProduct product) {
     product.setProductId(storeId);
     productCommandOutPort.updateSubscriptionProduct(product);
+  }
+
+  /**
+   * 리뷰 작성 시 상품 리뷰 정보 수정
+   *
+   * @param reviewRegisterEvent
+   */
+  @Override
+  public void updateProductReviewData(ReviewRegisterEvent reviewRegisterEvent) {
+    productCommandOutPort.updateProductReviewData(reviewRegisterEvent);
   }
 }

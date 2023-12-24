@@ -1,17 +1,30 @@
-package kr.bb.product.domain.review.entity;
+package kr.bb.product.domain.review.mapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import kr.bb.product.domain.review.entity.mapper.ReviewImageMapper;
-import kr.bb.product.domain.review.entity.mapper.ReviewMapper;
+import kr.bb.product.common.dto.ReviewRegisterEvent;
+import kr.bb.product.common.dto.ReviewType;
+import kr.bb.product.domain.review.entity.Review;
+import kr.bb.product.domain.review.entity.ReviewImages;
+import kr.bb.product.domain.review.mapper.mapper.ReviewImageMapper;
+import kr.bb.product.domain.review.mapper.mapper.ReviewMapper;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
 public class ReviewCommand {
+
+  public static ReviewRegisterEvent getReviewRegisterEventData(String productId, Register review) {
+    return ReviewRegisterEvent.builder()
+        .reviewRating(review.getRating())
+        .productId(productId)
+        .reviewType(ReviewType.PICKUP) // TODO: review type required
+        .build();
+  }
+
   @Getter
   public enum SortOption {
     DATE("createdAt"),

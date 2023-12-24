@@ -5,7 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 import kr.bb.product.domain.review.entity.Review;
-import kr.bb.product.domain.review.entity.ReviewCommand.SortOption;
+import kr.bb.product.domain.review.mapper.ReviewCommand.SortOption;
 import kr.bb.product.domain.review.entity.ReviewImages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

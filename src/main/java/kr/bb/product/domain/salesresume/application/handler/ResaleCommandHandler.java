@@ -1,4 +1,4 @@
-package kr.bb.product.domain.salesresume.application.facade;
+package kr.bb.product.domain.salesresume.application.handler;
 
 import bloomingblooms.domain.resale.ResaleNotificationData;
 import bloomingblooms.domain.resale.ResaleNotificationList;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ResaleFacadeHandler {
+public class ResaleCommandHandler {
   private final SalesResumeCommandUseCase salesResumeCommandUseCase;
   private final SalesResumeSQSPublisher salesResumeSQSPublisher;
 

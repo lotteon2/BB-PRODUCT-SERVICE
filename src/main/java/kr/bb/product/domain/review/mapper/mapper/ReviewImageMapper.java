@@ -1,4 +1,4 @@
-package kr.bb.product.domain.review.entity.mapper;
+package kr.bb.product.domain.review.mapper.mapper;
 
 import java.util.List;
 import kr.bb.product.domain.review.entity.ReviewImages;

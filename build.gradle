@@ -122,7 +122,7 @@ jacocoTestCoverageVerification {
                         "**.aop.**",
                         "**.entity.**",
                         "**.infrastructure.**",
-                        "**.facade.**"
+                        "**.handler.**"
             ]
         }
     }
@@ -138,7 +138,7 @@ test {
                      "**/common/**",
                      "**/api/**",
                      "**/adapter/in/api/**",
-                     "**/facade/**"
+                     "**/handler/**"
         ]
     }
     useJUnitPlatform()
@@ -166,7 +166,7 @@ jacocoTestReport {
                                     "**/handler/**",
                                     "**/common/**",
                                     "**/adapter/in/api/**",
-                                    "**/facade/**"
+                                    "**/handler/**"
                             ] + Qdomains)
                 })
         )
