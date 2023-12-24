@@ -3,10 +3,11 @@ package kr.bb.product.domain.product.application.port.in;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import bloomingblooms.domain.product.IsProductPriceValid;
+import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
-import bloomingblooms.domain.product.SubscriptionProductInformation;
+import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,20 +17,18 @@ import kr.bb.product.config.mock.MockingApi;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
-import kr.bb.product.domain.product.entity.ProductCommand.LanguageOfFlower;
-import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItems;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductInformationForLikes;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductRegister;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
-import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
-import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
-import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProductForCustomer;
+import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.BestSellerTopTen;
+import kr.bb.product.domain.product.mapper.ProductCommand.LanguageOfFlower;
+import kr.bb.product.domain.product.mapper.ProductCommand.MainPageProductItems;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductRegister;
+import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
+import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
+import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductDetail;
+import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductList;
+import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProductForCustomer;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
@@ -165,10 +164,10 @@ class ProductQueryInputPortTest {
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 5);
     MockingApi.setUpProductsLikes(mockCacheApi);
-    ProductsGroupByCategory productsByTag =
+    ProductList productsByTag =
         productQueryInputPort.getProductsByTag(1L, 1L, 1L, SortOption.SALE, pageRequest);
     assertThat(productsByTag.getProducts().size()).isEqualTo(5);
-    assertThat(productsByTag.getProducts().get(1L).getProducts().size()).isEqualTo(5);
+    assertThat(productsByTag.getProducts().size()).isEqualTo(5);
   }
 
   @Test
@@ -177,10 +176,10 @@ class ProductQueryInputPortTest {
     productMongoRepository.deleteAll();
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 5);
-    ProductsGroupByCategory productsByTag =
+    ProductList productsByTag =
         productQueryInputPort.getProductsByTag(null, 1L, 1L, SortOption.SALE, pageRequest);
     assertThat(productsByTag.getProducts().size()).isEqualTo(5);
-    assertThat(productsByTag.getProducts().get(1L).getProducts().size()).isEqualTo(5);
+    assertThat(productsByTag.getProducts().size()).isEqualTo(5);
   }
 
   @Test
@@ -189,10 +188,10 @@ class ProductQueryInputPortTest {
     productMongoRepository.deleteAll();
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 5);
-    ProductsGroupByCategory productsByTag =
+    ProductList productsByTag =
         productQueryInputPort.getProductsByTag(1L, 1L, SortOption.SALE, pageRequest);
     assertThat(productsByTag.getProducts().size()).isEqualTo(5);
-    assertThat(productsByTag.getProducts().get(1L).getProducts().size()).isEqualTo(5);
+    assertThat(productsByTag.getProducts().size()).isEqualTo(5);
   }
 
   @DisplayName("베스트 셀러 10개 정보")
@@ -370,7 +369,7 @@ class ProductQueryInputPortTest {
             .productId("123")
             .build();
     productMongoRepository.save(product);
-    SubscriptionProductInformation subscriptionProductInformation =
+    ProductInfoDto subscriptionProductInformation =
         productQueryInputPort.getSubscriptionProductInformation("123");
     assertThat(subscriptionProductInformation.getUnitPrice()).isEqualTo(product.getProductPrice());
   }
@@ -406,7 +405,7 @@ class ProductQueryInputPortTest {
               .build();
       productMongoRepository.save(product);
     }
-    List<ProductInformationForLikes> productInformationForLikes =
+    List<LikedProductInfoResponse> productInformationForLikes =
         productQueryInputPort.getProductInformationForLikes(productIds);
     assertThat(productInformationForLikes.size()).isEqualTo(4);
   }

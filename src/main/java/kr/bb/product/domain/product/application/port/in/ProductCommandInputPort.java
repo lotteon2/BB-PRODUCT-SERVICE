@@ -3,19 +3,19 @@ package kr.bb.product.domain.product.application.port.in;
 import java.util.List;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.category.repository.jpa.CategoryRepository;
+import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowers;
+import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowersRequestData;
 import kr.bb.product.domain.product.application.port.out.ProductCommandOutPort;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProduct;
-import kr.bb.product.domain.product.entity.ProductCommand.UpdateSubscriptionProduct;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
-import kr.bb.product.domain.product.entity.mapper.ProductMapper;
 import kr.bb.product.domain.product.infrastructure.message.ProductSQSPublisher;
-import kr.bb.product.domain.product.vo.ProductFlowers;
-import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
+import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProduct;
+import kr.bb.product.domain.product.mapper.ProductCommand.UpdateSubscriptionProduct;
+import kr.bb.product.domain.product.mapper.mapper.ProductMapper;
 import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.domain.tag.repository.jpa.TagRepository;
 import kr.bb.product.exception.errors.CategoryNotFoundException;
@@ -79,7 +79,8 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
       productOutPort.updateProductSaleStatus(product);
     } else if (productRequestData.getProductSaleStatus().equals(ProductSaleStatus.SALE)) {
       // sqs 재입고 알림 조회 요청
-      publishMessageToSQS.publishProductResaleNotificationCheckQueue(productId, product.getProductName());
+      publishMessageToSQS.publishProductResaleNotificationCheckQueue(
+          productId, product.getProductName());
       productOutPort.updateProductSaleStatus(product, productRequestData.getProductSaleStatus());
     } else {
       productOutPort.updateProductSaleStatus(product, productRequestData.getProductSaleStatus());

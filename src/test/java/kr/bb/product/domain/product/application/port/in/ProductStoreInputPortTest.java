@@ -8,7 +8,7 @@ import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import org.junit.jupiter.api.DisplayName;

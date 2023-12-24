@@ -2,7 +2,6 @@ package kr.bb.product.domain.review.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
-import static org.junit.jupiter.api.Assertions.*;
 
 import bloomingblooms.errors.EntityNotFoundException;
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.List;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.application.port.in.ProductCommandInputPort;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.domain.review.adapter.out.jpa.ReviewJpaRepository;
 import kr.bb.product.domain.review.entity.Review;
@@ -174,8 +173,8 @@ class ReviewQueryInputPortTest {
     ReviewList reviewsByUserId =
         reviewQueryInputPort.findReviewsByUserId(123L, pageRequest, SortOption.LOW);
     List<ReviewItem> reviews = reviewsByUserId.getReviews();
-    int totalCnt = reviewsByUserId.getTotalCnt();
+    long totalCnt = reviewsByUserId.getTotalCnt();
     assertThat(reviews.size()).isEqualTo(4);
-    assertThat(totalCnt).isEqualTo(1);
+    assertThat(totalCnt).isEqualTo(4);
   }
 }

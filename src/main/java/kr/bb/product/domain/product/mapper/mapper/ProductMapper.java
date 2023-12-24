@@ -1,20 +1,19 @@
-package kr.bb.product.domain.product.entity.mapper;
+package kr.bb.product.domain.product.mapper.mapper;
 
 import java.util.List;
 import kr.bb.product.domain.category.entity.Category;
-import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
+import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowers;
+import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowersRequestData;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItem;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductDetailLike;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreManagerSubscriptionProduct;
-import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProduct;
-import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProductForCustomer;
+import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.MainPageProductItem;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductDetail;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductDetailLike;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.mapper.ProductCommand.StoreManagerSubscriptionProduct;
+import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProduct;
+import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProductForCustomer;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
-import kr.bb.product.domain.product.vo.ProductFlowers;
-import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
 import org.mapstruct.IterableMapping;
@@ -88,14 +87,9 @@ public interface ProductMapper {
   @Mapping(source = "product.reviewCount", target = "reviewCount")
   @Mapping(target = "storeName", ignore = true)
   @Mapping(target = "isLiked", ignore = true)
-  @Mapping(source = "product.category", target = "category", qualifiedByName = "mapCategory")
+  @Mapping(source = "product.category.categoryId", target = "category")
   @Mapping(source = "product.tag", target = "tag", qualifiedByName = "mapTag")
   ProductDetail entityToDetail(Product product);
-
-  @Named("mapCategory")
-  @Mapping(source = "category.categoryId", target = "categoryId")
-  @Mapping(source = "category.categoryName", target = "categoryName")
-  CategoryForProductList mapCategory(Category category);
 
   @Named("mapTag")
   @Mapping(source = "tag.tagId", target = "key")

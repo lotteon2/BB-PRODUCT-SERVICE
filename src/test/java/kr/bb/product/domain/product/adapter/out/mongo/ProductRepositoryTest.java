@@ -7,7 +7,7 @@ import java.util.List;
 import kr.bb.product.domain.product.application.port.in.ProductCommandInputPort;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

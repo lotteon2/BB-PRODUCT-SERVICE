@@ -1,5 +1,6 @@
 package kr.bb.product.domain.product.infrastructure.client;
 
+import bloomingblooms.domain.store.StoreName;
 import bloomingblooms.response.CommonResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.List;
@@ -7,8 +8,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import kr.bb.product.common.dto.StorePolicy;
 import kr.bb.product.config.OpenFeignClientConfiguration;
-import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreName;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +23,7 @@ public interface StoreServiceClient {
       name = "getStoreNameOfProductDetailFallback",
       fallbackMethod = "getStoreNameOfProductDetailFallback")
   @GetMapping("client/stores/{storeId}/name")
-  CommonResponse<ProductCommand.StoreName> getStoreNameOfProductDetail(@PathVariable Long storeId);
+  CommonResponse<StoreName> getStoreNameOfProductDetail(@PathVariable Long storeId);
 
   @CircuitBreaker(
       name = "getCartItemProductInformationFallback",
@@ -33,8 +32,7 @@ public interface StoreServiceClient {
   CommonResponse<Map<Long, StorePolicy>> getCartItemProductInformation(
       @RequestBody List<Long> storeId);
 
-  default CommonResponse<ProductCommand.StoreName> getStoreNameOfProductDetailFallback(
-      Long storeId, Throwable t) {
+  default CommonResponse<StoreName> getStoreNameOfProductDetailFallback(Long storeId, Throwable t) {
     return CommonResponse.success(StoreName.builder().storeName("가게명").build());
   }
 

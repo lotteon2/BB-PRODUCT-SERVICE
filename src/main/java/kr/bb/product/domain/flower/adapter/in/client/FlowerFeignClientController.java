@@ -1,6 +1,6 @@
 package kr.bb.product.domain.flower.adapter.in.client;
 
-import bloomingblooms.domain.flower.FlowerInformation;
+import bloomingblooms.domain.flower.FlowerDto;
 import bloomingblooms.response.CommonResponse;
 import java.util.List;
 import kr.bb.product.domain.flower.application.usecase.FlowerQueryUseCase;
@@ -14,7 +14,7 @@ public class FlowerFeignClientController {
   private final FlowerQueryUseCase flowerQueryUseCase;
 
   @GetMapping("/client/flowers")
-  public CommonResponse<List<FlowerInformation>> getAllFlowerInformation() {
+  public CommonResponse<List<FlowerDto>> getAllFlowerInformation() {
     return CommonResponse.success(flowerQueryUseCase.getAllFlowers());
   }
 }

@@ -7,11 +7,10 @@ import java.util.List;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
-import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
+import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import org.junit.jupiter.api.DisplayName;
@@ -91,8 +90,8 @@ class ProductFindInputPortTest {
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 3);
     Page<Product> productsByTagId = productOutPort.findProductsByTagId(1L, pageRequest);
-    ProductsGroupByCategory productsByTag =
+    ProductList productsByTag =
         productFindInputPort.getProductsByTag(1L, 1L, SortOption.LOW, pageRequest);
-    assertThat(productsByTag.getProducts().size()).isEqualTo(5);
+    assertThat(productsByTag.getProducts().size()).isEqualTo(3);
   }
 }

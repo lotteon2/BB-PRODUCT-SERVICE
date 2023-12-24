@@ -4,14 +4,15 @@ import bloomingblooms.domain.product.IsProductPriceValid;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import kr.bb.product.domain.flower.mapper.FlowerCommand;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
-import kr.bb.product.domain.product.vo.ProductFlowers;
+import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
 import kr.bb.product.exception.errors.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,6 +22,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class ProductQueryRepository implements ProductQueryOutPort {
@@ -95,7 +97,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
   public Page<Product> findProductsByTag(Long tagId, Long categoryId, Pageable pageable) {
     Query query = new Query();
     query.addCriteria(Criteria.where("tag.tagId").is(tagId));
-    query.addCriteria(Criteria.where("category.categoryId").is(categoryId));
+    if (categoryId != null) query.addCriteria(Criteria.where("category.categoryId").is(categoryId));
     query.addCriteria(Criteria.where("product_sale_status").is(ProductSaleStatus.SALE));
     query.with(pageable);
 
@@ -178,7 +180,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
                 Product.class)
             .getProductFlowers()
             .stream()
-            .map(ProductFlowers::getFlowerId)
+            .map(FlowerCommand.ProductFlowers::getFlowerId)
             .findFirst()
             .orElse(null));
   }

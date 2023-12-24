@@ -1,11 +1,12 @@
 package kr.bb.product.domain.product.application.port.in;
 
 import bloomingblooms.domain.product.IsProductPriceValid;
+import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
-import bloomingblooms.domain.product.SubscriptionProductInformation;
 import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
+import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import bloomingblooms.errors.EntityNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -16,31 +17,29 @@ import kr.bb.product.common.dto.StorePolicy;
 import kr.bb.product.domain.flower.adapter.out.jpa.FlowerJpaRepository;
 import kr.bb.product.domain.flower.application.port.out.FlowerQueryOutPort;
 import kr.bb.product.domain.flower.entity.Flower;
+import kr.bb.product.domain.flower.mapper.FlowerCommand;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
-import kr.bb.product.domain.product.entity.ProductCommand.LanguageOfFlower;
-import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItems;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductDetail;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductDetailLike;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductInformationForLikes;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductsGroupByCategory;
-import kr.bb.product.domain.product.entity.ProductCommand.RepresentativeFlowerId;
-import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
-import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreManagerSubscriptionProduct;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreProduct;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
-import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProductForCustomer;
+import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.BestSellerTopTen;
+import kr.bb.product.domain.product.mapper.ProductCommand.LanguageOfFlower;
+import kr.bb.product.domain.product.mapper.ProductCommand.MainPageProductItems;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductDetail;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductDetailLike;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.mapper.ProductCommand.RepresentativeFlowerId;
+import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
+import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
+import kr.bb.product.domain.product.mapper.ProductCommand.StoreManagerSubscriptionProduct;
+import kr.bb.product.domain.product.mapper.ProductCommand.StoreProduct;
+import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductDetail;
+import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductList;
+import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProductForCustomer;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
-import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.review.application.port.out.ReviewQueryOutPort;
 import kr.bb.product.exception.errors.ProductPriceValidationException;
 import lombok.RequiredArgsConstructor;
@@ -188,14 +187,14 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
                     product -> {
                       String flowerName =
                           product.getProductFlowers().stream()
-                              .filter(ProductFlowers::getIsRepresentative)
+                              .filter(FlowerCommand.ProductFlowers::getIsRepresentative)
                               .findFirst()
                               .map(flowers -> getFlowerById(flowers.getFlowerId()).getFlowerName())
                               .orElse("대표꽃이 없습니다.");
                       return StoreProduct.fromEntity(product, flowerName);
                     })
                 .collect(Collectors.toList()))
-        .totalCnt(productByStoreId.getTotalPages())
+        .totalCnt(productByStoreId.getTotalElements())
         .build();
   }
 
@@ -292,7 +291,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   }
 
   @Override
-  public SubscriptionProductInformation getSubscriptionProductInformation(String productId) {
+  public ProductInfoDto getSubscriptionProductInformation(String productId) {
     return ProductCommand.getSubscriptionProductInformationData(
         productQueryOutPort.findByProductId(productId));
   }
@@ -306,7 +305,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   }
 
   @Override
-  public List<ProductInformationForLikes> getProductInformationForLikes(List<String> productIds) {
+  public List<LikedProductInfoResponse> getProductInformationForLikes(List<String> productIds) {
     return ProductCommand.getProductInformationForLikesData(
         productQueryOutPort.findProductByProductIds(productIds));
   }
@@ -348,7 +347,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
     List<ProductListItem> productByCategories = getProduct(byCategory);
     List<String> data = getProductsIsLiked(userId, ids);
-    return ProductList.getData(productByCategories, data, byCategory.getTotalPages());
+    return ProductList.getData(productByCategories, data, byCategory.getTotalElements());
   }
 
   /**
@@ -366,7 +365,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     Pageable pageRequest = getPageable(pageable, sortOption);
     Page<Product> byCategory = getProductsByCategoryId(categoryId, storeId, pageRequest);
     List<ProductListItem> productByCategories = getProduct(byCategory);
-    return ProductList.getData(productByCategories, byCategory.getTotalPages());
+    return ProductList.getData(productByCategories, byCategory.getTotalElements());
   }
 
   /**
@@ -380,23 +379,16 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
    * @return
    */
   @Override
-  public ProductCommand.ProductsGroupByCategory getProductsByTag(
+  public ProductList getProductsByTag(
       Long userId, Long tagId, Long categoryId, SortOption sortOption, Pageable pageable) {
     return getProductsGroupByCategory(userId, tagId, categoryId, sortOption, pageable);
   }
 
   // 태그 조회 카테고리별 묶음
   @NotNull
-  private ProductsGroupByCategory getProductsGroupByCategory(
+  private ProductList getProductsGroupByCategory(
       Long userId, Long tagId, Long categoryId, SortOption sortOption, Pageable pageable) {
-    ProductsGroupByCategory productsGroupByCategory = ProductsGroupByCategory.builder().build();
-    for (int i = 0; i < 5; i++) {
-      ProductList productWithLikes =
-          getProductListByTagId(userId, categoryId, tagId, sortOption, pageable);
-      productsGroupByCategory.setProducts(categoryId, productWithLikes);
-      categoryId++;
-    }
-    return productsGroupByCategory;
+    return getProductListByTagId(userId, categoryId, tagId, sortOption, pageable);
   }
 
   // 태그별 조회 응답 생성 - 찜 포함
@@ -407,11 +399,11 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
         productQueryOutPort.findProductsByTag(tagId, categoryId, pageRequest);
     List<ProductListItem> product = getProduct(productsByTag);
 
-    if (userId == null) return ProductList.getData(product, productsByTag.getTotalPages());
+    if (userId == null) return ProductList.getData(product, productsByTag.getTotalElements());
 
     List<String> ids = ProductListItem.getProductIds(product);
     List<String> data = getProductsIsLiked(userId, ids);
-    return ProductList.getData(product, data, productsByTag.getTotalPages());
+    return ProductList.getData(product, data, productsByTag.getTotalElements());
   }
 
   /**
@@ -424,7 +416,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
    * @return
    */
   @Override
-  public ProductCommand.ProductsGroupByCategory getProductsByTag(
+  public ProductList getProductsByTag(
       Long tagId, Long categoryId, SortOption sortOption, Pageable pageable) {
     return getProductsGroupByCategory(null, tagId, categoryId, sortOption, pageable);
   }
