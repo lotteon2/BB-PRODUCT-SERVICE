@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
+import kr.bb.product.common.dto.NewOrderEvent;
 import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.product.application.handler.ProductCommandHandler;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class ProductSQSListener {
   @SqsListener(
       value = "${cloud.aws.sqs.product-review-data-update-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
-  public void consumeProductResaleNotificationCheckQueue(
+  public void consumeProductReviewDataUpdateQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
     String messageFromSNS = getMessageFromSNS(message);
@@ -34,6 +35,21 @@ public class ProductSQSListener {
         objectMapper.readValue(messageFromSNS, ReviewRegisterEvent.class);
 
     productHandler.updateReviewData(reviewRegisterEvent);
+    ack.acknowledge();
+  }
+
+  @SqsListener(
+      value = "${cloud.aws.sqs.sale-count-update-queue.name}",
+      deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+  public void consumeSaleCountUpdateQueue(
+      @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
+      throws JsonProcessingException {
+    String messageFromSNS = getMessageFromSNS(message);
+
+    NewOrderEvent newOrderEvent =
+        objectMapper.readValue(messageFromSNS, NewOrderEvent.class);
+
+    productHandler.saleCountUpdate(newOrderEvent);
     ack.acknowledge();
   }
 

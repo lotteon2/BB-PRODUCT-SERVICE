@@ -1,6 +1,7 @@
 package kr.bb.product.domain.product.application.port.in;
 
 import java.util.List;
+import kr.bb.product.common.dto.NewOrderEvent;
 import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.category.repository.jpa.CategoryRepository;
@@ -138,5 +139,10 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
   @Override
   public void updateProductReviewData(ReviewRegisterEvent reviewRegisterEvent) {
     productCommandOutPort.updateProductReviewData(reviewRegisterEvent);
+  }
+
+  @Override
+  public void saleCountUpdate(List<NewOrderEvent.ProductCount> newOrderEvent) {
+    productCommandOutPort.updateProductSaleCount(newOrderEvent);
   }
 }

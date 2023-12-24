@@ -1,5 +1,7 @@
 package kr.bb.product.domain.product.application.usecase;
 
+import java.util.List;
+import kr.bb.product.common.dto.NewOrderEvent.ProductCount;
 import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.product.mapper.ProductCommand;
 
@@ -14,4 +16,6 @@ public interface ProductCommandUseCase {
       String productId, ProductCommand.UpdateSubscriptionProduct product);
 
   void updateProductReviewData(ReviewRegisterEvent reviewRegisterEvent);
+
+  void saleCountUpdate(List<ProductCount> newOrderEvent);
 }
