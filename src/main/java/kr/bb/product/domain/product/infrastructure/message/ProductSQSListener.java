@@ -1,6 +1,7 @@
 package kr.bb.product.domain.product.infrastructure.message;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import kr.bb.product.common.dto.ReviewRegisterEvent;
@@ -27,9 +28,17 @@ public class ProductSQSListener {
   public void consumeProductResaleNotificationCheckQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
+    String messageFromSNS = getMessageFromSNS(message);
+
     ReviewRegisterEvent reviewRegisterEvent =
-        objectMapper.readValue(message, ReviewRegisterEvent.class);
+        objectMapper.readValue(messageFromSNS, ReviewRegisterEvent.class);
+
     productHandler.updateReviewData(reviewRegisterEvent);
     ack.acknowledge();
+  }
+
+  private String getMessageFromSNS(String message) throws JsonProcessingException {
+    JsonNode jsonNode = objectMapper.readTree(message);
+    return jsonNode.get("Message").asText();
   }
 }

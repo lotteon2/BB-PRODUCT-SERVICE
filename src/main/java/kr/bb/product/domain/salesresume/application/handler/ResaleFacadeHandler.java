@@ -1,4 +1,4 @@
-package kr.bb.product.domain.salesresume.application.facade;
+package kr.bb.product.domain.salesresume.application.handler;
 
 import bloomingblooms.domain.resale.ResaleNotificationData;
 import bloomingblooms.domain.resale.ResaleNotificationList;

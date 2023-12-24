@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.salesresume.application.facade.ResaleFacadeHandler;
+import kr.bb.product.domain.salesresume.application.handler.ResaleFacadeHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.aws.messaging.listener.Acknowledgment;

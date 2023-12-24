@@ -1,4 +1,4 @@
-package kr.bb.product.domain.review.entity;
+package kr.bb.product.domain.review.mapper;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;

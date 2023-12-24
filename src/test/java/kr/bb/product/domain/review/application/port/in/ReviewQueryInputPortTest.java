@@ -2,7 +2,6 @@ package kr.bb.product.domain.review.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
-import static org.junit.jupiter.api.Assertions.*;
 
 import bloomingblooms.errors.EntityNotFoundException;
 import java.util.ArrayList;
@@ -14,11 +13,11 @@ import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
 import kr.bb.product.domain.review.adapter.out.jpa.ReviewJpaRepository;
 import kr.bb.product.domain.review.entity.Review;
-import kr.bb.product.domain.review.entity.ReviewCommand;
-import kr.bb.product.domain.review.entity.ReviewCommand.ProductDetailReviewList;
-import kr.bb.product.domain.review.entity.ReviewCommand.ReviewItem;
-import kr.bb.product.domain.review.entity.ReviewCommand.ReviewList;
-import kr.bb.product.domain.review.entity.ReviewCommand.SortOption;
+import kr.bb.product.domain.review.mapper.ReviewCommand;
+import kr.bb.product.domain.review.mapper.ReviewCommand.ProductDetailReviewList;
+import kr.bb.product.domain.review.mapper.ReviewCommand.ReviewItem;
+import kr.bb.product.domain.review.mapper.ReviewCommand.ReviewList;
+import kr.bb.product.domain.review.mapper.ReviewCommand.SortOption;
 import kr.bb.product.domain.review.entity.ReviewImages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

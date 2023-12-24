@@ -1,9 +1,9 @@
-package kr.bb.product.domain.review.entity.mapper;
+package kr.bb.product.domain.review.mapper.mapper;
 
 import java.util.Collection;
 import java.util.List;
 import kr.bb.product.domain.review.entity.Review;
-import kr.bb.product.domain.review.entity.ReviewCommand;
+import kr.bb.product.domain.review.mapper.ReviewCommand;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

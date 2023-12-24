@@ -1,10 +1,11 @@
 package kr.bb.product.domain.review.adapter.in.api;
 
 import bloomingblooms.response.CommonResponse;
+import kr.bb.product.domain.review.application.handler.ReviewCommandHandler;
 import kr.bb.product.domain.review.application.usecase.ReviewCommandUseCase;
 import kr.bb.product.domain.review.application.usecase.ReviewQueryUseCase;
-import kr.bb.product.domain.review.entity.ReviewCommand;
-import kr.bb.product.domain.review.entity.ReviewCommand.SortOption;
+import kr.bb.product.domain.review.mapper.ReviewCommand;
+import kr.bb.product.domain.review.mapper.ReviewCommand.SortOption;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReviewRestController {
   private final ReviewCommandUseCase reviewCommandUseCase;
   private final ReviewQueryUseCase reviewQueryUseCase;
+  private final ReviewCommandHandler reviewCommandHandler;
 
   @GetMapping("stores/{storeId}/reviews")
   public CommonResponse<ReviewCommand.StoreReviewList> getStoreReviews(
@@ -44,7 +46,7 @@ public class ReviewRestController {
       @PathVariable String productId,
       @RequestHeader Long userId,
       @RequestBody ReviewCommand.Register review) {
-    reviewCommandUseCase.writeReview(review, userId, productId);
+    reviewCommandHandler.writeReview(review, userId, productId);
   }
 
   @GetMapping("{productId}/reviews")
