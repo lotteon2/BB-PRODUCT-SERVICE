@@ -2,7 +2,6 @@ package kr.bb.product.domain.product.entity.mapper;
 
 import java.util.List;
 import kr.bb.product.domain.category.entity.Category;
-import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItem;
@@ -88,14 +87,9 @@ public interface ProductMapper {
   @Mapping(source = "product.reviewCount", target = "reviewCount")
   @Mapping(target = "storeName", ignore = true)
   @Mapping(target = "isLiked", ignore = true)
-  @Mapping(source = "product.category", target = "category", qualifiedByName = "mapCategory")
+  @Mapping(source = "product.category.categoryId", target = "category")
   @Mapping(source = "product.tag", target = "tag", qualifiedByName = "mapTag")
   ProductDetail entityToDetail(Product product);
-
-  @Named("mapCategory")
-  @Mapping(source = "category.categoryId", target = "categoryId")
-  @Mapping(source = "category.categoryName", target = "categoryName")
-  CategoryForProductList mapCategory(Category category);
 
   @Named("mapTag")
   @Mapping(source = "tag.tagId", target = "key")

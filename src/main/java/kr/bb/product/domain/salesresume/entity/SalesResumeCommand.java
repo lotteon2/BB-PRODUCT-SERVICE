@@ -24,9 +24,5 @@ public class SalesResumeCommand {
     public void setProductId(String productId) {
       this.productId = productId;
     }
-
-    public void setPhoneNumber(String format) {
-      this.phoneNumber = format;
-    }
   }
 }

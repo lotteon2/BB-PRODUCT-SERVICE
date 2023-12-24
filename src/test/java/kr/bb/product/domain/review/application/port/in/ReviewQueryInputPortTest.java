@@ -174,8 +174,8 @@ class ReviewQueryInputPortTest {
     ReviewList reviewsByUserId =
         reviewQueryInputPort.findReviewsByUserId(123L, pageRequest, SortOption.LOW);
     List<ReviewItem> reviews = reviewsByUserId.getReviews();
-    int totalCnt = reviewsByUserId.getTotalCnt();
+    long totalCnt = reviewsByUserId.getTotalCnt();
     assertThat(reviews.size()).isEqualTo(4);
-    assertThat(totalCnt).isEqualTo(1);
+    assertThat(totalCnt).isEqualTo(4);
   }
 }
