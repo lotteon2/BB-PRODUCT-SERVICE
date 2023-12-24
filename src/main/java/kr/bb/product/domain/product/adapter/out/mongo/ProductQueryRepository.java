@@ -4,12 +4,12 @@ import bloomingblooms.domain.product.IsProductPriceValid;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import kr.bb.product.domain.flower.mapper.FlowerCommand;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
-import kr.bb.product.domain.product.vo.ProductFlowers;
+import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
 import kr.bb.product.exception.errors.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -180,7 +180,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
                 Product.class)
             .getProductFlowers()
             .stream()
-            .map(ProductFlowers::getFlowerId)
+            .map(FlowerCommand.ProductFlowers::getFlowerId)
             .findFirst()
             .orElse(null));
   }
@@ -193,5 +193,13 @@ public class ProductQueryRepository implements ProductQueryOutPort {
 
     return products.stream()
         .collect(Collectors.toMap(Product::getProductId, Product::getProductName));
+  }
+
+  @Override
+  public Map<Long, List<Product>> findProductsByProductIdsForCartItem(List<String> productId) {
+    Query query = Query.query(Criteria.where("_id").in(productId));
+    List<Product> products = mongoTemplate.find(query, Product.class);
+    return products.stream()
+        .collect(Collectors.groupingBy(Product::getStoreId, Collectors.toList()));
   }
 }

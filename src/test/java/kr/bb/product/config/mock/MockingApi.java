@@ -15,6 +15,7 @@ public class MockingApi {
                     .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                     .withBodyFile("wishlist/product-detail-likes.json")));
   }
+
   public static void setUpProductsLikes(WireMockServer mockCacheApi) {
     mockCacheApi.stubFor(
         WireMock.post(WireMock.urlMatching("/client/likes/1"))
@@ -23,5 +24,15 @@ public class MockingApi {
                     .withStatus(HttpStatus.OK.value())
                     .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                     .withBodyFile("wishlist/products-likes.json")));
+  }
+
+  public static void setUpStorePolicy(WireMockServer mockServer) {
+    mockServer.stubFor(
+        WireMock.post(WireMock.urlMatching("/client/store/policy"))
+            .willReturn(
+                WireMock.aResponse()
+                    .withStatus(HttpStatus.OK.value())
+                    .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                    .withBodyFile("wishlist/store/store-policy.json")));
   }
 }

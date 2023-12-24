@@ -4,7 +4,7 @@ import bloomingblooms.domain.product.IsProductPriceValid;
 import java.util.List;
 import java.util.Map;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,4 +36,6 @@ public interface ProductQueryOutPort {
   ProductCommand.RepresentativeFlowerId findRepresentativeFlower(String productId);
 
   Map<String, String> findProductNameByProductIdsForReviewByUserId(List<String> productIds);
+
+  Map<Long, List<Product>> findProductsByProductIdsForCartItem(List<String> productId);
 }

@@ -15,23 +15,23 @@ import java.util.stream.Collectors;
 import kr.bb.product.config.MockingTestConfiguration;
 import kr.bb.product.config.mock.MockingApi;
 import kr.bb.product.domain.category.entity.Category;
+import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowers;
+import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowersRequestData;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
-import kr.bb.product.domain.product.entity.ProductCommand.LanguageOfFlower;
-import kr.bb.product.domain.product.entity.ProductCommand.MainPageProductItems;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductListItem;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductRegister;
-import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
-import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
-import kr.bb.product.domain.product.entity.ProductCommand.SubscriptionProductForCustomer;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
-import kr.bb.product.domain.product.vo.ProductFlowers;
-import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
+import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.BestSellerTopTen;
+import kr.bb.product.domain.product.mapper.ProductCommand.LanguageOfFlower;
+import kr.bb.product.domain.product.mapper.ProductCommand.MainPageProductItems;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductRegister;
+import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
+import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
+import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductDetail;
+import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductList;
+import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProductForCustomer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -409,4 +409,34 @@ class ProductQueryInputPortTest {
         productQueryInputPort.getProductInformationForLikes(productIds);
     assertThat(productInformationForLikes.size()).isEqualTo(4);
   }
+
+  //  @Test
+  //  @DisplayName("장바구니 상품 정보 조회")
+  //  void getCartItemProductInformations() {
+  //    productMongoRepository.deleteAll();
+  //    Map<String, Long> products = new HashMap<>();
+  //
+  //    for (int i = 0; i < 2; i++) {
+  //      products.put("uyf" + i, 3L + i);
+  //      Product product =
+  //          Product.builder()
+  //              .productId("uyf" + i)
+  //              .productName("name" + i)
+  //              .productThumbnail("thumbnail" + i)
+  //              .productPrice(1L + i)
+  //              .storeId(1L)
+  //              .build();
+  //      productMongoRepository.save(product);
+  //    }
+  //    MockingApi.setUpStorePolicy(mockCacheApi);
+  //    GetUserCartItemsResponse cartItemProductInformations =
+  //        productQueryInputPort.getCartItemProductInformations(products);
+  //    assertThat(cartItemProductInformations.getCartProductItemInfoList().size()).isEqualTo(2);
+  //    assertThat(
+  //            cartItemProductInformations
+  //                .getCartProductItemInfoList()
+  //                .get(0)
+  //                .getFreeDeliveryMinCost())
+  //        .isEqualTo(3000);
+  //  }
 }

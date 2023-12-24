@@ -1,19 +1,25 @@
-package kr.bb.product.domain.product.entity;
+package kr.bb.product.domain.product.mapper;
 
 import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
+import bloomingblooms.domain.wishlist.cart.CartProductItemInfo;
+import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
 import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import kr.bb.product.common.dto.StorePolicy;
 import kr.bb.product.domain.flower.entity.Flower;
-import kr.bb.product.domain.product.entity.mapper.ProductMapper;
-import kr.bb.product.domain.product.vo.ProductFlowers;
-import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
+import kr.bb.product.domain.flower.mapper.FlowerCommand;
+import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowers;
+import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowersRequestData;
+import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
+import kr.bb.product.domain.product.mapper.mapper.ProductMapper;
 import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
 import lombok.Builder;
@@ -65,6 +71,46 @@ public class ProductCommand {
                     .productThumbnail(item.getProductThumbnail())
                     .productPrice(item.getProductPrice())
                     .productSummary(item.getProductSummary())
+                    .build())
+        .collect(Collectors.toList());
+  }
+
+  public static List<Long> getStoreIds(List<Product> productByProductIds) {
+    return productByProductIds.stream().map(Product::getStoreId).collect(Collectors.toList());
+  }
+
+  public static GetUserCartItemsResponse getUserCartItemResponse(
+      Map<String, Long> productIds,
+      Map<Long, List<Product>> productsByProductIdsForCartItem,
+      Map<Long, StorePolicy> storePolicies) {
+    List<CartProductItemInfo> collect =
+        productsByProductIdsForCartItem.keySet().stream()
+            .map(
+                item ->
+                    CartProductItemInfo.builder()
+                        .storeId(item)
+                        .storeName(storePolicies.get(item).getStoreName())
+                        .freeDeliveryMinCost(storePolicies.get(item).getFreeDeliveryMinCost())
+                        .deliveryCost(storePolicies.get(item).getDeliveryCost())
+                        .productInfoList(
+                            ProductCommand.getProductInfoDtoForCart(
+                                productsByProductIdsForCartItem.get(item), productIds))
+                        .build())
+            .collect(Collectors.toList());
+    return GetUserCartItemsResponse.builder().cartProductItemInfoList(collect).build();
+  }
+
+  private static List<bloomingblooms.domain.wishlist.cart.ProductInfoDto> getProductInfoDtoForCart(
+      List<Product> products, Map<String, Long> productIds) {
+    return products.stream()
+        .map(
+            item ->
+                bloomingblooms.domain.wishlist.cart.ProductInfoDto.builder()
+                    .productName(item.getProductName())
+                    .productThumbnailImage(item.getProductThumbnail())
+                    .price(item.getProductPrice())
+                    .productId(item.getProductId())
+                    .quantity(productIds.get(item.getProductId()))
                     .build())
         .collect(Collectors.toList());
   }
@@ -131,7 +177,7 @@ public class ProductCommand {
     private Long categoryId;
     private Long storeId;
     private List<Long> productTag;
-    private ProductFlowersRequestData representativeFlower;
+    private FlowerCommand.ProductFlowersRequestData representativeFlower;
     private List<ProductFlowersRequestData> flowers;
 
     public void setStoreId(Long storeId) {

@@ -6,14 +6,15 @@ import bloomingblooms.domain.product.IsProductPriceValid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import kr.bb.product.domain.category.entity.Category;
+import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowers;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductCommand.RepresentativeFlowerId;
-import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
+import kr.bb.product.domain.product.mapper.ProductCommand.RepresentativeFlowerId;
+import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
-import kr.bb.product.domain.product.vo.ProductFlowers;
 import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.exception.errors.ProductNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -248,5 +249,35 @@ class ProductQueryRepositoryTest {
     Long flowerId = product1.getProductFlowers().get(0).getFlowerId();
     assertThat(representativeFlower.getFlowerId()).isNotNull();
     assertThat(representativeFlower.getFlowerId()).isEqualTo(flowerId);
+  }
+
+  @Test
+  @DisplayName("상품 조회 storeId 기준 map")
+  void findProductsByProductIds() {
+    productMongoRepository.deleteAll();
+    Long storeId = 1L;
+    Long productId = 1L;
+    for (int j = 0; j < 3; j++) {
+      Product product =
+          Product.builder()
+              .productId("id" + productId)
+              .productName("name" + j)
+              .storeId(storeId)
+              .build();
+      productId++;
+      productMongoRepository.save(product);
+    }
+
+    List<Product> all = productMongoRepository.findAll();
+    assertThat(all.size()).isEqualTo(3);
+    List<String> productIds = new ArrayList<>();
+    for (int i = 0; i < 3; i++) {
+      productIds.add("id" + i);
+    }
+    Map<Long, List<Product>> productsByProductIds =
+        productQueryOutPort.findProductsByProductIdsForCartItem(productIds);
+    System.out.println(productsByProductIds.keySet());
+    assertThat(productsByProductIds.size()).isEqualTo(1);
+    assertThat(productsByProductIds.get(1L).size()).isEqualTo(2);
   }
 }

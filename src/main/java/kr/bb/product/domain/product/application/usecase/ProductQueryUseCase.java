@@ -5,12 +5,14 @@ import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
+import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
 import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import java.util.List;
-import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.ProductList;
-import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
+import java.util.Map;
+import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
+import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
+import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductList;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import org.springframework.data.domain.Pageable;
 
@@ -70,6 +72,8 @@ public interface ProductQueryUseCase {
   ProductInfoDto getSubscriptionProductInformation(String productId);
 
   ProductCommand.LanguageOfFlower getLanguageOfFlower(String productId);
+
+  GetUserCartItemsResponse getCartItemProductInformations(Map<String, Long> productIds);
 
   List<LikedProductInfoResponse> getProductInformationForLikes(List<String> productIds);
 }
