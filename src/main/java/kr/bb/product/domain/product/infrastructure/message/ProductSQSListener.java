@@ -23,6 +23,14 @@ public class ProductSQSListener {
   private final ObjectMapper objectMapper;
   private final ProductCommandHandler productHandler;
 
+  /**
+   * 상품 리뷰 작성 시 상품 리뷰 정보 업데이트
+   *
+   * @param message
+   * @param headers
+   * @param ack
+   * @throws JsonProcessingException
+   */
   @SqsListener(
       value = "${cloud.aws.sqs.product-review-data-update-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
@@ -38,6 +46,14 @@ public class ProductSQSListener {
     ack.acknowledge();
   }
 
+  /**
+   * 상품 주문 시 판매량 증가
+   *
+   * @param message
+   * @param headers
+   * @param ack
+   * @throws JsonProcessingException
+   */
   @SqsListener(
       value = "${cloud.aws.sqs.sale-count-update-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
@@ -46,8 +62,7 @@ public class ProductSQSListener {
       throws JsonProcessingException {
     String messageFromSNS = getMessageFromSNS(message);
 
-    NewOrderEvent newOrderEvent =
-        objectMapper.readValue(messageFromSNS, NewOrderEvent.class);
+    NewOrderEvent newOrderEvent = objectMapper.readValue(messageFromSNS, NewOrderEvent.class);
 
     productHandler.saleCountUpdate(newOrderEvent);
     ack.acknowledge();
