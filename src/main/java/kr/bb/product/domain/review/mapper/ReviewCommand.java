@@ -61,13 +61,13 @@ public class ReviewCommand {
   @Builder
   public static class ProductDetailReviewList {
     @Nullable private List<ProductDetailReview> reviews;
-    private int totalCnt;
+    private long totalCnt;
 
     public static ProductDetailReviewList getData(Page<Review> reviewsByProductId) {
       List<Review> content = reviewsByProductId.getContent();
       return ProductDetailReviewList.builder()
           .reviews(ProductDetailReview.getData(content))
-          .totalCnt(reviewsByProductId.getTotalPages())
+          .totalCnt(reviewsByProductId.getTotalElements())
           .build();
     }
   }
@@ -103,7 +103,7 @@ public class ReviewCommand {
   @Builder
   public static class StoreReviewList {
     private List<StoreReviewItem> reviews;
-    private int totalCnt;
+    private long totalCnt;
 
     public static StoreReviewList getData(
         Page<Review> reviewByProductId, Map<String, String> productName) {
@@ -127,7 +127,7 @@ public class ReviewCommand {
               .collect(Collectors.toList());
       return StoreReviewList.builder()
           .reviews(reviewItems)
-          .totalCnt(reviewByProductId.getTotalPages())
+          .totalCnt(reviewByProductId.getTotalElements())
           .build();
     }
   }
@@ -162,7 +162,7 @@ public class ReviewCommand {
   @Builder
   public static class ReviewList {
     private List<ReviewItem> reviews;
-    private int totalCnt;
+    private long totalCnt;
 
     public static ReviewList getData(
         Page<Review> reviewsByUserId, Map<String, String> productNames) {
@@ -185,7 +185,7 @@ public class ReviewCommand {
                               .reviewRating(item.getReviewRating())
                               .build())
                   .collect(Collectors.toList()))
-          .totalCnt(reviewsByUserId.getTotalPages())
+          .totalCnt(reviewsByUserId.getTotalElements())
           .build();
     }
   }

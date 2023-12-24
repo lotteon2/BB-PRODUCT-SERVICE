@@ -63,7 +63,7 @@ public class ReviewRestController {
         reviewQueryUseCase.findReviewsByProductId(productId, pageable, sortOption));
   }
 
-  @GetMapping("reviews/mypage")
+  @GetMapping("reviews")
   public CommonResponse<ReviewCommand.ReviewList> getReviewByUserId(
       @RequestHeader Long userId,
       @PageableDefault(

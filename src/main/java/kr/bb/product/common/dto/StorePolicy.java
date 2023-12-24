@@ -1,4 +1,4 @@
-package kr.bb.product.domain.product.vo;
+package kr.bb.product.common.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ProductFlowersRequestData {
-  private Long flowerId;
-  private Long flowerCount;
+public class StorePolicy {
+  @Builder.Default private String storeName = "가게명";
+  @Builder.Default private Long deliveryCost = 0L;
+  @Builder.Default private Long freeDeliveryMinCost = 0L;
 }

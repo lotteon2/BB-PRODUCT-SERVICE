@@ -3,7 +3,7 @@ package kr.bb.product.domain.product.adapter.out.mongo;
 import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.product.application.port.out.ProductCommandOutPort;
 import kr.bb.product.domain.product.entity.Product;
-import kr.bb.product.domain.product.entity.ProductCommand.UpdateSubscriptionProduct;
+import kr.bb.product.domain.product.mapper.ProductCommand.UpdateSubscriptionProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;

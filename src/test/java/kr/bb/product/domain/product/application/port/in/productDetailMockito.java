@@ -2,8 +2,8 @@ package kr.bb.product.domain.product.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import bloomingblooms.domain.store.StoreName;
 import bloomingblooms.response.CommonResponse;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreName;
 import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

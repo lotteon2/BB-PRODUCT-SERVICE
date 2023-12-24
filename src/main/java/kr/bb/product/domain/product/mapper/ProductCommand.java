@@ -1,19 +1,25 @@
-package kr.bb.product.domain.product.entity;
+package kr.bb.product.domain.product.mapper;
 
+import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
-import bloomingblooms.domain.product.SubscriptionProductInformation;
+import bloomingblooms.domain.wishlist.cart.CartProductItemInfo;
+import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
+import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import kr.bb.product.domain.category.entity.CategoryCommand.CategoryForProductList;
+import kr.bb.product.common.dto.StorePolicy;
 import kr.bb.product.domain.flower.entity.Flower;
-import kr.bb.product.domain.product.entity.mapper.ProductMapper;
-import kr.bb.product.domain.product.vo.ProductFlowers;
-import kr.bb.product.domain.product.vo.ProductFlowersRequestData;
+import kr.bb.product.domain.flower.mapper.FlowerCommand;
+import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowers;
+import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowersRequestData;
+import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
+import kr.bb.product.domain.product.mapper.mapper.ProductMapper;
 import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
 import lombok.Builder;
@@ -44,9 +50,8 @@ public class ProductCommand {
         .build();
   }
 
-  public static SubscriptionProductInformation getSubscriptionProductInformationData(
-      Product product) {
-    return SubscriptionProductInformation.builder()
+  public static ProductInfoDto getSubscriptionProductInformationData(Product product) {
+    return ProductInfoDto.builder()
         .productName(product.getProductName())
         .productThumbnail(product.getProductThumbnail())
         .unitPrice(product.getProductPrice())
@@ -54,18 +59,58 @@ public class ProductCommand {
         .build();
   }
 
-  public static List<ProductInformationForLikes> getProductInformationForLikesData(
+  public static List<LikedProductInfoResponse> getProductInformationForLikesData(
       List<Product> productByProductIds) {
     return productByProductIds.stream()
         .map(
             item ->
-                ProductInformationForLikes.builder()
+                LikedProductInfoResponse.builder()
                     .productName(item.getProductName())
                     .productId(item.getProductId())
-                    .averageRating(item.getAverageRating())
+                    .averageRating(item.getAverageRating().floatValue())
                     .productThumbnail(item.getProductThumbnail())
                     .productPrice(item.getProductPrice())
                     .productSummary(item.getProductSummary())
+                    .build())
+        .collect(Collectors.toList());
+  }
+
+  public static List<Long> getStoreIds(List<Product> productByProductIds) {
+    return productByProductIds.stream().map(Product::getStoreId).collect(Collectors.toList());
+  }
+
+  public static GetUserCartItemsResponse getUserCartItemResponse(
+      Map<String, Long> productIds,
+      Map<Long, List<Product>> productsByProductIdsForCartItem,
+      Map<Long, StorePolicy> storePolicies) {
+    List<CartProductItemInfo> collect =
+        productsByProductIdsForCartItem.keySet().stream()
+            .map(
+                item ->
+                    CartProductItemInfo.builder()
+                        .storeId(item)
+                        .storeName(storePolicies.get(item).getStoreName())
+                        .freeDeliveryMinCost(storePolicies.get(item).getFreeDeliveryMinCost())
+                        .deliveryCost(storePolicies.get(item).getDeliveryCost())
+                        .productInfoList(
+                            ProductCommand.getProductInfoDtoForCart(
+                                productsByProductIdsForCartItem.get(item), productIds))
+                        .build())
+            .collect(Collectors.toList());
+    return GetUserCartItemsResponse.builder().cartProductItemInfoList(collect).build();
+  }
+
+  private static List<bloomingblooms.domain.wishlist.cart.ProductInfoDto> getProductInfoDtoForCart(
+      List<Product> products, Map<String, Long> productIds) {
+    return products.stream()
+        .map(
+            item ->
+                bloomingblooms.domain.wishlist.cart.ProductInfoDto.builder()
+                    .productName(item.getProductName())
+                    .productThumbnailImage(item.getProductThumbnail())
+                    .price(item.getProductPrice())
+                    .productId(item.getProductId())
+                    .quantity(productIds.get(item.getProductId()))
                     .build())
         .collect(Collectors.toList());
   }
@@ -132,7 +177,7 @@ public class ProductCommand {
     private Long categoryId;
     private Long storeId;
     private List<Long> productTag;
-    private ProductFlowersRequestData representativeFlower;
+    private FlowerCommand.ProductFlowersRequestData representativeFlower;
     private List<ProductFlowersRequestData> flowers;
 
     public void setStoreId(Long storeId) {
@@ -181,22 +226,22 @@ public class ProductCommand {
   @Getter
   public static class ProductList {
     private List<ProductListItem> products;
-    private int totalCnt;
+    private long totalCnt;
 
     public static List<ProductListItem> fromEntity(List<Product> products) {
       return ProductMapper.INSTANCE.entityToList(products);
     }
 
     public static ProductList getData(
-        List<ProductListItem> productListItem, List<String> data, int totalPages) {
+        List<ProductListItem> productListItem, List<String> data, long totalElements) {
       for (ProductListItem p : productListItem) {
         if (data.contains(p.key)) p.setLiked(true);
       }
-      return ProductList.builder().products(productListItem).totalCnt(totalPages).build();
+      return ProductList.builder().products(productListItem).totalCnt(totalElements).build();
     }
 
-    public static ProductList getData(List<ProductListItem> productListItem, int totalPages) {
-      return ProductList.builder().products(productListItem).totalCnt(totalPages).build();
+    public static ProductList getData(List<ProductListItem> productListItem, long totalElements) {
+      return ProductList.builder().products(productListItem).totalCnt(totalElements).build();
     }
   }
 
@@ -204,10 +249,6 @@ public class ProductCommand {
   @Builder
   public static class ProductsGroupByCategory {
     @Builder.Default private Map<Long, ProductList> products = new HashMap<>();
-
-    public void setProducts(Long categoryId, ProductList productList) {
-      this.products.put(categoryId, productList);
-    }
   }
 
   @Builder
@@ -226,7 +267,7 @@ public class ProductCommand {
     private Long storeId;
     private Long reviewCount;
     @Builder.Default private Boolean isLiked = false;
-    private CategoryForProductList category;
+    private Long category;
     private List<TagForProductList> tag;
 
     public static ProductDetail fromEntity(Product product) {
@@ -242,20 +283,6 @@ public class ProductCommand {
         ProductDetail productDetail, String storeName, Long reviewCnt, ProductDetailLike isLiked) {
       return ProductMapper.INSTANCE.getProductDetail(productDetail, storeName, reviewCnt, isLiked);
     }
-
-    public void setStoreName(String storeName) {
-      this.storeName = storeName;
-    }
-
-    public void setLiked(Boolean liked) {
-      isLiked = liked;
-    }
-  }
-
-  @Getter
-  @Builder
-  public static class StoreName {
-    private String storeName;
   }
 
   @Getter
@@ -322,7 +349,7 @@ public class ProductCommand {
     private String productName;
     private String productSummary;
     private Long productPrice;
-    private String category;
+    private Long category;
     private List<String> tag;
     private String productDescriptionImage;
     private Long productSaleAmount;
@@ -354,7 +381,7 @@ public class ProductCommand {
           .productName(product.getProductName())
           .productSummary(product.getProductSummary())
           .productPrice(product.getProductPrice())
-          .category(product.getCategory().getCategoryName())
+          .category(product.getCategory().getCategoryId())
           .tag(tagNames)
           .productDescriptionImage(product.getProductDescriptionImage())
           .productSaleAmount(product.getProductSaleAmount())
@@ -373,7 +400,7 @@ public class ProductCommand {
     private String productThumbnail;
     private String productName;
     private String representativeFlower;
-    private String category;
+    private Long category;
     private Long productPrice;
     private Long productSaleAmount;
     private Double averageRating;
@@ -382,7 +409,7 @@ public class ProductCommand {
     public static StoreProduct fromEntity(Product product, String representativeFlower) {
       return StoreProduct.builder()
           .averageRating(product.getAverageRating())
-          .category(product.getCategory().getCategoryName())
+          .category(product.getCategory().getCategoryId())
           .key(product.getProductId())
           .productName(product.getProductName())
           .productPrice(product.getProductPrice())
@@ -398,13 +425,13 @@ public class ProductCommand {
   @Builder
   public static class StoreProductList {
     private List<StoreProduct> products;
-    private int totalCnt;
+    private long totalCnt;
   }
 
   @Getter
   @Builder
   public static class BestSellerTopTenItem {
-    private String productName;
+    private String name;
     private List<Long> data;
   }
 
@@ -420,7 +447,7 @@ public class ProductCommand {
                   .map(
                       item ->
                           BestSellerTopTenItem.builder()
-                              .productName(item.getProductName())
+                              .name(item.getProductName())
                               .data(List.of(item.getProductSaleAmount()))
                               .build())
                   .collect(Collectors.toList()))
@@ -525,16 +552,5 @@ public class ProductCommand {
     public static RepresentativeFlowerId getData(Long flowerId) {
       return RepresentativeFlowerId.builder().flowerId(flowerId).build();
     }
-  }
-
-  @Getter
-  @Builder
-  public static class ProductInformationForLikes {
-    private String productId;
-    private String productName;
-    private String productSummary;
-    private String productThumbnail;
-    private Long productPrice;
-    private Double averageRating;
   }
 }

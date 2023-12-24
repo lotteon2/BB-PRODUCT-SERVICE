@@ -3,7 +3,7 @@ package kr.bb.product.domain.salesresume.infrastructure.message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
-import kr.bb.product.domain.product.entity.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand;
 import kr.bb.product.domain.salesresume.application.handler.ResaleFacadeHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

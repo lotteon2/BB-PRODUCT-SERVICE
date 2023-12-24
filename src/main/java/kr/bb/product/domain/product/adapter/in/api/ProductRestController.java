@@ -5,12 +5,13 @@ import java.util.Optional;
 import javax.validation.Valid;
 import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
-import kr.bb.product.domain.product.entity.ProductCommand;
-import kr.bb.product.domain.product.entity.ProductCommand.BestSellerTopTen;
-import kr.bb.product.domain.product.entity.ProductCommand.SelectOption;
-import kr.bb.product.domain.product.entity.ProductCommand.SortOption;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreProductDetail;
-import kr.bb.product.domain.product.entity.ProductCommand.StoreProductList;
+import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.BestSellerTopTen;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
+import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
+import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
+import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductDetail;
+import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductList;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,16 @@ public class ProductRestController {
   private final ProductQueryUseCase productQueryUseCase;
   private final ProductCommandUseCase productCommandUseCase;
 
+  /**
+   * 가게 사장 상품 리스트 조회
+   *
+   * @param storeId
+   * @param categoryId
+   * @param flowerId
+   * @param saleStatus
+   * @param pageable
+   * @return
+   */
   @GetMapping("store/{storeId}")
   public CommonResponse<StoreProductList> getStoreManagerProducts(
       @PathVariable Long storeId,
@@ -58,6 +69,13 @@ public class ProductRestController {
         .build();
   }
 
+  /**
+   * 상품 상세 조회: 가게 사장
+   *
+   * @param productId
+   * @param storeId
+   * @return
+   */
   @GetMapping("{productId}/store/{storeId}")
   public CommonResponse<StoreProductDetail> getStoreProductDetail(
       @PathVariable String productId, @PathVariable Long storeId) {
@@ -65,6 +83,12 @@ public class ProductRestController {
         productQueryUseCase.getStoreProductDetail(storeId, productId), "가게 사장 상품 상세 조회");
   }
 
+  /**
+   * 구독 상품 수정
+   *
+   * @param productId
+   * @param product
+   */
   @PutMapping("{productId}/subscribe-product")
   public void updateSubscriptionProduct(
       @PathVariable String productId,
@@ -72,12 +96,25 @@ public class ProductRestController {
     productCommandUseCase.updateSubscriptionProduct(productId, product);
   }
 
+  /**
+   * 구독 상품 등록
+   *
+   * @param storeId
+   * @param product
+   */
   @PostMapping("store/{storeId}/subscribe-product")
   public void createSubscriptionProduct(
       @PathVariable Long storeId, @RequestBody ProductCommand.SubscriptionProduct product) {
     productCommandUseCase.createSubscriptionProduct(storeId, product);
   }
 
+  /**
+   * 상품 상세 정보 조회
+   *
+   * @param productId
+   * @param userId
+   * @return
+   */
   @GetMapping("{productId}")
   public CommonResponse<ProductCommand.ProductDetail> getProductDetail(
       @PathVariable String productId, @RequestHeader Optional<Long> userId) {
@@ -89,6 +126,12 @@ public class ProductRestController {
     }
   }
 
+  /**
+   * 상품 등록하기
+   *
+   * @param storeId
+   * @param productRequestData
+   */
   @PostMapping("store/{storeId}")
   public void createProduct(
       @PathVariable Long storeId,
@@ -97,6 +140,12 @@ public class ProductRestController {
     productCommandUseCase.createProduct(productRequestData);
   }
 
+  /**
+   * 상품 정보 수정
+   *
+   * @param productId
+   * @param productRequestData
+   */
   @PutMapping("{productId}")
   public void updateProductSaleStatus(
       @PathVariable String productId,
@@ -142,10 +191,21 @@ public class ProductRestController {
     }
   }
 
+  /**
+   * 태그별 상품 조회
+   *
+   * @param tagId
+   * @param userId
+   * @param categoryId
+   * @param sortOption
+   * @param pageable
+   * @return
+   */
   @GetMapping("tag/{tagId}")
-  public CommonResponse<ProductCommand.ProductsGroupByCategory> getProductsByTag(
+  public CommonResponse<ProductList> getProductsByTag(
       @PathVariable Long tagId,
       @RequestHeader Optional<Long> userId,
+      @RequestParam("category") Optional<Long> categoryId,
       @RequestParam("sort-option") Optional<ProductCommand.SortOption> sortOption,
       @PageableDefault(
               page = 0,
@@ -154,29 +214,49 @@ public class ProductRestController {
               direction = Sort.Direction.DESC)
           Pageable pageable) {
     SortOption sortOptionParam = sortOption.orElse(null);
+    Long categoryIdParam = categoryId.orElse(null);
     if (userId.isPresent()) {
       return CommonResponse.success(
-          productQueryUseCase.getProductsByTag(userId.get(), tagId, 0L, sortOptionParam, pageable),
+          productQueryUseCase.getProductsByTag(
+              userId.get(), tagId, categoryIdParam, sortOptionParam, pageable),
           "태그별 상품 리스트 조회");
     } else {
       return CommonResponse.success(
-          productQueryUseCase.getProductsByTag(tagId, 0L, sortOptionParam, pageable),
+          productQueryUseCase.getProductsByTag(tagId, categoryIdParam, sortOptionParam, pageable),
           "태그별 상품 리스트 조회");
     }
   }
 
+  /**
+   * 베스트 셀러 top ten 조회
+   *
+   * @param storeId
+   * @return
+   */
   @GetMapping("store/{storeId}/best-top-ten")
   public CommonResponse<BestSellerTopTen> getBestSellerTopTen(@PathVariable Long storeId) {
     return CommonResponse.success(
         productQueryUseCase.getBestSellerTopTen(storeId), "베스트 셀러 top 10 상품 조회");
   }
 
+  /**
+   * 가게 사장 구독 상품 조회
+   *
+   * @param storeId
+   * @return
+   */
   @GetMapping("store/{storeId}/subscribe-product")
   public CommonResponse<ProductCommand.StoreManagerSubscriptionProduct>
       getStoreManagerSubscriptionProduct(@PathVariable Long storeId) {
     return CommonResponse.success(productQueryUseCase.getSubscriptionProductByStoreId(storeId));
   }
 
+  /**
+   * 메인 페이지 상품 조회 추천
+   *
+   * @param userId
+   * @return
+   */
   @GetMapping("main/recommend")
   public CommonResponse<ProductCommand.MainPageProductItems> getMainPageProductsRecommend(
       @RequestHeader Optional<Long> userId) {
@@ -188,6 +268,12 @@ public class ProductRestController {
           productQueryUseCase.getMainPageProducts(SelectOption.RECOMMEND));
   }
 
+  /**
+   * 메인 페이지 상품 조회 신상품
+   *
+   * @param userId
+   * @return
+   */
   @GetMapping("main/new-arrival")
   public CommonResponse<ProductCommand.MainPageProductItems> getMainPageProductsNewArrival(
       @RequestHeader Optional<Long> userId) {
@@ -199,6 +285,12 @@ public class ProductRestController {
           productQueryUseCase.getMainPageProducts(SelectOption.NEW_ARRIVAL));
   }
 
+  /**
+   * 메인 페이지 상품 조회 평점
+   *
+   * @param userId
+   * @return
+   */
   @GetMapping("main/rating")
   public CommonResponse<ProductCommand.MainPageProductItems> getMainPageProductsRating(
       @RequestHeader Optional<Long> userId) {
@@ -209,6 +301,13 @@ public class ProductRestController {
       return CommonResponse.success(productQueryUseCase.getMainPageProducts(SelectOption.RATING));
   }
 
+  /**
+   * 구독 상품 상세 조회: 구매자
+   *
+   * @param storeId
+   * @param userId
+   * @return
+   */
   @GetMapping("subscription/{storeId}")
   public CommonResponse<ProductCommand.SubscriptionProductForCustomer> getSubscriptionProductDetail(
       @PathVariable Long storeId, @RequestHeader Optional<Long> userId) {
@@ -218,6 +317,12 @@ public class ProductRestController {
     else return CommonResponse.success(productQueryUseCase.getSubscriptionProductDetail(storeId));
   }
 
+  /**
+   * 상품의 대표꽃 꽃말 조회
+   *
+   * @param productId
+   * @return
+   */
   @GetMapping("{productId}/language-of-flowers")
   public CommonResponse<ProductCommand.LanguageOfFlower> getLanguageOfFlower(
       @PathVariable String productId) {

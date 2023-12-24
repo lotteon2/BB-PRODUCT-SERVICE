@@ -4,7 +4,7 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.bb.product.domain.product.entity.ProductCommand.ResaleCheckRequest;
+import kr.bb.product.domain.product.mapper.ProductCommand.ResaleCheckRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

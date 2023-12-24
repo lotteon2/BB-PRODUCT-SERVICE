@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import kr.bb.product.domain.category.entity.Category;
-import kr.bb.product.domain.product.vo.ProductFlowers;
+import kr.bb.product.domain.flower.mapper.FlowerCommand;
 import kr.bb.product.domain.tag.entity.Tag;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -55,7 +55,7 @@ public class Product {
   private List<Tag> tag;
 
   @Field(name = "product_flowers")
-  private List<ProductFlowers> productFlowers;
+  private List<FlowerCommand.ProductFlowers> productFlowers;
 
   @NotNull
   @Field(name = "product_thumbnail")
@@ -108,7 +108,7 @@ public class Product {
 
   public static List<Long> getFlowerIds(Product product) {
     return product.getProductFlowers().stream()
-        .map(ProductFlowers::getFlowerId)
+        .map(FlowerCommand.ProductFlowers::getFlowerId)
         .collect(Collectors.toList());
   }
 
