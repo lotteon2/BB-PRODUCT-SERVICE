@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import kr.bb.product.common.dto.ReviewRegisterEvent;
-import kr.bb.product.domain.product.application.handler.ProductHandler;
+import kr.bb.product.domain.product.application.handler.ProductCommandHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.aws.messaging.listener.Acknowledgment;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProductSQSListener {
   private final ObjectMapper objectMapper;
-  private final ProductHandler productHandler;
+  private final ProductCommandHandler productHandler;
 
   @SqsListener(
       value = "${cloud.aws.sqs.product-review-data-update-queue.name}",

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import kr.bb.product.domain.product.mapper.ProductCommand;
-import kr.bb.product.domain.salesresume.application.handler.ResaleFacadeHandler;
+import kr.bb.product.domain.salesresume.application.handler.ResaleCommandHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.aws.messaging.listener.Acknowledgment;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SalesResumeSQSListener {
   private final ObjectMapper objectMapper;
-  private final ResaleFacadeHandler resaleFacadeHandler;
+  private final ResaleCommandHandler resaleFacadeHandler;
 
   @SqsListener(
       value = "${cloud.aws.sqs.product-resale-notification-check-queue.name}",

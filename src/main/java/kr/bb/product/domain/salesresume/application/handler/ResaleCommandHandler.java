@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ResaleFacadeHandler {
+public class ResaleCommandHandler {
   private final SalesResumeCommandUseCase salesResumeCommandUseCase;
   private final SalesResumeSQSPublisher salesResumeSQSPublisher;
 

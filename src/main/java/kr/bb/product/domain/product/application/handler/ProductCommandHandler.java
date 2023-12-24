@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ProductHandler {
+public class ProductCommandHandler {
   private final ProductCommandUseCase productCommandUseCase;
 
   public void updateReviewData(ReviewRegisterEvent reviewRegisterEvent) {
