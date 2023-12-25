@@ -2,7 +2,9 @@ package kr.bb.product.domain.product.adapter.out.mongo;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.util.ArrayList;
 import java.util.List;
+import kr.bb.product.common.dto.NewOrderEvent.ProductCount;
 import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.common.dto.ReviewType;
 import kr.bb.product.domain.product.entity.Product;
@@ -58,7 +60,8 @@ class ProductCommandRepositoryTest {
   @DisplayName("리뷰 작성 시 리뷰 정보 수정 ")
   void updateProductReviewData() {
     productMongoRepository.deleteAll();
-    Product product = Product.builder().productId("1234").averageRating(1.0).reviewCount(5L).build();
+    Product product =
+        Product.builder().productId("1234").averageRating(1.0).reviewCount(5L).build();
     productMongoRepository.save(product);
     productCommandRepository.updateProductReviewData(
         ReviewRegisterEvent.builder()
@@ -69,5 +72,22 @@ class ProductCommandRepositoryTest {
     Product product1 = productMongoRepository.findByProductId("1234").get();
     System.out.println(product1.getAverageRating());
     assertThat(product1.getReviewCount()).isEqualTo(product.getReviewCount() + 1);
+  }
+
+  @Test
+  @DisplayName("상품 판매량 증가 ")
+  void updateProductSaleCount() {
+    productMongoRepository.deleteAll();
+    for (int i = 0; i < 5; i++) {
+      Product product = Product.builder().productId("i" + i).productSaleAmount(1L).build();
+      productMongoRepository.save(product);
+    }
+    List<ProductCount> lst = new ArrayList<>();
+    for (int i = 0; i < 5; i++) {
+      lst.add(ProductCount.builder().quantity(i + 1L).productId("i" + i).build());
+    }
+    productCommandRepository.updateProductSaleCount(lst);
+    Product product = productMongoRepository.findByProductId("i" + 1L).orElseGet(null);
+    assertThat(product.getProductSaleAmount()).isEqualTo(3);
   }
 }

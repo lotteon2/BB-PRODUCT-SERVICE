@@ -1,5 +1,7 @@
 package kr.bb.product.domain.product.application.port.out;
 
+import java.util.List;
+import kr.bb.product.common.dto.NewOrderEvent.ProductCount;
 import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.mapper.ProductCommand;
@@ -9,5 +11,7 @@ public interface ProductCommandOutPort {
 
   void updateSubscriptionProduct(ProductCommand.UpdateSubscriptionProduct product);
 
-    void updateProductReviewData(ReviewRegisterEvent reviewRegisterEvent);
+  void updateProductReviewData(ReviewRegisterEvent reviewRegisterEvent);
+
+  void updateProductSaleCount(List<ProductCount> newOrderEvent);
 }
