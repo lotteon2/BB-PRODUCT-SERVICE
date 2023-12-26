@@ -5,6 +5,7 @@ import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowers;
 import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowersRequestData;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand;
 import kr.bb.product.domain.product.mapper.ProductCommand.MainPageProductItem;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductDetail;
@@ -13,7 +14,6 @@ import kr.bb.product.domain.product.mapper.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreManagerSubscriptionProduct;
 import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProduct;
 import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProductForCustomer;
-import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
 import org.mapstruct.IterableMapping;
@@ -87,7 +87,7 @@ public interface ProductMapper {
   @Mapping(source = "product.reviewCount", target = "reviewCount")
   @Mapping(target = "storeName", ignore = true)
   @Mapping(target = "isLiked", ignore = true)
-  @Mapping(source = "product.category.categoryId", target = "category")
+  @Mapping(source = "product.category", target = "category")
   @Mapping(source = "product.tag", target = "tag", qualifiedByName = "mapTag")
   ProductDetail entityToDetail(Product product);
 
@@ -95,6 +95,9 @@ public interface ProductMapper {
   @Mapping(source = "tag.tagId", target = "key")
   @Mapping(source = "tag.tagName", target = "tagName")
   TagForProductList mapTag(Tag tag);
+
+  @IterableMapping(qualifiedByName = "mapTag")
+  List<TagForProductList> entityToTagList(List<Tag> tag);
 
   @Mappings({
     @Mapping(target = "productId", ignore = true),

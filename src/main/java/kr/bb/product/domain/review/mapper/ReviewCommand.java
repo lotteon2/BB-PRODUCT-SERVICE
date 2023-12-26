@@ -21,7 +21,8 @@ public class ReviewCommand {
     return ReviewRegisterEvent.builder()
         .reviewRating(review.getRating())
         .productId(productId)
-        .reviewType(ReviewType.PICKUP) // TODO: review type required
+        .id(review.id)
+        .reviewType(review.reviewType) // TODO: review type required
         .build();
   }
 
@@ -45,6 +46,9 @@ public class ReviewCommand {
     private List<String> reviewImage;
     private String nickname;
     private String profileImage;
+    // for review type status
+    private String id;
+    private ReviewType reviewType;
 
     public static Review toEntity(Register register, Long userId, String productId) {
       return ReviewMapper.INSTANCE.toEntity(register, userId, productId);

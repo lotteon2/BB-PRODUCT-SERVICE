@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import kr.bb.product.common.dto.StorePolicy;
+import kr.bb.product.domain.category.entity.CategoryCommand;
+import kr.bb.product.domain.category.entity.CategoryCommand.CategoryDetail;
 import kr.bb.product.domain.flower.entity.Flower;
 import kr.bb.product.domain.flower.mapper.FlowerCommand;
 import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowers;
@@ -20,7 +22,7 @@ import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowersRequestDat
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.mapper.ProductMapper;
-import kr.bb.product.domain.tag.entity.Tag;
+import kr.bb.product.domain.tag.entity.TagCommand;
 import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
 import lombok.Builder;
 import lombok.Getter;
@@ -267,7 +269,7 @@ public class ProductCommand {
     private Long storeId;
     private Long reviewCount;
     @Builder.Default private Boolean isLiked = false;
-    private Long category;
+    private CategoryCommand.CategoryDetail category;
     private List<TagForProductList> tag;
 
     public static ProductDetail fromEntity(Product product) {
@@ -349,8 +351,8 @@ public class ProductCommand {
     private String productName;
     private String productSummary;
     private Long productPrice;
-    private Long category;
-    private List<String> tag;
+    private CategoryDetail category;
+    private List<TagForProductList> tag;
     private String productDescriptionImage;
     private Long productSaleAmount;
     private Double averageRating;
@@ -359,8 +361,8 @@ public class ProductCommand {
     private List<ProductDetailFlower> flowers;
 
     public static StoreProductDetail fromEntity(Product product, List<Flower> flowers) {
-      List<String> tagNames =
-          product.getTag().stream().map(Tag::getTagName).collect(Collectors.toList());
+      List<TagForProductList> tagList = TagCommand.entityToTagList(product.getTag());
+
       Map<Long, String> flowerName =
           flowers.stream().collect(Collectors.toMap(Flower::getId, Flower::getFlowerName));
 
@@ -381,8 +383,8 @@ public class ProductCommand {
           .productName(product.getProductName())
           .productSummary(product.getProductSummary())
           .productPrice(product.getProductPrice())
-          .category(product.getCategory().getCategoryId())
-          .tag(tagNames)
+          .category(CategoryDetail.getData(product.getCategory()))
+          .tag(tagList)
           .productDescriptionImage(product.getProductDescriptionImage())
           .productSaleAmount(product.getProductSaleAmount())
           .averageRating(product.getAverageRating())
