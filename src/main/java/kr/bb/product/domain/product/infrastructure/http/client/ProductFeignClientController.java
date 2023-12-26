@@ -1,4 +1,4 @@
-package kr.bb.product.domain.product.adapter.in.client;
+package kr.bb.product.domain.product.infrastructure.http.client;
 
 import bloomingblooms.domain.product.IsProductPriceValid;
 import bloomingblooms.domain.product.ProductInfoDto;

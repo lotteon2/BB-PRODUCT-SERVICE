@@ -31,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class ProductQueryRepositoryTest {
   @Autowired ProductCommandRepository productCommandRepository;
-  @Autowired ProductRepository productRepository;
   @Autowired EntityManager em;
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired private ProductMongoRepository productMongoRepository;

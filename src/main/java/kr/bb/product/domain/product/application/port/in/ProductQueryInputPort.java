@@ -8,7 +8,6 @@ import bloomingblooms.domain.product.StoreSubscriptionProductId;
 import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
 import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import bloomingblooms.errors.EntityNotFoundException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +20,9 @@ import kr.bb.product.domain.flower.mapper.FlowerCommand;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
+import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
+import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import kr.bb.product.domain.product.mapper.ProductCommand;
 import kr.bb.product.domain.product.mapper.ProductCommand.BestSellerTopTen;
 import kr.bb.product.domain.product.mapper.ProductCommand.LanguageOfFlower;
@@ -37,9 +39,6 @@ import kr.bb.product.domain.product.mapper.ProductCommand.StoreProduct;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductList;
 import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProductForCustomer;
-import kr.bb.product.domain.product.entity.ProductSaleStatus;
-import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
-import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import kr.bb.product.domain.review.application.port.out.ReviewQueryOutPort;
 import kr.bb.product.exception.errors.ProductPriceValidationException;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +65,6 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   private final ProductQueryOutPort productQueryOutPort;
   private final FlowerQueryOutPort flowerQueryOutPort;
   private final ReviewQueryOutPort reviewQueryOutPort;
-  private final ObjectMapper objectMapper;
 
   @NotNull
   private static Pageable getPageable(Pageable pageable, ProductCommand.SortOption sortOption) {

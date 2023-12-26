@@ -5,6 +5,7 @@ import kr.bb.product.common.dto.NewOrderEvent.ProductCount;
 import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.product.application.port.out.ProductCommandOutPort;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand.UpdateSubscriptionProduct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,5 +64,22 @@ public class ProductCommandRepository implements ProductCommandOutPort {
       bulkOperations.updateOne(query, update);
     }
     bulkOperations.execute();
+  }
+
+  @Override
+  public void updateProductSaleStatus(Product product) {
+    mongoTemplate.updateFirst(
+        Query.query(Criteria.where("_id").is(product.getProductId())),
+        Update.update("is_deleted", true)
+            .set("product_sale_status", ProductSaleStatus.DISCONTINUED),
+        Product.class);
+  }
+
+  @Override
+  public void updateProductSaleStatus(Product product, ProductSaleStatus productSaleStatus) {
+    mongoTemplate.updateFirst(
+        Query.query(Criteria.where("_id").is(product.getProductId())),
+        Update.update("product_sale_status", productSaleStatus),
+        Product.class);
   }
 }

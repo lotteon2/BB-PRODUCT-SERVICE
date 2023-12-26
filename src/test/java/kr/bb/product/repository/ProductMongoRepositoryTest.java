@@ -17,7 +17,6 @@ import javax.transaction.Transactional;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowers;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
-import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.tag.entity.Tag;
@@ -35,13 +34,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 @Transactional
 class ProductMongoRepositoryTest {
   private static final String CONNECTION_STRING = "mongodb://%s:%d";
-  @MockBean
-  SimpleMessageListenerContainer simpleMessageListenerContainer;
-  @Autowired
-  ProductMongoRepository productMongoRepository;
+  @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
+  @Autowired ProductMongoRepository productMongoRepository;
+  @Autowired MongoTemplate mongoTemplate;
   private MongodExecutable mongodExecutable;
-  private MongoTemplate mongoTemplate;
-  @Autowired private  ProductOutPort productOutPort;
 
   @AfterEach
   void clean() {
@@ -63,8 +59,7 @@ class ProductMongoRepositoryTest {
     mongodExecutable = starter.prepare(mongodConfig);
     mongodExecutable.start();
     mongoTemplate =
-        new MongoTemplate(
-            MongoClients.create(String.format(CONNECTION_STRING, ip, port)), "local");
+        new MongoTemplate(MongoClients.create(String.format(CONNECTION_STRING, ip, port)), "local");
   }
 
   @Test
