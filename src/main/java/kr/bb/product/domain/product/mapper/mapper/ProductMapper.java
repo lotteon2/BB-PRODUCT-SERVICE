@@ -15,6 +15,7 @@ import kr.bb.product.domain.product.mapper.ProductCommand.StoreManagerSubscripti
 import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProduct;
 import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProductForCustomer;
 import kr.bb.product.domain.tag.entity.Tag;
+import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -86,12 +87,17 @@ public interface ProductMapper {
   @Mapping(source = "product.reviewCount", target = "reviewCount")
   @Mapping(target = "storeName", ignore = true)
   @Mapping(target = "isLiked", ignore = true)
-  @Mapping(source = "product.category.categoryId", target = "category")
+  @Mapping(source = "product.category", target = "category")
   @Mapping(source = "product.tag", target = "tag", qualifiedByName = "mapTag")
   ProductDetail entityToDetail(Product product);
 
   @Named("mapTag")
-  List<Long> mapTag(List<Tag> tag);
+  @Mapping(source = "tag.tagId", target = "key")
+  @Mapping(source = "tag.tagName", target = "tagName")
+  TagForProductList mapTag(Tag tag);
+
+  @IterableMapping(qualifiedByName = "mapTag")
+  List<TagForProductList> entityToTagList(List<Tag> tag);
 
   @Mappings({
     @Mapping(target = "productId", ignore = true),
