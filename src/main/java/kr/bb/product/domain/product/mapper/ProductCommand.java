@@ -21,7 +21,6 @@ import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.mapper.ProductMapper;
 import kr.bb.product.domain.tag.entity.Tag;
-import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -268,7 +267,7 @@ public class ProductCommand {
     private Long reviewCount;
     @Builder.Default private Boolean isLiked = false;
     private Long category;
-    private List<TagForProductList> tag;
+    private List<Long> tag;
 
     public static ProductDetail fromEntity(Product product) {
       return ProductMapper.INSTANCE.entityToDetail(product);
@@ -350,7 +349,7 @@ public class ProductCommand {
     private String productSummary;
     private Long productPrice;
     private Long category;
-    private List<String> tag;
+    private List<Long> tag;
     private String productDescriptionImage;
     private Long productSaleAmount;
     private Double averageRating;
@@ -359,8 +358,8 @@ public class ProductCommand {
     private List<ProductDetailFlower> flowers;
 
     public static StoreProductDetail fromEntity(Product product, List<Flower> flowers) {
-      List<String> tagNames =
-          product.getTag().stream().map(Tag::getTagName).collect(Collectors.toList());
+      List<Long> tagNId =
+          product.getTag().stream().map(Tag::getTagId).collect(Collectors.toList());
       Map<Long, String> flowerName =
           flowers.stream().collect(Collectors.toMap(Flower::getId, Flower::getFlowerName));
 
@@ -382,7 +381,7 @@ public class ProductCommand {
           .productSummary(product.getProductSummary())
           .productPrice(product.getProductPrice())
           .category(product.getCategory().getCategoryId())
-          .tag(tagNames)
+          .tag(tagNId)
           .productDescriptionImage(product.getProductDescriptionImage())
           .productSaleAmount(product.getProductSaleAmount())
           .averageRating(product.getAverageRating())
