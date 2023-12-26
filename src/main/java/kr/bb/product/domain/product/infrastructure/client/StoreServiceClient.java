@@ -28,7 +28,7 @@ public interface StoreServiceClient {
   @CircuitBreaker(
       name = "getCartItemProductInformationFallback",
       fallbackMethod = "getCartItemProductInformationFallback")
-  @PostMapping("/client/store/policy")
+  @PostMapping("/client/stores/policy")
   CommonResponse<Map<Long, StorePolicy>> getCartItemProductInformation(
       @RequestBody List<Long> storeId);
 
