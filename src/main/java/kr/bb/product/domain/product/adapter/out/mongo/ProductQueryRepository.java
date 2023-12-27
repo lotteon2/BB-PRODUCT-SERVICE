@@ -11,12 +11,21 @@ import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand;
 import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
 import kr.bb.product.exception.errors.ProductNotFoundException;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -201,5 +210,38 @@ public class ProductQueryRepository implements ProductQueryOutPort {
     List<Product> products = mongoTemplate.find(query, Product.class);
     return products.stream()
         .collect(Collectors.groupingBy(Product::getStoreId, Collectors.toList()));
+  }
+
+  @Override
+  public Map<Long, Double> findStoreAverageRating() {
+    AggregationOperation groupByStoreId =
+        Aggregation.group("storeId").avg("averageRating").as("averageRating");
+
+    TypedAggregation<Product> aggregation =
+        Aggregation.newAggregation(Product.class, groupByStoreId);
+
+    // Execute the aggregation
+    AggregationResults<AverageResult> aggregate =
+        mongoTemplate.aggregate(aggregation, AverageResult.class);
+    List<AverageResult> averageResults = aggregate.getMappedResults();
+
+    // Logging for troubleshooting
+    averageResults.forEach(
+        result -> {
+          System.out.println(
+              "storeId: " + result.getStoreId() + ", averageRating: " + result.getAverageRating());
+        });
+
+    return averageResults.stream()
+        .collect(Collectors.toMap(AverageResult::getStoreId, AverageResult::getAverageRating));
+  }
+
+  @Getter
+  @AllArgsConstructor
+  @Builder
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  private static class AverageResult {
+    private Long storeId;
+    private Double averageRating;
   }
 }

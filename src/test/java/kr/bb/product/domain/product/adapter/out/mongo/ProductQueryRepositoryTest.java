@@ -12,9 +12,9 @@ import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowers;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand.RepresentativeFlowerId;
 import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
-import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.exception.errors.ProductNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -278,5 +278,28 @@ class ProductQueryRepositoryTest {
     System.out.println(productsByProductIds.keySet());
     assertThat(productsByProductIds.size()).isEqualTo(1);
     assertThat(productsByProductIds.get(1L).size()).isEqualTo(2);
+  }
+
+  @Test
+  @DisplayName("가게별 평균 평점 업데이트")
+  void findStoreAverageRating() {
+    productMongoRepository.deleteAll();
+    for (int i = 0; i < 5; i++) {
+      Product product =
+          Product.builder().productId("i" + i).averageRating(1.0 + i).storeId(1L).build();
+      productMongoRepository.save(product);
+    }
+
+    List<Product> all = productMongoRepository.findAll();
+    for (Product product : all) {
+      System.out.println(product.getStoreId() + " : " + product.getAverageRating());
+    }
+
+    Map<Long, Double> storeAverageRating = productQueryOutPort.findStoreAverageRating();
+    for (Long key : storeAverageRating.keySet()) {
+      System.out.println(key);
+    }
+
+    //        assertThat(storeAverageRating.keySet().size()).isEqualTo(3);
   }
 }
