@@ -2,6 +2,9 @@ package kr.bb.product.domain.product.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import bloomingblooms.domain.flower.StockChangeDto;
+import bloomingblooms.domain.notification.order.OrderType;
+import bloomingblooms.domain.order.ProcessOrderDto;
 import bloomingblooms.domain.product.IsProductPriceValid;
 import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
@@ -10,7 +13,9 @@ import bloomingblooms.domain.product.StoreSubscriptionProductId;
 import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import kr.bb.product.config.MockingTestConfiguration;
 import kr.bb.product.config.mock.MockingApi;
@@ -410,33 +415,34 @@ class ProductQueryInputPortTest {
     assertThat(productInformationForLikes.size()).isEqualTo(4);
   }
 
-  //  @Test
-  //  @DisplayName("장바구니 상품 정보 조회")
-  //  void getCartItemProductInformations() {
-  //    productMongoRepository.deleteAll();
-  //    Map<String, Long> products = new HashMap<>();
-  //
-  //    for (int i = 0; i < 2; i++) {
-  //      products.put("uyf" + i, 3L + i);
-  //      Product product =
-  //          Product.builder()
-  //              .productId("uyf" + i)
-  //              .productName("name" + i)
-  //              .productThumbnail("thumbnail" + i)
-  //              .productPrice(1L + i)
-  //              .storeId(1L)
-  //              .build();
-  //      productMongoRepository.save(product);
-  //    }
-  //    MockingApi.setUpStorePolicy(mockCacheApi);
-  //    GetUserCartItemsResponse cartItemProductInformations =
-  //        productQueryInputPort.getCartItemProductInformations(products);
-  //    assertThat(cartItemProductInformations.getCartProductItemInfoList().size()).isEqualTo(2);
-  //    assertThat(
-  //            cartItemProductInformations
-  //                .getCartProductItemInfoList()
-  //                .get(0)
-  //                .getFreeDeliveryMinCost())
-  //        .isEqualTo(3000);
-  //  }
+  @Test
+  @DisplayName("꽃 재고 차감 요청 데이터")
+  void getFlowerAmountGroupByStoreId() {
+    productMongoRepository.deleteAll();
+    Map<String, Long> map = new HashMap<>();
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 4; j++) {
+        map.put("i" + i + j, 1L);
+        Product product =
+            Product.builder()
+                .productId("i" + i + j)
+                .storeId(i + 1L)
+                .productFlowers(
+                    List.of(ProductFlowers.builder().flowerId(j + i + 1L).flowerCount(3L).build()))
+                .build();
+        productMongoRepository.save(product);
+      }
+    }
+
+    List<StockChangeDto> order =
+        productQueryInputPort.getFlowerAmountGroupByStoreId(
+            ProcessOrderDto.builder()
+                .products(map)
+                .orderId("order")
+                .couponIds(List.of(1L))
+                .orderType(OrderType.DELIVERY.getOrderType())
+                .phoneNumber("")
+                .build());
+    assertThat(order.size()).isEqualTo(3);
+  }
 }

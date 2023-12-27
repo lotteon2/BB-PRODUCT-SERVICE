@@ -37,7 +37,7 @@ public interface ProductQueryOutPort {
 
   Map<String, String> findProductNameByProductIdsForReviewByUserId(List<String> productIds);
 
-  Map<Long, List<Product>> findProductsByProductIdsForCartItem(List<String> productId);
+  Map<Long, List<Product>> findProductsByProductsGroupByStoreId(List<String> productId);
 
   Map<Long, Double> findStoreAverageRating();
 }
