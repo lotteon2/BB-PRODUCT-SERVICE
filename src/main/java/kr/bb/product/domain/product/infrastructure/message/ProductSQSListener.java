@@ -7,6 +7,7 @@ import java.util.Map;
 import kr.bb.product.common.dto.NewOrderEvent;
 import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.product.application.handler.ProductCommandHandler;
+import kr.bb.product.domain.product.application.handler.ProductQueryHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.aws.messaging.listener.Acknowledgment;
@@ -21,7 +22,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProductSQSListener {
   private final ObjectMapper objectMapper;
-  private final ProductCommandHandler productHandler;
+  private final ProductCommandHandler productCommandHandler;
+  private final ProductQueryHandler productQueryHandler;
 
   /**
    * 상품 리뷰 작성 시 상품 리뷰 정보 업데이트
@@ -42,7 +44,7 @@ public class ProductSQSListener {
     ReviewRegisterEvent reviewRegisterEvent =
         objectMapper.readValue(messageFromSNS, ReviewRegisterEvent.class);
 
-    productHandler.updateReviewData(reviewRegisterEvent);
+    productCommandHandler.updateReviewData(reviewRegisterEvent);
     ack.acknowledge();
   }
 
@@ -64,12 +66,23 @@ public class ProductSQSListener {
 
     NewOrderEvent newOrderEvent = objectMapper.readValue(messageFromSNS, NewOrderEvent.class);
 
-    productHandler.saleCountUpdate(newOrderEvent);
+    productCommandHandler.saleCountUpdate(newOrderEvent);
     ack.acknowledge();
   }
 
   private String getMessageFromSNS(String message) throws JsonProcessingException {
     JsonNode jsonNode = objectMapper.readTree(message);
     return jsonNode.get("Message").asText();
+  }
+
+  @SqsListener(
+      value = "${cloud.aws.sqs.store-average-rating-update-queue.name}",
+      deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+  public void consumeStoreAverageRatingUpdateQueue(
+      @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
+      throws JsonProcessingException {
+
+    productQueryHandler.getStoreAverageRating();
+    ack.acknowledge();
   }
 }

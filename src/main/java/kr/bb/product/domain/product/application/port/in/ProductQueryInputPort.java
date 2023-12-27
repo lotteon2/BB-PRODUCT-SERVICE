@@ -309,6 +309,11 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   }
 
   @Override
+  public Map<Long, Double> getStoreAverageRating() {
+    return productQueryOutPort.findStoreAverageRating();
+  }
+
+  @Override
   public GetUserCartItemsResponse getCartItemProductInformations(Map<String, Long> productIds) {
     Map<Long, List<Product>> productsByProductIdsForCartItem =
         productQueryOutPort.findProductsByProductIdsForCartItem(

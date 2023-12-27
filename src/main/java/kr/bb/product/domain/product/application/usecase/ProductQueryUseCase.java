@@ -76,4 +76,6 @@ public interface ProductQueryUseCase {
   GetUserCartItemsResponse getCartItemProductInformations(Map<String, Long> productIds);
 
   List<LikedProductInfoResponse> getProductInformationForLikes(List<String> productIds);
+
+    Map<Long, Double> getStoreAverageRating();
 }
