@@ -216,7 +216,6 @@ public class ProductQueryRepository implements ProductQueryOutPort {
   public Map<Long, Double> findStoreAverageRating() {
     AggregationOperation groupByStoreId =
         Aggregation.group("storeId").avg("averageRating").as("averageRating");
-
     TypedAggregation<Product> aggregation =
         Aggregation.newAggregation(Product.class, groupByStoreId);
 
@@ -229,11 +228,11 @@ public class ProductQueryRepository implements ProductQueryOutPort {
     averageResults.forEach(
         result -> {
           System.out.println(
-              "storeId: " + result.getStoreId() + ", averageRating: " + result.getAverageRating());
+              "storeId: " + result.get_id() + ", averageRating: " + result.getAverageRating());
         });
 
     return averageResults.stream()
-        .collect(Collectors.toMap(AverageResult::getStoreId, AverageResult::getAverageRating));
+        .collect(Collectors.toMap(AverageResult::get_id, AverageResult::getAverageRating));
   }
 
   @Getter
@@ -241,7 +240,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
   @Builder
   @NoArgsConstructor(access = AccessLevel.PROTECTED)
   private static class AverageResult {
-    private Long storeId;
+    private Long _id;
     private Double averageRating;
   }
 }

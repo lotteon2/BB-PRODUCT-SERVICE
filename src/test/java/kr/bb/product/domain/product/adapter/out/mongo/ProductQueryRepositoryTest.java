@@ -284,22 +284,17 @@ class ProductQueryRepositoryTest {
   @DisplayName("가게별 평균 평점 업데이트")
   void findStoreAverageRating() {
     productMongoRepository.deleteAll();
-    for (int i = 0; i < 5; i++) {
-      Product product =
-          Product.builder().productId("i" + i).averageRating(1.0 + i).storeId(1L).build();
-      productMongoRepository.save(product);
-    }
 
-    List<Product> all = productMongoRepository.findAll();
-    for (Product product : all) {
-      System.out.println(product.getStoreId() + " : " + product.getAverageRating());
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
+        Product product =
+            Product.builder().productId("i" + i + j).averageRating(1.0 + i).storeId(1L + i).build();
+        productMongoRepository.save(product);
+      }
     }
 
     Map<Long, Double> storeAverageRating = productQueryOutPort.findStoreAverageRating();
-    for (Long key : storeAverageRating.keySet()) {
-      System.out.println(key);
-    }
 
-    //        assertThat(storeAverageRating.keySet().size()).isEqualTo(3);
+    assertThat(storeAverageRating.keySet().size()).isEqualTo(3);
   }
 }

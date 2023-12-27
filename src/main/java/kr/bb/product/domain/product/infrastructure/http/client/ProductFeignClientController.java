@@ -59,7 +59,7 @@ public class ProductFeignClientController {
     return CommonResponse.success(productQueryUseCase.getSubscriptionProductInformation(productId));
   }
 
-  @PostMapping("product/likes")
+  @PostMapping("products/likes")
   public CommonResponse<List<LikedProductInfoResponse>> getProductInformationForLikes(
       @RequestBody List<String> productId) {
     return CommonResponse.success(productQueryUseCase.getProductInformationForLikes(productId));
