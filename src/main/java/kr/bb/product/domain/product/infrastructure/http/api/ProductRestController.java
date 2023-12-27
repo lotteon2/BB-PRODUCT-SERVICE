@@ -1,4 +1,4 @@
-package kr.bb.product.domain.product.adapter.in.api;
+package kr.bb.product.domain.product.infrastructure.http.api;
 
 import bloomingblooms.response.CommonResponse;
 import java.util.Optional;

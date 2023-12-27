@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowersRequestData;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
-import kr.bb.product.domain.product.application.port.out.ProductOutPort;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
@@ -24,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 class ProductStoreInputPortTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired private ProductCommandInputPort productStoreInputPort;
-  @Autowired private ProductOutPort productOutPort;
   @Autowired private ProductMongoRepository productMongoRepository;
   @Autowired private ProductQueryOutPort productQueryOutPort;
 

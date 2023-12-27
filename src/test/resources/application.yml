@@ -62,3 +62,6 @@ cloud:
       sale-count-update-queue:
         name: ""
         url: ""
+      store-average-rating-update-queue:
+        name: ""
+        url: ""

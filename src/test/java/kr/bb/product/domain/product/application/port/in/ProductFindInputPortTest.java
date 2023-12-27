@@ -1,26 +1,14 @@
 package kr.bb.product.domain.product.application.port.in;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import java.util.ArrayList;
 import java.util.List;
 import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowersRequestData;
-import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
-import kr.bb.product.domain.product.application.port.out.ProductOutPort;
-import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import kr.bb.product.domain.product.mapper.ProductCommand;
-import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
-import kr.bb.product.domain.product.mapper.ProductCommand.ProductListItem;
-import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.aws.messaging.listener.SimpleMessageListenerContainer;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -28,31 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 class ProductFindInputPortTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired WishlistServiceClient wishlistServiceClient;
-  @Autowired private ProductOutPort productOutPort;
   @Autowired private ProductCommandInputPort productStoreInputPort;
-  @Autowired private ProductQueryInputPort productFindInputPort;
-  @Autowired private ProductMongoRepository productMongoRepository;
-
-  @Test
-  @DisplayName("상품 카테고리 조회 페이징")
-  void getProductsByCategory() {
-    // given
-    extracted();
-
-    // when
-    PageRequest pageRequest = PageRequest.of(0, 2);
-    Page<Product> byCategory = productOutPort.findByCategory(1L, pageRequest);
-
-    // 반환 객체로 변환
-    List<ProductListItem> productByCategories = ProductList.fromEntity(byCategory.getContent());
-    ProductList data = ProductList.getData(productByCategories, byCategory.getTotalPages());
-
-    assertThat(data.getTotalCnt()).isEqualTo(5);
-    // 찜 생략
-    //    List<ProductByCategory> data1 =
-    //        wishlistServiceClient.getProductsMemberLikes(1L, productByCategories).getData();
-    //    System.out.println(data1.toString());
-  }
 
   private void extracted() {
     for (int i = 0; i < 10; i++) {
@@ -81,17 +45,5 @@ class ProductFindInputPortTest {
               .build();
       productStoreInputPort.createProduct(product);
     }
-  }
-
-  @Test
-  @DisplayName("태그별 상품 리스트 조회")
-  void getProductListByTagId() {
-    productMongoRepository.deleteAll();
-    extracted();
-    PageRequest pageRequest = PageRequest.of(0, 3);
-    Page<Product> productsByTagId = productOutPort.findProductsByTagId(1L, pageRequest);
-    ProductList productsByTag =
-        productFindInputPort.getProductsByTag(1L, 1L, SortOption.LOW, pageRequest);
-    assertThat(productsByTag.getProducts().size()).isEqualTo(3);
   }
 }

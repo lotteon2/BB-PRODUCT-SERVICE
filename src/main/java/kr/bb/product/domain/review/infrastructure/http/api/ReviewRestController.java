@@ -1,4 +1,4 @@
-package kr.bb.product.domain.review.adapter.in.api;
+package kr.bb.product.domain.review.infrastructure.http.api;
 
 import bloomingblooms.response.CommonResponse;
 import kr.bb.product.domain.review.application.handler.ReviewCommandHandler;
