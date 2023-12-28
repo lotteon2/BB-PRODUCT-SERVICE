@@ -1,5 +1,7 @@
 package kr.bb.product.domain.product.application.usecase;
 
+import bloomingblooms.domain.flower.StockChangeDto;
+import bloomingblooms.domain.order.ProcessOrderDto;
 import bloomingblooms.domain.product.IsProductPriceValid;
 import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
@@ -78,4 +80,6 @@ public interface ProductQueryUseCase {
   List<LikedProductInfoResponse> getProductInformationForLikes(List<String> productIds);
 
     Map<Long, Double> getStoreAverageRating();
+
+  List<StockChangeDto> getFlowerAmountGroupByStoreId(ProcessOrderDto processOrderDto);
 }

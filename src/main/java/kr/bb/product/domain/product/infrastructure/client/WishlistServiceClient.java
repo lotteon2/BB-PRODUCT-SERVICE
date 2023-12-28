@@ -19,12 +19,12 @@ public interface WishlistServiceClient {
   @CircuitBreaker(name = "getProductsMemberLikesFallback", fallbackMethod = "getProductsMemberLikesFallback")
   @PostMapping("/client/likes/{userId}")
   CommonResponse<List<String>> getProductsMemberLikes(
-      @PathVariable Long userId, List<String> productIds);
+      @PathVariable("userId") Long userId, List<String> productIds);
 
   @CircuitBreaker(name = "getProductDetailLikesFallback", fallbackMethod = "getProductDetailLikesFallback")
   @GetMapping("/client/likes/{userId}/product/{productId}")
   CommonResponse<ProductDetailLike> getProductDetailLikes(
-      @PathVariable String productId, @PathVariable Long userId);
+      @PathVariable("productId") String productId, @PathVariable Long userId);
 
   default CommonResponse<List<String>> getProductsMemberLikesFallback(
       Long userId, List<String> productIds, Throwable t) {

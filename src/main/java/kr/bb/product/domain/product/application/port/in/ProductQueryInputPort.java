@@ -1,5 +1,7 @@
 package kr.bb.product.domain.product.application.port.in;
 
+import bloomingblooms.domain.flower.StockChangeDto;
+import bloomingblooms.domain.order.ProcessOrderDto;
 import bloomingblooms.domain.product.IsProductPriceValid;
 import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
@@ -314,9 +316,18 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   }
 
   @Override
+  public List<StockChangeDto> getFlowerAmountGroupByStoreId(ProcessOrderDto processOrderDto) {
+
+    Map<Long, List<Product>> productsByProductsGroupByStoreId =
+        productQueryOutPort.findProductsByProductsGroupByStoreId(
+            new ArrayList<>(processOrderDto.getProducts().keySet()));
+    return ProductCommand.getFlowerAmountOfStore(productsByProductsGroupByStoreId, processOrderDto);
+  }
+
+  @Override
   public GetUserCartItemsResponse getCartItemProductInformations(Map<String, Long> productIds) {
     Map<Long, List<Product>> productsByProductIdsForCartItem =
-        productQueryOutPort.findProductsByProductIdsForCartItem(
+        productQueryOutPort.findProductsByProductsGroupByStoreId(
             new ArrayList<>(productIds.keySet()));
 
     Map<Long, StorePolicy> storePolicies =

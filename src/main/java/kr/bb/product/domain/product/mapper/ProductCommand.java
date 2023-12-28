@@ -1,5 +1,8 @@
 package kr.bb.product.domain.product.mapper;
 
+import bloomingblooms.domain.flower.StockChangeDto;
+import bloomingblooms.domain.flower.StockDto;
+import bloomingblooms.domain.order.ProcessOrderDto;
 import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
@@ -115,6 +118,40 @@ public class ProductCommand {
                     .quantity(productIds.get(item.getProductId()))
                     .build())
         .collect(Collectors.toList());
+  }
+
+  public static List<StockChangeDto> getFlowerAmountOfStore(
+      Map<Long, List<Product>> productsByProductsGroupByStoreId, ProcessOrderDto processOrderDto) {
+    Map<Long, List<StockDto>> stockDtos = new HashMap<>();
+
+    for (Long key : productsByProductsGroupByStoreId.keySet()) {
+      Map<Long, Long> map = new HashMap<>();
+      List<StockDto> list = new ArrayList<>();
+      for (Product p : productsByProductsGroupByStoreId.get(key)) {
+        p.getProductFlowers()
+            .forEach(
+                item ->
+                    map.merge(
+                        item.getFlowerId(),
+                        item.getFlowerCount() * processOrderDto.getProducts().get(p.getProductId()),
+                        Long::sum));
+      }
+      for (Long flower : map.keySet()) {
+        list.add(StockDto.builder().flowerId(flower).stock(map.get(flower)).build());
+      }
+      stockDtos.put(key, list);
+    }
+    List<StockChangeDto> stockChangeDtos = new ArrayList<>();
+    for (Long key : stockDtos.keySet()) {
+      stockChangeDtos.add(
+          StockChangeDto.builder()
+              .phoneNumber(processOrderDto.getPhoneNumber())
+              .stockDtos(stockDtos.get(key))
+              .storeId(key)
+              .build());
+    }
+
+    return stockChangeDtos;
   }
 
   @Getter
