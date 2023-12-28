@@ -6,7 +6,7 @@ import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.product.mapper.ProductCommand;
 
 public interface ProductCommandUseCase {
-  void updateProductSaleStatus(String productId, ProductCommand.ProductUpdate productRequestData);
+  void updateProduct(String productId, ProductCommand.ProductUpdate productRequestData);
 
   void createProduct(ProductCommand.ProductRegister productRequestData);
 

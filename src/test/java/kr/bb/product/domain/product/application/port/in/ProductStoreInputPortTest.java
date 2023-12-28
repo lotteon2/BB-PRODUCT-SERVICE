@@ -1,7 +1,9 @@
 package kr.bb.product.domain.product.application.port.in;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.amazonaws.services.sqs.model.AmazonSQSException;
 import java.util.ArrayList;
 import java.util.List;
 import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowersRequestData;
@@ -10,6 +12,7 @@ import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductUpdate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,12 +65,8 @@ class ProductStoreInputPortTest {
     list.add(ProductFlowersRequestData.builder().flowerId(2L).flowerCount(2L).build());
 
     return ProductCommand.ProductUpdate.builder()
-        .categoryId(1L)
         .productTag(tagList)
         .productSaleStatus(ProductSaleStatus.DISCONTINUED)
-        .representativeFlower(
-            ProductFlowersRequestData.builder().flowerCount(3L).flowerId(1L).build())
-        .flowers(list)
         .productName("Example Product")
         .productSummary("Product Summary")
         .productDescriptionImage("image")
@@ -88,12 +87,8 @@ class ProductStoreInputPortTest {
     list.add(ProductFlowersRequestData.builder().flowerId(2L).flowerCount(2L).build());
 
     return ProductCommand.ProductUpdate.builder()
-        .categoryId(1L)
         .productTag(tagList)
         .productSaleStatus(ProductSaleStatus.DELETED)
-        .representativeFlower(
-            ProductFlowersRequestData.builder().flowerCount(3L).flowerId(1L).build())
-        .flowers(list)
         .productName("Example Product")
         .productSummary("Product Summary")
         .productDescriptionImage("image")
@@ -131,7 +126,7 @@ class ProductStoreInputPortTest {
     Product product = createProduct();
 
     // Act
-    productStoreInputPort.updateProductSaleStatus(product.getProductId(), productRequestData);
+    productStoreInputPort.updateProduct(product.getProductId(), productRequestData);
     Product byProductId = productQueryOutPort.findByProductId(product.getProductId());
     assertThat(byProductId.getProductSaleStatus()).isEqualTo(ProductSaleStatus.DISCONTINUED);
   }
@@ -144,10 +139,28 @@ class ProductStoreInputPortTest {
     Product product = createProduct();
 
     // Act
-    productStoreInputPort.updateProductSaleStatus(product.getProductId(), productRequestData);
+    productStoreInputPort.updateProduct(product.getProductId(), productRequestData);
     Product byProductId = productQueryOutPort.findByProductId(product.getProductId());
-    assertThat(byProductId.getProductSaleStatus()).isEqualTo(ProductSaleStatus.DISCONTINUED);
+    assertThat(byProductId.getProductSaleStatus()).isEqualTo(ProductSaleStatus.DELETED);
     assertThat(byProductId.getIsDeleted()).isEqualTo(true);
+  }
+
+  @Test
+  @DisplayName("Update product sale status - ProductSaleStatus SALE")
+  void updateProductSaleStatusSALE() {
+    // Arrange
+
+    ProductUpdate build =
+        ProductUpdate.builder()
+            .productTag(List.of(1L))
+            .productSaleStatus(ProductSaleStatus.SALE)
+            .build();
+    Product product = createProduct();
+
+    // Act
+    assertThrows(
+        AmazonSQSException.class,
+        () -> productStoreInputPort.updateProduct(product.getProductId(), build));
   }
 
   private Product createProduct() {

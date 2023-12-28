@@ -71,7 +71,7 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
    */
   @Override
   @Transactional
-  public void updateProductSaleStatus(
+  public void updateProduct(
       String productId, ProductCommand.ProductUpdate productRequestData) {
     List<Tag> tags = getTags(productRequestData.getProductTag());
 

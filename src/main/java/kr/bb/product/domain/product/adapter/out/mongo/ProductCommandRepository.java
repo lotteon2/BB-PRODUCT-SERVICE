@@ -69,23 +69,6 @@ public class ProductCommandRepository implements ProductCommandOutPort {
   }
 
   @Override
-  public void updateProductSaleStatus(Product product) {
-    mongoTemplate.updateFirst(
-        Query.query(Criteria.where("_id").is(product.getProductId())),
-        Update.update("is_deleted", true)
-            .set("product_sale_status", ProductSaleStatus.DISCONTINUED),
-        Product.class);
-  }
-
-  @Override
-  public void updateProductSaleStatus(Product product, ProductSaleStatus productSaleStatus) {
-    mongoTemplate.updateFirst(
-        Query.query(Criteria.where("_id").is(product.getProductId())),
-        Update.update("product_sale_status", productSaleStatus),
-        Product.class);
-  }
-
-  @Override
   public void updateProductSaleStatus(String productId, ProductUpdate productRequestData) {
     mongoTemplate.updateFirst(
         Query.query(Criteria.where("_id").is(productId)),

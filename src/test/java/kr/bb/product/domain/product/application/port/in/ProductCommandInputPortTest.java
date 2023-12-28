@@ -3,14 +3,13 @@ package kr.bb.product.domain.product.application.port.in;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.amazonaws.services.sqs.model.AmazonSQSException;
 import java.util.List;
 import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.entity.Product;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductUpdate;
 import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProduct;
-import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,21 +91,23 @@ class ProductCommandInputPortTest {
   @Test
   @DisplayName("상품 판매 상태 수정")
   void updateProductSaleStatus() {
+    productMongoRepository.deleteAll();
     Product save =
         productMongoRepository.save(
             Product.builder()
                 .productId("123")
-                .productSaleStatus(ProductSaleStatus.DISCONTINUED)
+                .productSaleStatus(ProductSaleStatus.SALE)
                 .productName("name")
                 .build());
     ProductUpdate name =
         ProductUpdate.builder()
-            .productSaleStatus(ProductSaleStatus.SALE)
-            .productName("name")
+            .productSaleStatus(ProductSaleStatus.DISCONTINUED)
+            .productName("name1")
+            .productTag(List.of(1L))
             .build();
 
-    assertThrows(
-        AmazonSQSException.class,
-        () -> productCommandInputPort.updateProductSaleStatus("123", name));
+    productCommandInputPort.updateProduct("123", name);
+    Product product = productMongoRepository.findByProductId("123").get();
+    assertThat(product.getProductName()).isEqualTo(name.getProductName());
   }
 }
