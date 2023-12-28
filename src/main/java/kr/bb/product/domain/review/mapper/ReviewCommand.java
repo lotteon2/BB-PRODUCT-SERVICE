@@ -21,7 +21,8 @@ public class ReviewCommand {
     return ReviewRegisterEvent.builder()
         .reviewRating(review.getRating())
         .productId(productId)
-        .reviewType(review.reviewType) // TODO: review type required
+        .id(review.getId())
+        .reviewType(review.reviewType)
         .build();
   }
 
