@@ -150,7 +150,7 @@ public class ProductRestController {
   public void updateProductSaleStatus(
       @PathVariable String productId,
       @RequestBody ProductCommand.ProductUpdate productRequestData) {
-    productCommandUseCase.updateProductSaleStatus(productId, productRequestData);
+    productCommandUseCase.updateProduct(productId, productRequestData);
   }
 
   /**
