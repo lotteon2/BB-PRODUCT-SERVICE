@@ -144,7 +144,11 @@ public class ProductCommand {
     List<StockChangeDto> stockChangeDtos = new ArrayList<>();
     for (Long key : stockDtos.keySet()) {
       stockChangeDtos.add(
-          StockChangeDto.builder().stockDtos(stockDtos.get(key)).storeId(key).build());
+          StockChangeDto.builder()
+              .phoneNumber(processOrderDto.getPhoneNumber())
+              .stockDtos(stockDtos.get(key))
+              .storeId(key)
+              .build());
     }
 
     return stockChangeDtos;

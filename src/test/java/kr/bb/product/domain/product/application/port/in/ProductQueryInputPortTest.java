@@ -422,7 +422,7 @@ class ProductQueryInputPortTest {
     Map<String, Long> map = new HashMap<>();
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 4; j++) {
-        map.put("i" + i + j, 1L);
+        map.put("i" + i + j, 3L);
         Product product =
             Product.builder()
                 .productId("i" + i + j)
@@ -443,6 +443,10 @@ class ProductQueryInputPortTest {
                 .orderType(OrderType.DELIVERY.getOrderType())
                 .phoneNumber("")
                 .build());
+    order
+        .get(0)
+        .getStockDtos()
+        .forEach(item -> System.out.println(item.getStock() + ": " + item.getFlowerId()));
     assertThat(order.size()).isEqualTo(3);
   }
 }

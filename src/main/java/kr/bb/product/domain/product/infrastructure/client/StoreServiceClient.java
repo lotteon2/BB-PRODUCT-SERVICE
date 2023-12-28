@@ -1,5 +1,6 @@
 package kr.bb.product.domain.product.infrastructure.client;
 
+import bloomingblooms.domain.flower.StockChangeDto;
 import bloomingblooms.domain.store.StoreName;
 import bloomingblooms.response.CommonResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -12,6 +13,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
@@ -31,6 +33,14 @@ public interface StoreServiceClient {
   @PostMapping("/client/stores/policy")
   CommonResponse<Map<Long, StorePolicy>> getCartItemProductInformation(
       @RequestBody List<Long> storeId);
+
+  /**
+   * 꽃 재고 차감 요청
+   *
+   * @param stockChangeDto
+   */
+  @PutMapping("/client/stores/flowers/stocks/subtract")
+  void flowerStockDecreaseRequest(@RequestBody List<StockChangeDto> stockChangeDto);
 
   default CommonResponse<StoreName> getStoreNameOfProductDetailFallback(Long storeId, Throwable t) {
     return CommonResponse.success(StoreName.builder().storeName("가게명").build());
