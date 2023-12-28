@@ -1,8 +1,8 @@
 package kr.bb.product.domain.product.application.port.in;
 
+import bloomingblooms.domain.order.NewOrderEvent;
+import bloomingblooms.domain.review.ReviewRegisterEvent;
 import java.util.List;
-import kr.bb.product.common.dto.NewOrderEvent;
-import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.category.entity.Category;
 import kr.bb.product.domain.category.repository.jpa.CategoryRepository;
 import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowers;

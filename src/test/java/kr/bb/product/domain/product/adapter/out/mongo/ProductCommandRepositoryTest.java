@@ -2,11 +2,11 @@ package kr.bb.product.domain.product.adapter.out.mongo;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import bloomingblooms.domain.order.NewOrderEvent.ProductCount;
+import bloomingblooms.domain.review.ReviewRegisterEvent;
+import bloomingblooms.domain.review.ReviewType;
 import java.util.ArrayList;
 import java.util.List;
-import kr.bb.product.common.dto.NewOrderEvent.ProductCount;
-import kr.bb.product.common.dto.ReviewRegisterEvent;
-import kr.bb.product.common.dto.ReviewType;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.mapper.ProductCommand;
 import org.junit.jupiter.api.DisplayName;
