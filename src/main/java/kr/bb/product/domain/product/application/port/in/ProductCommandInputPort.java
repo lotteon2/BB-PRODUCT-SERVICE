@@ -10,7 +10,6 @@ import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowersRequestDat
 import kr.bb.product.domain.product.application.port.out.ProductCommandOutPort;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
-import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.infrastructure.message.ProductSQSPublisher;
 import kr.bb.product.domain.product.mapper.ProductCommand;
@@ -54,8 +53,8 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
   }
 
   @NotNull
-  private List<Tag> getTags(ProductCommand.ProductRegister productRequestData) {
-    return tagRepository.findAllById(productRequestData.getProductTag());
+  private List<Tag> getTags(List<Long> productRequestData) {
+    return tagRepository.findAllById(productRequestData);
   }
 
   private Category getCategory(ProductCommand.ProductRegister productRequestData) {
@@ -72,18 +71,19 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
    */
   @Override
   @Transactional
-  public void updateProductSaleStatus(
+  public void updateProduct(
       String productId, ProductCommand.ProductUpdate productRequestData) {
-    Product product = productQueryOutPort.findByProductId(productId);
+    List<Tag> tags = getTags(productRequestData.getProductTag());
+
     if (productRequestData.getProductSaleStatus().equals(ProductSaleStatus.DELETED)) {
-      productCommandOutPort.updateProductSaleStatus(product);
+      productCommandOutPort.updateProductSaleStatus(productId, productRequestData);
     } else if (productRequestData.getProductSaleStatus().equals(ProductSaleStatus.SALE)) {
       // sqs 재입고 알림 조회 요청
       publishMessageToSQS.publishProductResaleNotificationCheckQueue(
-          productId, product.getProductName());
-      productCommandOutPort.updateProductSaleStatus(product, productRequestData.getProductSaleStatus());
+          productId, productRequestData.getProductName());
+      productCommandOutPort.updateProductSaleStatus(productId, productRequestData, tags);
     } else {
-      productCommandOutPort.updateProductSaleStatus(product, productRequestData.getProductSaleStatus());
+     productCommandOutPort.updateProductSaleStatus(productId, productRequestData, tags);
     }
   }
 
@@ -96,7 +96,7 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
   @Transactional
   public void createProduct(ProductCommand.ProductRegister productRequestData) {
     Category category = getCategory(productRequestData);
-    List<Tag> tags = getTags(productRequestData);
+    List<Tag> tags = getTags(productRequestData.getProductTag());
     ProductFlowersRequestData representativeFlower = productRequestData.getRepresentativeFlower();
     List<ProductFlowers> flowers = getFlowers(productRequestData, representativeFlower);
 

@@ -75,7 +75,8 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     return PageRequest.of(
         pageable.getPageNumber(),
         pageable.getPageSize(),
-        Sort.by(direction, sortOption.getSortOption()));
+        Sort.by(Direction.DESC, "product_sale_status")
+            .and(Sort.by(direction, sortOption.getSortOption())));
   }
 
   private static List<ProductListItem> getProduct(Page<Product> byCategory) {
