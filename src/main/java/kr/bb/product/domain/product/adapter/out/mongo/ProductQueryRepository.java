@@ -10,7 +10,6 @@ import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand;
 import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
-import kr.bb.product.exception.errors.ProductNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -93,7 +92,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
     Query query = new Query();
     if (storeId != null) query.addCriteria(Criteria.where("store_id").is(storeId));
     query.addCriteria(Criteria.where("category.categoryId").is(categoryId));
-    query.addCriteria(Criteria.where("product_sale_status").is(ProductSaleStatus.SALE));
+    query.addCriteria(Criteria.where("product_sale_status").ne(ProductSaleStatus.DELETED));
     query.with(pageable);
     List<Product> products = mongoTemplate.find(query, Product.class);
     return PageableExecutionUtils.getPage(
@@ -107,7 +106,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
     Query query = new Query();
     query.addCriteria(Criteria.where("tag.tagId").is(tagId));
     if (categoryId != null) query.addCriteria(Criteria.where("category.categoryId").is(categoryId));
-    query.addCriteria(Criteria.where("product_sale_status").is(ProductSaleStatus.SALE));
+    query.addCriteria(Criteria.where("product_sale_status").ne(ProductSaleStatus.DELETED));
     query.with(pageable);
 
     List<Product> products = mongoTemplate.find(query, Product.class);
@@ -119,9 +118,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
 
   @Override
   public Product findByProductId(String productId) {
-    return productMongoRepository
-        .findByProductId(productId)
-        .orElseThrow(ProductNotFoundException::new);
+    return mongoTemplate.findOne(Query.query(Criteria.where("_id").is(productId)), Product.class);
   }
 
   @Override
