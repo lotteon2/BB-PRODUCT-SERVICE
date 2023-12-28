@@ -1,12 +1,12 @@
 package kr.bb.product.domain.review.mapper;
 
+import bloomingblooms.domain.review.ReviewRegisterEvent;
+import bloomingblooms.domain.review.ReviewType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import kr.bb.product.common.dto.ReviewRegisterEvent;
-import kr.bb.product.common.dto.ReviewType;
 import kr.bb.product.domain.review.entity.Review;
 import kr.bb.product.domain.review.entity.ReviewImages;
 import kr.bb.product.domain.review.mapper.mapper.ReviewImageMapper;
@@ -21,7 +21,6 @@ public class ReviewCommand {
     return ReviewRegisterEvent.builder()
         .reviewRating(review.getRating())
         .productId(productId)
-        .id(review.id)
         .reviewType(review.reviewType) // TODO: review type required
         .build();
   }
