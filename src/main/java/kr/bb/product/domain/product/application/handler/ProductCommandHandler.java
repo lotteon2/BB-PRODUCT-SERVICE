@@ -1,7 +1,7 @@
 package kr.bb.product.domain.product.application.handler;
 
-import kr.bb.product.common.dto.NewOrderEvent;
-import kr.bb.product.common.dto.ReviewRegisterEvent;
+import bloomingblooms.domain.order.NewOrderEvent;
+import bloomingblooms.domain.review.ReviewRegisterEvent;
 import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

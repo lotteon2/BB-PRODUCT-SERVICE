@@ -13,6 +13,11 @@ public class ProductKafkaListener {
 
   @KafkaListener(topics = "stock-decrease", groupId = "stock-decrease")
   public void stockDecreaseRequestListener(ProcessOrderDto processOrderDto) {
-    productQueryHandler.getFlowerAmountForOrder(processOrderDto);
+    productQueryHandler.getFlowerStockDecrease(processOrderDto);
+  }
+
+  @KafkaListener(topics = "order-create-rollback", groupId = "order-rollback")
+  public void orderRollbackRequestListener(ProcessOrderDto processOrderDto) {
+    productQueryHandler.getFlowerStockRollback(processOrderDto);
   }
 }

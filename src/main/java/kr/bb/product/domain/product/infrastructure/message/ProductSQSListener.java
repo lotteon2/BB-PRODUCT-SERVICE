@@ -1,11 +1,11 @@
 package kr.bb.product.domain.product.infrastructure.message;
 
+import bloomingblooms.domain.order.NewOrderEvent;
+import bloomingblooms.domain.review.ReviewRegisterEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
-import kr.bb.product.common.dto.NewOrderEvent;
-import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.product.application.handler.ProductCommandHandler;
 import kr.bb.product.domain.product.application.handler.ProductQueryHandler;
 import lombok.RequiredArgsConstructor;

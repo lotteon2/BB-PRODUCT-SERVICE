@@ -1,8 +1,8 @@
 package kr.bb.product.domain.product.application.usecase;
 
+import bloomingblooms.domain.order.NewOrderEvent.ProductCount;
+import bloomingblooms.domain.review.ReviewRegisterEvent;
 import java.util.List;
-import kr.bb.product.common.dto.NewOrderEvent.ProductCount;
-import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.product.mapper.ProductCommand;
 
 public interface ProductCommandUseCase {

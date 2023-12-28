@@ -1,8 +1,8 @@
 package kr.bb.product.domain.review.infrastructure.event;
 
+import bloomingblooms.domain.review.ReviewRegisterEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.bb.product.common.dto.ReviewRegisterEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
