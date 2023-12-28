@@ -233,10 +233,7 @@ public class ProductCommand {
     private String productThumbnail;
     private Long productPrice;
     private ProductSaleStatus productSaleStatus;
-    private Long categoryId;
     private List<Long> productTag;
-    private ProductFlowersRequestData representativeFlower;
-    private List<ProductFlowersRequestData> flowers;
   }
 
   @Getter

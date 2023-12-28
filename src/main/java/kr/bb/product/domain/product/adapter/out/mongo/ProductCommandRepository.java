@@ -6,7 +6,9 @@ import kr.bb.product.common.dto.ReviewRegisterEvent;
 import kr.bb.product.domain.product.application.port.out.ProductCommandOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductUpdate;
 import kr.bb.product.domain.product.mapper.ProductCommand.UpdateSubscriptionProduct;
+import kr.bb.product.domain.tag.entity.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.BulkOperations;
@@ -80,6 +82,29 @@ public class ProductCommandRepository implements ProductCommandOutPort {
     mongoTemplate.updateFirst(
         Query.query(Criteria.where("_id").is(product.getProductId())),
         Update.update("product_sale_status", productSaleStatus),
+        Product.class);
+  }
+
+  @Override
+  public void updateProductSaleStatus(String productId, ProductUpdate productRequestData) {
+    mongoTemplate.updateFirst(
+        Query.query(Criteria.where("_id").is(productId)),
+        Update.update("is_deleted", true).set("product_sale_status", ProductSaleStatus.DELETED),
+        Product.class);
+  }
+
+  @Override
+  public void updateProductSaleStatus(
+      String productId, ProductUpdate productRequestData, List<Tag> tags) {
+    mongoTemplate.updateFirst(
+        Query.query(Criteria.where("_id").is(productId)),
+        Update.update("product_sale_status", productRequestData.getProductSaleStatus())
+            .set("tag", tags)
+            .set("product_summary", productRequestData.getProductSummary())
+            .set("product_price", productRequestData.getProductPrice())
+            .set("product_thumbnail", productRequestData.getProductThumbnail())
+            .set("product_name", productRequestData.getProductName())
+            .set("product_description_image", productRequestData.getProductDescriptionImage()),
         Product.class);
   }
 }
