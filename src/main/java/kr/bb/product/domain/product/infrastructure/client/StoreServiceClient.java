@@ -42,6 +42,9 @@ public interface StoreServiceClient {
   @PutMapping("/client/stores/flowers/stocks/subtract")
   void flowerStockDecreaseRequest(@RequestBody List<StockChangeDto> stockChangeDto);
 
+  @PutMapping("/client/stores/flowers/stocks/add")
+  void flowerStockIncreaseRequest(@RequestBody List<StockChangeDto> flowerAmountGroupByStoreId);
+
   default CommonResponse<StoreName> getStoreNameOfProductDetailFallback(Long storeId, Throwable t) {
     return CommonResponse.success(StoreName.builder().storeName("가게명").build());
   }
