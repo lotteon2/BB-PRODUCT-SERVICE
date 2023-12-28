@@ -13,24 +13,28 @@ import org.springframework.stereotype.Service;
 public class ProductQueryHandler {
   private static final String STORE_AVERAGE_RATING_UPDATE_TOPIC = "store-average-rating-update";
   private static final String STOCK_DECREASE_ROLLBACK = "stock-decrease-rollback";
+  private static final String ORDER_CREATE = "order-create";
   private final ProductQueryUseCase productQueryUseCase;
   private final StoreServiceClient storeServiceClient;
-  private final ProductKafkaProcessor<Map<Long, Double>> productKafkaProcessor;
+  private final ProductKafkaProcessor<Map<Long, Double>> mapProductKafkaProcessor;
   private final ProductKafkaProcessor<ProcessOrderDto> processOrderDtoProductKafkaProcessor;
 
   public void getStoreAverageRating() {
-    Map<Long, Double> storeAverageRating = productQueryUseCase.getStoreAverageRating();
-    productKafkaProcessor.send(STORE_AVERAGE_RATING_UPDATE_TOPIC, storeAverageRating);
+    mapProductKafkaProcessor.send(
+        STORE_AVERAGE_RATING_UPDATE_TOPIC, productQueryUseCase.getStoreAverageRating());
   }
 
   public void getFlowerStockDecrease(ProcessOrderDto processOrderDto) {
     storeServiceClient.flowerStockDecreaseRequest(
         productQueryUseCase.getFlowerAmountGroupByStoreId(processOrderDto));
+    // order create request kafka
+    processOrderDtoProductKafkaProcessor.send(ORDER_CREATE, processOrderDto);
   }
 
   public void getFlowerStockRollback(ProcessOrderDto processOrderDto) {
-//    storeServiceClient.flowerStockIncreaseRequest(
-//        productQueryUseCase.getFlowerAmountGroupByStoreId(processOrderDto));
+    storeServiceClient.flowerStockIncreaseRequest(
+        productQueryUseCase.getFlowerAmountGroupByStoreId(processOrderDto));
+    // stock decrease rollback kafka
     processOrderDtoProductKafkaProcessor.send(STOCK_DECREASE_ROLLBACK, processOrderDto);
   }
 }
