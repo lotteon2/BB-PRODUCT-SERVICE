@@ -248,6 +248,7 @@ public class ProductCommand {
     private Long salesCount;
     private Long reviewCount;
     private Long averageRating;
+    private ProductSaleStatus productSaleStatus;
 
     public static List<String> getProductIds(List<ProductListItem> productListItem) {
       return productListItem.stream().map(ProductListItem::getKey).collect(Collectors.toList());
@@ -390,7 +391,7 @@ public class ProductCommand {
     private String productDescriptionImage;
     private Long productSaleAmount;
     private Double averageRating;
-    private String productSaleStatus;
+    private ProductSaleStatus productSaleStatus;
     private ProductDetailFlower representativeFlower;
     private List<ProductDetailFlower> flowers;
 
@@ -422,7 +423,7 @@ public class ProductCommand {
           .productDescriptionImage(product.getProductDescriptionImage())
           .productSaleAmount(product.getProductSaleAmount())
           .averageRating(product.getAverageRating())
-          .productSaleStatus(product.getProductSaleStatus().getMessage())
+          .productSaleStatus(product.getProductSaleStatus())
           .representativeFlower(representativeFlower)
           .flowers(flowerList)
           .build();
@@ -440,7 +441,7 @@ public class ProductCommand {
     private Long productPrice;
     private Long productSaleAmount;
     private Double averageRating;
-    private String productSaleStatus;
+    private ProductSaleStatus productSaleStatus;
 
     public static StoreProduct fromEntity(Product product, String representativeFlower) {
       return StoreProduct.builder()
@@ -450,7 +451,7 @@ public class ProductCommand {
           .productName(product.getProductName())
           .productPrice(product.getProductPrice())
           .productSaleAmount(product.getProductSaleAmount())
-          .productSaleStatus(product.getProductSaleStatus().getMessage())
+          .productSaleStatus(product.getProductSaleStatus())
           .productThumbnail(product.getProductThumbnail())
           .representativeFlower(representativeFlower)
           .build();
