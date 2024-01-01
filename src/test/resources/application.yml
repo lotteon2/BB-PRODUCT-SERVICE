@@ -65,3 +65,10 @@ cloud:
       store-average-rating-update-queue:
         name: ""
         url: ""
+
+aws:
+  region: ap-northeast-1
+  dynamodb:
+    endpoint: ""
+  bucket:
+    name: ""
