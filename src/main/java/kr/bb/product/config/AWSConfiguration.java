@@ -4,6 +4,8 @@ import autovalue.shaded.org.jetbrains.annotations.NotNull;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,12 +22,14 @@ public class AWSConfiguration {
   @Value("${cloud.aws.region.static}")
   private String region;
 
+  @Value("${aws.region}")
+  private String getRegion;
+
   @Value("${cloud.aws.credentials.ACCESS_KEY_ID}")
   private String accessKeyId;
 
   @Value("${cloud.aws.credentials.SECRET_ACCESS_KEY}")
   private String secretAccessKey;
-
 
   @NotNull
   private BasicAWSCredentials getBasicAWSCredentials() {
@@ -54,6 +58,15 @@ public class AWSConfiguration {
     return SnsClient.builder()
         .credentialsProvider(getAwsCredentials())
         .region(Region.AP_NORTHEAST_1)
+        .build();
+  }
+
+  @Primary
+  @Bean
+  public AmazonS3 amazonS3Client() {
+    return AmazonS3ClientBuilder.standard()
+        .withRegion(getRegion)
+        .withCredentials(new AWSStaticCredentialsProvider(getBasicAWSCredentials()))
         .build();
   }
 }

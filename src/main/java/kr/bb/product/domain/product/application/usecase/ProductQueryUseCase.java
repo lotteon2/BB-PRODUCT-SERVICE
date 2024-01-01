@@ -1,5 +1,6 @@
 package kr.bb.product.domain.product.application.usecase;
 
+import bloomingblooms.domain.aws.PresignedUrlData;
 import bloomingblooms.domain.flower.StockChangeDto;
 import bloomingblooms.domain.order.ProcessOrderDto;
 import bloomingblooms.domain.product.IsProductPriceValid;
@@ -82,4 +83,6 @@ public interface ProductQueryUseCase {
     Map<Long, Double> getStoreAverageRating();
 
   List<StockChangeDto> getFlowerAmountGroupByStoreId(ProcessOrderDto processOrderDto);
+
+  PresignedUrlData getPresignedUrl(String fileName);
 }

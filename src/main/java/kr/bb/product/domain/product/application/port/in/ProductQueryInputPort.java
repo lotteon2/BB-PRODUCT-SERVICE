@@ -1,5 +1,7 @@
 package kr.bb.product.domain.product.application.port.in;
 
+import bloomingblooms.domain.aws.PresignedUrlData;
+import bloomingblooms.domain.aws.PresignedUrlService;
 import bloomingblooms.domain.flower.StockChangeDto;
 import bloomingblooms.domain.order.ProcessOrderDto;
 import bloomingblooms.domain.product.IsProductPriceValid;
@@ -11,6 +13,7 @@ import bloomingblooms.domain.store.StorePolicy;
 import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
 import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import bloomingblooms.errors.EntityNotFoundException;
+import com.amazonaws.services.s3.AmazonS3;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +49,7 @@ import kr.bb.product.exception.errors.ProductPriceValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -67,6 +71,10 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   private final ProductQueryOutPort productQueryOutPort;
   private final FlowerQueryOutPort flowerQueryOutPort;
   private final ReviewQueryOutPort reviewQueryOutPort;
+  private final AmazonS3 amazonS3;
+
+  @Value("${aws.bucket.name}")
+  private String bucket;
 
   @NotNull
   private static Pageable getPageable(Pageable pageable, ProductCommand.SortOption sortOption) {
@@ -323,6 +331,11 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
         productQueryOutPort.findProductsByProductsGroupByStoreId(
             new ArrayList<>(processOrderDto.getProducts().keySet()));
     return ProductCommand.getFlowerAmountOfStore(productsByProductsGroupByStoreId, processOrderDto);
+  }
+
+  @Override
+  public PresignedUrlData getPresignedUrl(String fileName) {
+    return PresignedUrlService.getPresignedUrl("product", fileName, amazonS3, bucket);
   }
 
   @Override
