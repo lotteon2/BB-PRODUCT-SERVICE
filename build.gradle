@@ -1,0 +1,175 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.17'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'jacoco'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+}
+
+group = 'kr.bb'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '11'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', "2021.0.8")
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation "org.springframework.cloud:spring-cloud-starter-bus-kafka"
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    runtimeOnly 'com.h2database:h2'
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version: '2.7.17'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.cloud:spring-cloud-circuitbreaker-resilience4j:2.1.7'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '2.7.17'
+    implementation "org.springframework.boot:spring-boot-starter-aop"
+    implementation group: 'com.google.auto.value', name: 'auto-value', version: '1.10.1'
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.4.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.4.RELEASE'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'software.amazon.awssdk:sns:2.21.37'
+
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+    testImplementation 'org.mockito:mockito-core:4.8.0'
+    implementation 'io.github.lotteon-maven:blooming-blooms-utils:202401010607'
+    testImplementation 'com.github.tomakehurst:wiremock:2.27.2'
+
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+tasks.named('bootBuildImage') {
+    builder = 'paketobuildpacks/builder-jammy-base:latest'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// jacoco
+jacoco {
+    toolVersion = '0.8.5'
+}
+
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+            excludes = ["*.mapper*",
+                        "**.adapter.**",
+                        "**.aop.**",
+                        "**.entity.**",
+                        "**.infrastructure.**",
+                        "**.handler.**"
+            ]
+        }
+    }
+}
+
+test {
+    jacoco {
+        destinationFile = file("$buildDir/jacoco/jacoco.exec")
+        excludes += ["**/errors/**",
+                     "**/api/**",
+                     "**/mapper/**",
+                     "**/handler/**",
+                     "**/common/**",
+                     "**/api/**",
+                     "**/adapter/in/api/**",
+                     "**/handler/**"
+        ]
+    }
+    useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
+}
+
+jacocoTestReport {
+    reports {
+        html.required = true
+    }
+    def Qdomains = []
+    for (qPattern in '**/QA'..'**/QZ') {
+        Qdomains.add(qPattern + '*')
+    }
+    afterEvaluate {
+        classDirectories.setFrom(
+                files(classDirectories.files.collect {
+                    fileTree(dir: it,
+                            excludes: [
+                                    "**/*Application*",
+                                    "**/*generated*",
+                                    "**/errors/**",
+                                    "**/api/**",
+                                    "**/mapper/**",
+                                    "**/handler/**",
+                                    "**/common/**",
+                                    "**/adapter/in/api/**",
+                                    "**/handler/**"
+                            ] + Qdomains)
+                })
+        )
+    }
+    finalizedBy 'jacocoTestCoverageVerification'
+}
