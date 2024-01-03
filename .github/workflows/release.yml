@@ -63,4 +63,4 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: nowgnas/bb:product-${{ env.NEW_TAG }}
+          tags: nowgnas/bb-product:${{ env.NEW_TAG }}, nowgnas/bb-product:latest
