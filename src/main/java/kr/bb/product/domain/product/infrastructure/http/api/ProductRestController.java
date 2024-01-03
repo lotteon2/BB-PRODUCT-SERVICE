@@ -1,10 +1,12 @@
 package kr.bb.product.domain.product.infrastructure.http.api;
 
+import bloomingblooms.domain.aws.PresignedUrlData;
 import bloomingblooms.response.CommonResponse;
 import java.util.Optional;
 import javax.validation.Valid;
 import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand;
 import kr.bb.product.domain.product.mapper.ProductCommand.BestSellerTopTen;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
@@ -12,7 +14,6 @@ import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductList;
-import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -327,5 +328,11 @@ public class ProductRestController {
   public CommonResponse<ProductCommand.LanguageOfFlower> getLanguageOfFlower(
       @PathVariable String productId) {
     return CommonResponse.success(productQueryUseCase.getLanguageOfFlower(productId));
+  }
+
+  @GetMapping("image/presigned-url")
+  public CommonResponse<PresignedUrlData> getPresignedUrl(
+      @RequestParam("file-name") String fileName) {
+    return CommonResponse.success(productQueryUseCase.getPresignedUrl(fileName));
   }
 }
