@@ -330,6 +330,7 @@ public class ProductRestController {
     return CommonResponse.success(productQueryUseCase.getLanguageOfFlower(productId));
   }
 
+
   @GetMapping("image/presigned-url")
   public CommonResponse<PresignedUrlData> getPresignedUrl(
       @RequestParam("file-name") String fileName) {
