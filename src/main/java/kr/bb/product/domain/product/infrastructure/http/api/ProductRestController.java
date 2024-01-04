@@ -16,6 +16,7 @@ import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -259,6 +260,7 @@ public class ProductRestController {
    * @return
    */
   @GetMapping("main/recommend")
+  @Cacheable(cacheNames = "product-promotion-recommend")
   public CommonResponse<ProductCommand.MainPageProductItems> getMainPageProductsRecommend(
       @RequestHeader Optional<Long> userId) {
     if (userId.isPresent())
@@ -276,6 +278,7 @@ public class ProductRestController {
    * @return
    */
   @GetMapping("main/new-arrival")
+  @Cacheable(cacheNames = "product-promotion-new-arrival")
   public CommonResponse<ProductCommand.MainPageProductItems> getMainPageProductsNewArrival(
       @RequestHeader Optional<Long> userId) {
     if (userId.isPresent())
@@ -293,6 +296,7 @@ public class ProductRestController {
    * @return
    */
   @GetMapping("main/rating")
+  @Cacheable(cacheNames = "product-promotion-rating")
   public CommonResponse<ProductCommand.MainPageProductItems> getMainPageProductsRating(
       @RequestHeader Optional<Long> userId) {
     if (userId.isPresent())
@@ -329,7 +333,6 @@ public class ProductRestController {
       @PathVariable String productId) {
     return CommonResponse.success(productQueryUseCase.getLanguageOfFlower(productId));
   }
-
 
   @GetMapping("image/presigned-url")
   public CommonResponse<PresignedUrlData> getPresignedUrl(
