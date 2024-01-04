@@ -9,11 +9,12 @@ jobs:
   update_release_draft:
     runs-on: ubuntu-latest
     steps:
-      - uses: release-drafter/release-drafter@v5
+      - name: "Build Changelog"
+        uses: mikepenz/release-changelog-builder-action@{latest-release}
         with:
-          config-name: release-drafter-config.yml
+          configuration: "configuration.json"
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deployment:
     name: Setup, Build, and Deploy
