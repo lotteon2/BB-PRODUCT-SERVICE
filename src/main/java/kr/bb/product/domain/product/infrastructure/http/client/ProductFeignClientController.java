@@ -34,7 +34,7 @@ public class ProductFeignClientController {
     return CommonResponse.success(productQueryUseCase.getProductThumbnail(productId));
   }
 
-  @GetMapping("/products/product-info")
+  @PostMapping("/products/product-info")
   public CommonResponse<List<ProductInformation>> getProductInformation(
       @RequestBody List<String> productIds) {
     return CommonResponse.success(productQueryUseCase.getProductInformation(productIds));
