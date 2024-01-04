@@ -39,3 +39,4 @@ docker.sh
 *.DS_Store
 data.sql
 ProductKafkaTest.java
+Test.java
