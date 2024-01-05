@@ -12,8 +12,8 @@ public class SalesResumeCommandRepository implements SalesResumeCommandOutPort {
   private final SalesResumeJpaRepository salesResumeJpaRepository;
 
   @Override
-  public void save(SalesResume salesResume) {
-    salesResumeJpaRepository.save(salesResume);
+  public void save(SalesResume salesResume, Long userId) {
+    salesResumeJpaRepository.saveIfNotExist(salesResume, userId);
   }
 
   @Override

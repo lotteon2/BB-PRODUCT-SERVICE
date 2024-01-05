@@ -17,8 +17,8 @@ public class SalesResumeCommandInputPort implements SalesResumeCommandUseCase {
 
   @Transactional
   @Override
-  public void save(SalesResumeRequest request) {
-    salesResumeCommandOutPort.save(SalesResumeRequest.toEntity(request));
+  public void save(SalesResumeRequest request, Long userId) {
+    salesResumeCommandOutPort.save(SalesResumeRequest.toEntity(request), userId);
   }
 
   @Transactional
