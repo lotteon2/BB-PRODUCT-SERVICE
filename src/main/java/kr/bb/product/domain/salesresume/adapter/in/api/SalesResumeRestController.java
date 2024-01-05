@@ -22,7 +22,7 @@ public class SalesResumeRestController {
       @RequestHeader Long userId) {
     request.setUserId(userId);
     request.setProductId(productId);
-    salesResumeCommandUseCase.save(request);
+    salesResumeCommandUseCase.save(request, userId);
     return CommonResponse.success("상품 판매 재개 알림이 요청되었습니다.");
   }
 }
