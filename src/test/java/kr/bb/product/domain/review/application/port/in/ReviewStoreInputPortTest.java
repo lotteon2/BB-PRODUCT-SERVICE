@@ -8,12 +8,13 @@ import javax.persistence.EntityManager;
 import kr.bb.product.domain.review.adapter.out.jpa.ReviewCommandRepository;
 import kr.bb.product.domain.review.application.port.out.ReviewOutPort;
 import kr.bb.product.domain.review.entity.Review;
+import kr.bb.product.domain.review.entity.ReviewImages;
 import kr.bb.product.domain.review.mapper.ReviewCommand;
 import kr.bb.product.domain.review.mapper.ReviewCommand.Register;
 import kr.bb.product.domain.review.mapper.ReviewCommand.ReviewImage;
-import kr.bb.product.domain.review.entity.ReviewImages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -28,6 +29,7 @@ class ReviewStoreInputPortTest {
   @Autowired ReviewCommandRepository reviewRepository;
   @Autowired ReviewCommandInputPort reviewStoreInputPort;
   @Autowired EntityManager em;
+  @MockBean RedissonAutoConfiguration redissonAutoConfiguration;
 
   @Test
   @DisplayName("리뷰 작성 service logic")

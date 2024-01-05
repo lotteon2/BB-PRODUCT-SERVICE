@@ -5,6 +5,7 @@ import java.util.List;
 import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowersRequestData;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import kr.bb.product.domain.product.mapper.ProductCommand;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 class ProductFindInputPortTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired WishlistServiceClient wishlistServiceClient;
+  @MockBean RedissonAutoConfiguration redissonAutoConfiguration;
+
   @Autowired private ProductCommandInputPort productStoreInputPort;
 
   private void extracted() {

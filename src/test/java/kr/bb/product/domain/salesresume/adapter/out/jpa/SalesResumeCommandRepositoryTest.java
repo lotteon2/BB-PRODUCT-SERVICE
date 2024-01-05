@@ -8,6 +8,7 @@ import kr.bb.product.domain.salesresume.application.port.out.SalesResumeCommandO
 import kr.bb.product.domain.salesresume.entity.SalesResume;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 class SalesResumeCommandRepositoryTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired SalesResumeJpaRepository salesResumeJpaRepository;
+  @MockBean RedissonAutoConfiguration redissonAutoConfiguration;
   @Autowired private SalesResumeCommandOutPort salesResumeCommandOutPort;
 
   @Test

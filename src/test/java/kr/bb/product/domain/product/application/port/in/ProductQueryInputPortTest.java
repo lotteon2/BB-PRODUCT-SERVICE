@@ -39,6 +39,7 @@ import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductList;
 import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProductForCustomer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -51,6 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @ContextConfiguration(classes = {MockingTestConfiguration.class})
 class ProductQueryInputPortTest {
+  @MockBean RedissonAutoConfiguration redissonAutoConfiguration;
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired ProductCommandInputPort productCommandInputPort;
   @Autowired WireMockServer mockCacheApi;

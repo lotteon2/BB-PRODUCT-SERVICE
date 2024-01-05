@@ -72,6 +72,11 @@ dependencies {
     implementation("it.ozimov:embedded-redis:0.7.2")
     implementation 'org.redisson:redisson-spring-boot-starter:3.17.0'
 
+    // testcontainers
+    testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
+    testImplementation "org.testcontainers:testcontainers:1.17.6"
+    testImplementation "org.testcontainers:junit-jupiter:1.17.6"
+
 
 }
 
