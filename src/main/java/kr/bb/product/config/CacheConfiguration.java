@@ -15,8 +15,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @RequiredArgsConstructor
 public class CacheConfiguration {
-  private static final String PRODUCT_PROMOTION = "product-promotion";
-  private static final String BEST_SELLER = "best-seller";
+  private static final String PRODUCT = "product";
 
   @Bean
   public CacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
@@ -31,8 +30,7 @@ public class CacheConfiguration {
 
     return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(redisConnectionFactory)
         .cacheDefaults(redisCacheConfiguration)
-        .withCacheConfiguration(PRODUCT_PROMOTION, redisCacheConfigurationPromotion())
-        .withCacheConfiguration(BEST_SELLER, redisCacheConfigurationBestSeller())
+        .withCacheConfiguration(PRODUCT, redisCacheConfigurationPromotion())
         .build();
   }
 
@@ -51,19 +49,7 @@ public class CacheConfiguration {
   @Bean
   public RedisCacheConfiguration redisCacheConfigurationPromotion() {
     return RedisCacheConfiguration.defaultCacheConfig()
-        .entryTtl(Duration.ofMinutes(1))
-        .disableCachingNullValues()
-        .serializeKeysWith(
-            RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-        .serializeValuesWith(
-            RedisSerializationContext.SerializationPair.fromSerializer(
-                new GenericJackson2JsonRedisSerializer()));
-  }
-
-  @Bean
-  public RedisCacheConfiguration redisCacheConfigurationBestSeller() {
-    return RedisCacheConfiguration.defaultCacheConfig()
-        .entryTtl(Duration.ofMinutes(1))
+        .entryTtl(Duration.ofMinutes(30))
         .disableCachingNullValues()
         .serializeKeysWith(
             RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))

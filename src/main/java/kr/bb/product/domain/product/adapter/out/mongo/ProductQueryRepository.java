@@ -35,7 +35,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class ProductQueryRepository implements ProductQueryOutPort {
-  private static final String PRODUCT_PROMOTION = "product-promotion";
+  private static final String PRODUCT = "product";
   private final ProductMongoRepository productMongoRepository;
   private final MongoTemplate mongoTemplate;
 
@@ -144,7 +144,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
   }
 
   @Override
-  @Cacheable(cacheNames = PRODUCT_PROMOTION, key = "#selectOption")
+  @Cacheable(cacheNames = PRODUCT, key = "#selectOption")
   public List<Product> findMainPageProducts(SelectOption selectOption) {
     Query query =
         new Query(

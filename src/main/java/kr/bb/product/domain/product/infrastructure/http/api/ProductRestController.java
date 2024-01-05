@@ -16,6 +16,7 @@ import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class ProductRestController {
-  private static final String BEST_SELLER = "best-seller";
+  private static final String PRODUCT = "product";
   private final ProductQueryUseCase productQueryUseCase;
   private final ProductCommandUseCase productCommandUseCase;
 
@@ -136,6 +137,7 @@ public class ProductRestController {
    * @param productRequestData
    */
   @PostMapping("store/{storeId}")
+  @CacheEvict(cacheNames = PRODUCT, key = "'best-seller' + #storeId")
   public void createProduct(
       @PathVariable Long storeId,
       final @Valid @RequestBody ProductCommand.ProductRegister productRequestData) {
@@ -237,7 +239,7 @@ public class ProductRestController {
    * @return
    */
   @GetMapping("store/{storeId}/best-top-ten")
-  @Cacheable(cacheNames = BEST_SELLER, key = "#storeId")
+  @Cacheable(cacheNames = PRODUCT, key = "'best-seller' + #storeId")
   public CommonResponse<BestSellerTopTen> getBestSellerTopTen(@PathVariable Long storeId) {
     return CommonResponse.success(
         productQueryUseCase.getBestSellerTopTen(storeId), "베스트 셀러 top 10 상품 조회");
