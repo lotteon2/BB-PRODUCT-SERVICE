@@ -71,6 +71,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
     if (flowerId != null)
       query.addCriteria(Criteria.where("product_flowers.flowerId").is(flowerId));
     if (saleStatus != null) query.addCriteria(Criteria.where("product_sale_status").is(saleStatus));
+    else query.addCriteria(Criteria.where("product_sale_status").ne(ProductSaleStatus.DELETED));
     query.with(pageable);
     List<Product> products = mongoTemplate.find(query, Product.class);
     return PageableExecutionUtils.getPage(
