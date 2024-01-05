@@ -1,11 +1,7 @@
 package kr.bb.product.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +15,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @RequiredArgsConstructor
 public class CacheConfiguration {
-  private final ObjectMapper objectMapper;
+  private static final String PRODUCT_PROMOTION = "product-promotion";
+  private static final String BEST_SELLER = "best-seller";
 
   @Bean
   public CacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
@@ -34,6 +31,8 @@ public class CacheConfiguration {
 
     return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(redisConnectionFactory)
         .cacheDefaults(redisCacheConfiguration)
+        .withCacheConfiguration(PRODUCT_PROMOTION, redisCacheConfigurationPromotion())
+        .withCacheConfiguration(BEST_SELLER, redisCacheConfigurationBestSeller())
         .build();
   }
 
@@ -50,50 +49,26 @@ public class CacheConfiguration {
   }
 
   @Bean
-  public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
-    return (builder) ->
-        builder.withCacheConfiguration(
-            "product-promotion-recommend",
-            RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(1))
-                .disableCachingNullValues()
-                .serializeKeysWith(
-                    RedisSerializationContext.SerializationPair.fromSerializer(
-                        new StringRedisSerializer()))
-                .serializeValuesWith(
-                    RedisSerializationContext.SerializationPair.fromSerializer(
-                        new GenericJackson2JsonRedisSerializer())));
+  public RedisCacheConfiguration redisCacheConfigurationPromotion() {
+    return RedisCacheConfiguration.defaultCacheConfig()
+        .entryTtl(Duration.ofMinutes(1))
+        .disableCachingNullValues()
+        .serializeKeysWith(
+            RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+        .serializeValuesWith(
+            RedisSerializationContext.SerializationPair.fromSerializer(
+                new GenericJackson2JsonRedisSerializer()));
   }
 
   @Bean
-  public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer2() {
-    return (builder) ->
-        builder.withCacheConfiguration(
-            "product-promotion-new-arrival",
-            RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(1))
-                .disableCachingNullValues()
-                .serializeKeysWith(
-                    RedisSerializationContext.SerializationPair.fromSerializer(
-                        new StringRedisSerializer()))
-                .serializeValuesWith(
-                    RedisSerializationContext.SerializationPair.fromSerializer(
-                        new GenericJackson2JsonRedisSerializer())));
-  }
-
-  @Bean
-  public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer3() {
-    return (builder) ->
-        builder.withCacheConfiguration(
-            "product-promotion-rating",
-            RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(1))
-                .disableCachingNullValues()
-                .serializeKeysWith(
-                    RedisSerializationContext.SerializationPair.fromSerializer(
-                        new StringRedisSerializer()))
-                .serializeValuesWith(
-                    RedisSerializationContext.SerializationPair.fromSerializer(
-                        new GenericJackson2JsonRedisSerializer())));
+  public RedisCacheConfiguration redisCacheConfigurationBestSeller() {
+    return RedisCacheConfiguration.defaultCacheConfig()
+        .entryTtl(Duration.ofMinutes(1))
+        .disableCachingNullValues()
+        .serializeKeysWith(
+            RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+        .serializeValuesWith(
+            RedisSerializationContext.SerializationPair.fromSerializer(
+                new GenericJackson2JsonRedisSerializer()));
   }
 }

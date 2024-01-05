@@ -13,6 +13,7 @@ import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import java.util.List;
 import java.util.Map;
 import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.MainPageProductItems;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
 import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductList;
@@ -80,7 +81,7 @@ public interface ProductQueryUseCase {
 
   List<LikedProductInfoResponse> getProductInformationForLikes(List<String> productIds);
 
-    Map<Long, Double> getStoreAverageRating();
+  Map<Long, Double> getStoreAverageRating();
 
   List<StockChangeDto> getFlowerAmountGroupByStoreId(ProcessOrderDto processOrderDto);
 

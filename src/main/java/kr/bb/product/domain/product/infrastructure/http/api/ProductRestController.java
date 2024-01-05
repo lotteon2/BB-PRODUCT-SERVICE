@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class ProductRestController {
+  private static final String BEST_SELLER = "best-seller";
   private final ProductQueryUseCase productQueryUseCase;
   private final ProductCommandUseCase productCommandUseCase;
 
@@ -236,6 +237,7 @@ public class ProductRestController {
    * @return
    */
   @GetMapping("store/{storeId}/best-top-ten")
+  @Cacheable(cacheNames = BEST_SELLER, key = "#storeId")
   public CommonResponse<BestSellerTopTen> getBestSellerTopTen(@PathVariable Long storeId) {
     return CommonResponse.success(
         productQueryUseCase.getBestSellerTopTen(storeId), "베스트 셀러 top 10 상품 조회");
@@ -260,7 +262,6 @@ public class ProductRestController {
    * @return
    */
   @GetMapping("main/recommend")
-  @Cacheable(cacheNames = "product-promotion-recommend")
   public CommonResponse<ProductCommand.MainPageProductItems> getMainPageProductsRecommend(
       @RequestHeader Optional<Long> userId) {
     if (userId.isPresent())
@@ -278,7 +279,6 @@ public class ProductRestController {
    * @return
    */
   @GetMapping("main/new-arrival")
-  @Cacheable(cacheNames = "product-promotion-new-arrival")
   public CommonResponse<ProductCommand.MainPageProductItems> getMainPageProductsNewArrival(
       @RequestHeader Optional<Long> userId) {
     if (userId.isPresent())
@@ -296,7 +296,6 @@ public class ProductRestController {
    * @return
    */
   @GetMapping("main/rating")
-  @Cacheable(cacheNames = "product-promotion-rating")
   public CommonResponse<ProductCommand.MainPageProductItems> getMainPageProductsRating(
       @RequestHeader Optional<Long> userId) {
     if (userId.isPresent())

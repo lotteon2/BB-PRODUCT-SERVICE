@@ -1,5 +1,9 @@
 package kr.bb.product.domain.product.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -92,12 +96,16 @@ public class Product {
   @NotBlank
   @Builder.Default
   @CreatedDate
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   @Field(name = "created_at")
   private LocalDateTime createdAt = LocalDateTime.now();
 
   @NotBlank
   @Builder.Default
   @LastModifiedDate
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   @Field(name = "updated_at")
   private LocalDateTime updatedAt = LocalDateTime.now();
 

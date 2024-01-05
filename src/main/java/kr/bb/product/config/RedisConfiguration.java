@@ -13,13 +13,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfiguration {
-
-  private static final String PROMOTION_RECOMMEND = "product-promotion-recommend";
-  private static final String PROMOTION_RATING = "product-promotion-rating";
-  private static final String PROMOTION_NEW_ARRIVAL = "product-promotion-new-arrival";
-
-  //  private final ObjectMapper objectMapper;
-
   @Value("${spring.redis.host}")
   private String host;
 

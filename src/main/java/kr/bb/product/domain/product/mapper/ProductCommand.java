@@ -492,6 +492,8 @@ public class ProductCommand {
 
   @Getter
   @Builder
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
   public static class BestSellerTopTenItem {
 
     private String name;
@@ -500,6 +502,8 @@ public class ProductCommand {
 
   @Getter
   @Builder
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
   public static class BestSellerTopTen {
 
     private List<BestSellerTopTenItem> products;
