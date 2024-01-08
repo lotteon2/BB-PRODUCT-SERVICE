@@ -41,10 +41,10 @@ public interface StoreServiceClient {
      * @param stockChangeDto
      */
     @PutMapping("/client/stores/flowers/stocks/subtract")
-    void flowerStockDecreaseRequest(@RequestBody List<StockChangeDto> stockChangeDto);
+    CommonResponse flowerStockDecreaseRequest(@RequestBody List<StockChangeDto> stockChangeDto);
 
     @PutMapping("/client/stores/flowers/stocks/add")
-    void flowerStockIncreaseRequest(@RequestBody List<StockChangeDto> flowerAmountGroupByStoreId);
+    CommonResponse flowerStockIncreaseRequest(@RequestBody List<StockChangeDto> flowerAmountGroupByStoreId);
 
     default CommonResponse<StoreName> getStoreNameOfProductDetailFallback(Long storeId,
             Throwable t) {
