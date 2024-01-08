@@ -1,6 +1,7 @@
 package kr.bb.product.domain.product.application.handler;
 
 import bloomingblooms.domain.order.ProcessOrderDto;
+import bloomingblooms.response.CommonResponse.Result;
 import java.util.Map;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
@@ -25,16 +26,24 @@ public class ProductQueryHandler {
   }
 
   public void getFlowerStockDecrease(ProcessOrderDto processOrderDto) {
-    storeServiceClient.flowerStockDecreaseRequest(
-        productQueryUseCase.getFlowerAmountGroupByStoreId(processOrderDto));
-    // order create request kafka
-    processOrderDtoProductKafkaProcessor.send(ORDER_CREATE, processOrderDto);
+    Result result =
+        storeServiceClient
+            .flowerStockDecreaseRequest(
+                productQueryUseCase.getFlowerAmountGroupByStoreId(processOrderDto))
+            .getResult();
+    if (result.equals(Result.SUCCESS))
+      // order create request kafka
+      processOrderDtoProductKafkaProcessor.send(ORDER_CREATE, processOrderDto);
   }
 
   public void getFlowerStockRollback(ProcessOrderDto processOrderDto) {
-    storeServiceClient.flowerStockIncreaseRequest(
-        productQueryUseCase.getFlowerAmountGroupByStoreId(processOrderDto));
-    // stock decrease rollback kafka
-    processOrderDtoProductKafkaProcessor.send(STOCK_DECREASE_ROLLBACK, processOrderDto);
+    Result result =
+        storeServiceClient
+            .flowerStockIncreaseRequest(
+                productQueryUseCase.getFlowerAmountGroupByStoreId(processOrderDto))
+            .getResult();
+    if (result.equals(Result.SUCCESS))
+      // stock decrease rollback kafka
+      processOrderDtoProductKafkaProcessor.send(STOCK_DECREASE_ROLLBACK, processOrderDto);
   }
 }
