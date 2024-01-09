@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class ReviewRestController {
-  private final ReviewCommandUseCase reviewCommandUseCase;
   private final ReviewQueryUseCase reviewQueryUseCase;
   private final ReviewCommandHandler reviewCommandHandler;
 

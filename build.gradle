@@ -67,6 +67,17 @@ dependencies {
     implementation 'io.github.lotteon-maven:blooming-blooms-utils:202401040316'
     testImplementation 'com.github.tomakehurst:wiremock:2.27.2'
 
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation("it.ozimov:embedded-redis:0.7.2")
+    implementation 'org.redisson:redisson-spring-boot-starter:3.17.0'
+
+    // testcontainers
+    testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
+    testImplementation "org.testcontainers:testcontainers:1.17.6"
+    testImplementation "org.testcontainers:junit-jupiter:1.17.6"
+
+
 }
 
 dependencyManagement {

@@ -10,6 +10,7 @@ import kr.bb.product.domain.review.entity.Review;
 import kr.bb.product.domain.review.entity.ReviewImages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Import;
 class ReviewJpaRepositoryTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired ReviewJpaRepository reviewJpaRepository;
+  @MockBean RedissonAutoConfiguration redissonAutoConfiguration;
 
   @Test
   @DisplayName("리뷰 작성 repository 테스트")
