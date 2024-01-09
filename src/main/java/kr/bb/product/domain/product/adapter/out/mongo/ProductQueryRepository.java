@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class ProductQueryRepository implements ProductQueryOutPort {
+  private static final String PRODUCT = "product";
   private final ProductMongoRepository productMongoRepository;
   private final MongoTemplate mongoTemplate;
 
@@ -143,6 +145,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
   }
 
   @Override
+  @Cacheable(cacheNames = PRODUCT, key = "#selectOption")
   public List<Product> findMainPageProducts(SelectOption selectOption) {
     Query query =
         new Query(

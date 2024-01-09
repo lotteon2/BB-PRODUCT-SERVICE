@@ -5,10 +5,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 import kr.bb.product.domain.review.entity.Review;
-import kr.bb.product.domain.review.mapper.ReviewCommand.SortOption;
 import kr.bb.product.domain.review.entity.ReviewImages;
+import kr.bb.product.domain.review.mapper.ReviewCommand.SortOption;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Sort.Direction;
 class ReviewJpaRepositoryTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired ReviewJpaRepository reviewJpaRepository;
+  @MockBean RedissonAutoConfiguration redissonAutoConfiguration;
 
   @Test
   void getReviewByProductId() {

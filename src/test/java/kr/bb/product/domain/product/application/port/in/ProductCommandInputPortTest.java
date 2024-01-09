@@ -12,6 +12,7 @@ import kr.bb.product.domain.product.mapper.ProductCommand.ProductUpdate;
 import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProduct;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class ProductCommandInputPortTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
+  @MockBean RedissonAutoConfiguration redissonAutoConfiguration;
   @Autowired private ProductCommandInputPort productCommandInputPort;
   @Autowired private ProductMongoRepository productMongoRepository;
 

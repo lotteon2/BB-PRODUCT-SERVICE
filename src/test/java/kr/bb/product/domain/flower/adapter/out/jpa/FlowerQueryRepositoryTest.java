@@ -7,11 +7,14 @@ import java.util.List;
 import kr.bb.product.domain.flower.entity.Flower;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @DataJpaTest
 class FlowerQueryRepositoryTest {
+  @MockBean RedissonAutoConfiguration redissonAutoConfiguration;
   @Autowired private FlowerJpaRepository flowerJpaRepository;
 
   @Test
