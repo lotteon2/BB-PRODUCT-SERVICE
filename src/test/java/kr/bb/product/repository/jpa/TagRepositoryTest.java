@@ -9,6 +9,7 @@ import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.domain.tag.repository.jpa.TagRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,6 +21,7 @@ class TagRepositoryTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired TagRepository tagRepository;
   @Autowired DataSource dataSource;
+  @MockBean RedissonAutoConfiguration redissonAutoConfiguration;
 
   @Test
   @DisplayName("select tag")

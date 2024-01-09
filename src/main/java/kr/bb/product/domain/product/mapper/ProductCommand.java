@@ -27,10 +27,14 @@ import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.mapper.ProductMapper;
 import kr.bb.product.domain.tag.entity.TagCommand;
 import kr.bb.product.domain.tag.entity.TagCommand.TagForProductList;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class ProductCommand {
+
   public static List<ProductInformation> getProductInformationListData(
       List<Product> productByProductIds) {
     return productByProductIds.stream()
@@ -148,6 +152,7 @@ public class ProductCommand {
               .phoneNumber(processOrderDto.getPhoneNumber())
               .stockDtos(stockDtos.get(key))
               .storeId(key)
+              .userId(processOrderDto.getUserId())
               .build());
     }
 
@@ -185,6 +190,7 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class ResaleCheckRequest {
+
     private String productId;
     private String productName;
   }
@@ -192,6 +198,7 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class StoreManagerSubscriptionProduct {
+
     private String productId;
     private Double averageRating;
     private String productName;
@@ -208,6 +215,7 @@ public class ProductCommand {
   @Builder
   @Getter
   public static class ProductRegister {
+
     private String productName;
     private String productSummary;
     private String productDescriptionImage;
@@ -227,6 +235,7 @@ public class ProductCommand {
   @Builder
   @Getter
   public static class ProductUpdate {
+
     private String productName;
     private String productSummary;
     private String productDescriptionImage;
@@ -239,6 +248,7 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class ProductListItem {
+
     @Builder.Default private Boolean isLiked = false;
     private String key;
     private String productName;
@@ -262,6 +272,7 @@ public class ProductCommand {
   @Builder
   @Getter
   public static class ProductList {
+
     private List<ProductListItem> products;
     private long totalCnt;
 
@@ -272,7 +283,9 @@ public class ProductCommand {
     public static ProductList getData(
         List<ProductListItem> productListItem, List<String> data, long totalElements) {
       for (ProductListItem p : productListItem) {
-        if (data.contains(p.key)) p.setLiked(true);
+        if (data.contains(p.key)) {
+          p.setLiked(true);
+        }
       }
       return ProductList.builder().products(productListItem).totalCnt(totalElements).build();
     }
@@ -285,12 +298,14 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class ProductsGroupByCategory {
+
     @Builder.Default private Map<Long, ProductList> products = new HashMap<>();
   }
 
   @Builder
   @Getter
   public static class ProductDetail {
+
     private String productId;
     private String productName;
     private String productDescription;
@@ -325,12 +340,14 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class ProductDetailLike {
+
     private Boolean isLiked;
   }
 
   @Getter
   @Builder
   public static class SubscriptionProduct {
+
     private String productName;
     private String productSummary;
     private Long productPrice;
@@ -347,6 +364,7 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class UpdateSubscriptionProduct {
+
     private String productName;
     private String productSummary;
     private Long productPrice;
@@ -362,6 +380,7 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class ProductDetailFlower {
+
     private Long flowerId;
     private String flowerName;
     private Long flowerCount;
@@ -381,6 +400,7 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class StoreProductDetail {
+
     private String productId;
     private String productThumbnail;
     private String productName;
@@ -408,8 +428,11 @@ public class ProductCommand {
         ProductDetailFlower data = ProductDetailFlower.getData(item);
         data.setFlowerName(flowerName.get(item.getFlowerId()));
 
-        if (item.getIsRepresentative()) representativeFlower = data;
-        else flowerList.add(data);
+        if (item.getIsRepresentative()) {
+          representativeFlower = data;
+        } else {
+          flowerList.add(data);
+        }
       }
 
       return StoreProductDetail.builder()
@@ -433,6 +456,7 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class StoreProduct {
+
     private String key;
     private String productThumbnail;
     private String productName;
@@ -461,20 +485,27 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class StoreProductList {
+
     private List<StoreProduct> products;
     private long totalCnt;
   }
 
   @Getter
   @Builder
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
   public static class BestSellerTopTenItem {
+
     private String name;
     private List<Long> data;
   }
 
   @Getter
   @Builder
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
   public static class BestSellerTopTen {
+
     private List<BestSellerTopTenItem> products;
 
     public static BestSellerTopTen getData(List<Product> bestSellerTopTen) {
@@ -494,7 +525,10 @@ public class ProductCommand {
 
   @Getter
   @Builder
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
   public static class MainPageProductItem {
+
     @Builder.Default private Boolean isLiked = false;
     private String key;
     private String productName;
@@ -510,7 +544,10 @@ public class ProductCommand {
 
   @Getter
   @Builder
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
   public static class MainPageProductItems {
+
     private List<MainPageProductItem> products;
 
     public static MainPageProductItems getData(
@@ -538,6 +575,7 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class SubscriptionProductForCustomer {
+
     private String productId;
     private String productName;
     private String productSummary;
@@ -572,6 +610,7 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class LanguageOfFlower {
+
     private String languageOfFlower;
 
     public static LanguageOfFlower getData(Flower languageOfFlowerByFlowerId) {
@@ -584,6 +623,7 @@ public class ProductCommand {
   @Getter
   @Builder
   public static class RepresentativeFlowerId {
+
     private Long flowerId;
 
     public static RepresentativeFlowerId getData(Long flowerId) {

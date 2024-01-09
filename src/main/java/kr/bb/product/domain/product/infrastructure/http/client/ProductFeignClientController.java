@@ -24,23 +24,23 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("client")
+@RequestMapping("/client")
 public class ProductFeignClientController {
   private final ProductQueryUseCase productQueryUseCase;
 
-  @GetMapping("product")
+  @GetMapping("/product")
   public CommonResponse<ProductThumbnail> getProductThumbnail(
       @RequestParam("product-id") String productId) {
     return CommonResponse.success(productQueryUseCase.getProductThumbnail(productId));
   }
 
-  @GetMapping("/products/product-info")
+  @PostMapping("/products/product-info")
   public CommonResponse<List<ProductInformation>> getProductInformation(
       @RequestBody List<String> productIds) {
     return CommonResponse.success(productQueryUseCase.getProductInformation(productIds));
   }
 
-  @GetMapping("/products/validate-price")
+  @PostMapping("/products/validate-price")
   public CommonResponse getProductPriceValidation(
       @RequestBody List<IsProductPriceValid> productPriceValids) {
     productQueryUseCase.getProductPriceValidation(productPriceValids);

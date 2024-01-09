@@ -8,6 +8,7 @@ import kr.bb.product.domain.salesresume.application.port.out.SalesResumeQueryOut
 import kr.bb.product.domain.salesresume.entity.SalesResume;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,6 +21,7 @@ class SalesResumeQueryRepositoryTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired SalesResumeJpaRepository salesResumeJpaRepository;
   @Autowired SalesResumeQueryOutPort salesResumeQueryOutPort;
+  @MockBean RedissonAutoConfiguration redissonAutoConfiguration;
 
   @Test
   @DisplayName("상품 판매 재개 알림 요청 확인 ")

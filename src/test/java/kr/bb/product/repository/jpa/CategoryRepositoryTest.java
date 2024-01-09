@@ -8,6 +8,7 @@ import kr.bb.product.domain.category.repository.jpa.CategoryRepository;
 import kr.bb.product.exception.errors.CategoryNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,6 +19,7 @@ import org.springframework.cloud.aws.messaging.listener.SimpleMessageListenerCon
 class CategoryRepositoryTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired CategoryRepository categoryRepository;
+  @MockBean RedissonAutoConfiguration redissonAutoConfiguration;
 
   @Test
   @DisplayName("select category by id ")

@@ -7,6 +7,7 @@ import kr.bb.product.domain.salesresume.application.usecase.SalesResumeCommandUs
 import kr.bb.product.domain.salesresume.entity.SalesResumeCommand.SalesResumeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,6 +20,7 @@ class SalesResumeCommandInputPortTest {
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired SalesResumeCommandUseCase salesResumeCommandUseCase;
   @Autowired SalesResumeJpaRepository salesResumeJpaRepository;
+  @MockBean RedissonAutoConfiguration redissonAutoConfiguration;
 
   @Test
   @DisplayName("상품 판매 재개 알림 요청")
