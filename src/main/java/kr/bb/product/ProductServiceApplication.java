@@ -6,12 +6,14 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.kafka.annotation.EnableKafka;
 
 @SpringBootApplication
 @EnableEurekaClient
 @EnableFeignClients
 @EnableAspectJAutoProxy
 @EnableCaching
+@EnableKafka
 public class ProductServiceApplication {
 
   public static void main(String[] args) {
