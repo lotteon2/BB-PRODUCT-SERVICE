@@ -49,6 +49,7 @@ import kr.bb.product.exception.errors.ProductPriceValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -227,7 +228,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
    */
   @Override
   public MainPageProductItems getMainPageProducts(SelectOption selectOption) {
-    List<Product> mainPageProducts = productQueryOutPort.findMainPageProducts(selectOption);
+    List<Product> mainPageProducts = getMainPageProductBySelectOption(selectOption);
     return MainPageProductItems.getData(mainPageProducts);
   }
 
@@ -240,9 +241,26 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
    */
   @Override
   public MainPageProductItems getMainPageProducts(Long userId, SelectOption selectOption) {
-    List<Product> mainPageProducts = productQueryOutPort.findMainPageProducts(selectOption);
+    List<Product> mainPageProducts = getMainPageProductBySelectOption(selectOption);
     return MainPageProductItems.getData(
         mainPageProducts, getProductsIsLiked(userId, getProductIdsFromProducts(mainPageProducts)));
+  }
+
+  @Nullable
+  private List<Product> getMainPageProductBySelectOption(SelectOption selectOption) {
+    List<Product> mainPageProducts = null;
+    switch (selectOption) {
+      case RATING:
+        mainPageProducts = productQueryOutPort.findMainPageProductsRating();
+        break;
+      case RECOMMEND:
+        mainPageProducts = productQueryOutPort.findMainPageProductsRecommend();
+        break;
+      case NEW_ARRIVAL:
+        mainPageProducts = productQueryOutPort.findMainPageProductsNewArrival();
+        break;
+    }
+    return mainPageProducts;
   }
 
   /**

@@ -145,12 +145,32 @@ public class ProductQueryRepository implements ProductQueryOutPort {
   }
 
   @Override
-  @Cacheable(cacheNames = PRODUCT, key = "#selectOption")
-  public List<Product> findMainPageProducts(SelectOption selectOption) {
+  @Cacheable(cacheNames = PRODUCT, key = "'RECOMMEND'")
+  public List<Product> findMainPageProductsRecommend() {
     Query query =
         new Query(
             Criteria.where("is_subscription").is(false).and("product_sale_status").is("SALE"));
-    query.limit(4).with(Sort.by(Sort.Order.desc(selectOption.getSelectOption())));
+    query.limit(4).with(Sort.by(Sort.Order.desc(SelectOption.RECOMMEND.getSelectOption())));
+    return mongoTemplate.find(query, Product.class);
+  }
+
+  @Override
+  @Cacheable(cacheNames = PRODUCT, key = "'NEW_ARRIVAL'")
+  public List<Product> findMainPageProductsNewArrival() {
+    Query query =
+        new Query(
+            Criteria.where("is_subscription").is(false).and("product_sale_status").is("SALE"));
+    query.limit(4).with(Sort.by(Sort.Order.desc(SelectOption.NEW_ARRIVAL.getSelectOption())));
+    return mongoTemplate.find(query, Product.class);
+  }
+
+  @Override
+  @Cacheable(cacheNames = PRODUCT, key = "'RATING'")
+  public List<Product> findMainPageProductsRating() {
+    Query query =
+        new Query(
+            Criteria.where("is_subscription").is(false).and("product_sale_status").is("SALE"));
+    query.limit(4).with(Sort.by(Sort.Order.desc(SelectOption.RATING.getSelectOption())));
     return mongoTemplate.find(query, Product.class);
   }
 

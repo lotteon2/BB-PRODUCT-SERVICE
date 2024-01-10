@@ -11,6 +11,7 @@ import kr.bb.product.domain.product.mapper.ProductCommand.UpdateSubscriptionProd
 import kr.bb.product.domain.tag.entity.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.BulkOperations.BulkMode;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,10 +24,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class ProductCommandRepository implements ProductCommandOutPort {
+  private static final String PRODUCT = "product";
   private final ProductMongoRepository productMongoRepository;
   private final MongoTemplate mongoTemplate;
 
   @Override
+  @CacheEvict(cacheNames = PRODUCT, key = "'NEW_ARRIVAL'")
   public void createProduct(Product productRequestToEntity) {
     productMongoRepository.save(productRequestToEntity);
   }

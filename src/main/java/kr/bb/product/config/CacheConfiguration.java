@@ -2,6 +2,7 @@ package kr.bb.product.config;
 
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 public class CacheConfiguration {
   private static final String PRODUCT = "product";
+
+  @Value("${cache.expire}")
+  private int expire;
 
   @Bean
   public CacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
@@ -37,7 +41,7 @@ public class CacheConfiguration {
   @Bean
   public RedisCacheConfiguration redisCacheConfiguration() {
     return RedisCacheConfiguration.defaultCacheConfig()
-        .entryTtl(Duration.ofMinutes(1))
+        .entryTtl(Duration.ofMinutes(expire))
         .disableCachingNullValues()
         .serializeKeysWith(
             RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
@@ -49,7 +53,7 @@ public class CacheConfiguration {
   @Bean
   public RedisCacheConfiguration redisCacheConfigurationPromotion() {
     return RedisCacheConfiguration.defaultCacheConfig()
-        .entryTtl(Duration.ofMinutes(30))
+        .entryTtl(Duration.ofMinutes(expire))
         .disableCachingNullValues()
         .serializeKeysWith(
             RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
