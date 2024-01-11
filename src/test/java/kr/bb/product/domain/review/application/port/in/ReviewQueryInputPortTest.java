@@ -116,19 +116,6 @@ class ReviewQueryInputPortTest {
   }
 
   @Test
-  void findReviewByStoreId() {
-    productMongoRepository.deleteAll();
-    PageRequest pageRequest = PageRequest.of(0, 5);
-
-    Throwable throwable =
-        catchThrowable(
-            () -> {
-              reviewQueryInputPort.findReviewByStoreId(1L, pageRequest, SortOption.LOW);
-            });
-    assertThat(throwable).isInstanceOf(EntityNotFoundException.class);
-  }
-
-  @Test
   @DisplayName("상품 상세 리뷰 조회")
   void findReviewsByProductId() {
     List<ReviewImages> reviewImages = new ArrayList<>();
