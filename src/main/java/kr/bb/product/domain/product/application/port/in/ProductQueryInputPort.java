@@ -251,16 +251,13 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     List<Product> mainPageProducts = null;
     switch (selectOption) {
       case RATING:
-        mainPageProducts = productQueryOutPort.findMainPageProductsRating();
-        break;
+        return productQueryOutPort.findMainPageProductsRating();
       case RECOMMEND:
-        mainPageProducts = productQueryOutPort.findMainPageProductsRecommend();
-        break;
+        return productQueryOutPort.findMainPageProductsRecommend();
       case NEW_ARRIVAL:
-        mainPageProducts = productQueryOutPort.findMainPageProductsNewArrival();
-        break;
+        return productQueryOutPort.findMainPageProductsNewArrival();
     }
-    return mainPageProducts;
+    return null;
   }
 
   /**

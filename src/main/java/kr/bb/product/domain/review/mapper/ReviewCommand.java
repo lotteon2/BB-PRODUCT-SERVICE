@@ -134,6 +134,10 @@ public class ReviewCommand {
           .totalCnt(reviewByProductId.getTotalElements())
           .build();
     }
+
+    public static StoreReviewList getData() {
+      return StoreReviewList.builder().reviews(List.of()).totalCnt(0).build();
+    }
   }
 
   @Getter
