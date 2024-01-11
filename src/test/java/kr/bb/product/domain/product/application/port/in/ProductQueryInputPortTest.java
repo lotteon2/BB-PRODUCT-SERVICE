@@ -12,10 +12,12 @@ import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
 import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 import kr.bb.product.config.MockingTestConfiguration;
 import kr.bb.product.config.TestEnv;
@@ -27,11 +29,13 @@ import kr.bb.product.domain.product.adapter.out.mongo.ProductMongoRepository;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.AdminSelectOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.BestSellerTopTen;
 import kr.bb.product.domain.product.mapper.ProductCommand.LanguageOfFlower;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductRegister;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductsForAdmin;
 import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductList;
@@ -238,25 +242,25 @@ class ProductQueryInputPortTest extends TestEnv {
     assertThat(all.get(0).getProductName()).isEqualTo(build.getProductName());
   }
 
-//  @Test
-//  @DisplayName("메인 페이지 상품 조회 - 로그인 ")
-//  void getMainPageProducts() {
-//    productMongoRepository.deleteAll();
-//    extracted();
-//    MainPageProductItems mainPageProducts =
-//        productQueryInputPort.getMainPageProducts(1L, SelectOption.RATING);
-//    assertThat(mainPageProducts.getProducts().size()).isEqualTo(4);
-//  }
+  //  @Test
+  //  @DisplayName("메인 페이지 상품 조회 - 로그인 ")
+  //  void getMainPageProducts() {
+  //    productMongoRepository.deleteAll();
+  //    extracted();
+  //    MainPageProductItems mainPageProducts =
+  //        productQueryInputPort.getMainPageProducts(1L, SelectOption.RATING);
+  //    assertThat(mainPageProducts.getProducts().size()).isEqualTo(4);
+  //  }
 
-//  @Test
-//  @DisplayName("메인 페이지 상품 조회 - 비 로그인 ")
-//  void getMainPageProductsNotLogin() {
-//    productMongoRepository.deleteAll();
-//    extracted();
-//    MainPageProductItems mainPageProducts =
-//        productQueryInputPort.getMainPageProducts(SelectOption.RATING);
-//    assertThat(mainPageProducts.getProducts().size()).isEqualTo(4);
-//  }
+  //  @Test
+  //  @DisplayName("메인 페이지 상품 조회 - 비 로그인 ")
+  //  void getMainPageProductsNotLogin() {
+  //    productMongoRepository.deleteAll();
+  //    extracted();
+  //    MainPageProductItems mainPageProducts =
+  //        productQueryInputPort.getMainPageProducts(SelectOption.RATING);
+  //    assertThat(mainPageProducts.getProducts().size()).isEqualTo(4);
+  //  }
 
   @Test
   @DisplayName("구독 상품 상세 - 로그인 ")
@@ -449,5 +453,31 @@ class ProductQueryInputPortTest extends TestEnv {
         .getStockDtos()
         .forEach(item -> System.out.println(item.getStock() + ": " + item.getFlowerId()));
     assertThat(order.size()).isEqualTo(3);
+  }
+
+  @Test
+  @DisplayName("관리자 상품 리스트 조회")
+  void getProductsForAdmin() throws InterruptedException {
+    productMongoRepository.deleteAll();
+    Random random = new Random();
+    for (int i = 0; i < 10; i++) {
+      Product product =
+          Product.builder()
+              .storeId(1L + i)
+              .productPrice(1000L + random.nextInt())
+              .createdAt(LocalDateTime.now())
+              .build();
+      Thread.sleep(100);
+      productMongoRepository.save(product);
+    } // 10개 상품 저장
+    AdminSelectOption selectOption =
+        AdminSelectOption.builder()
+            .salesAmount(SortOption.BOTTOM_SALE)
+            .build(); // 전체, 최신순, 상품 가격 높은 순
+    PageRequest pageRequest = PageRequest.of(0, 7);
+    ProductsForAdmin productsForAdmin =
+        productQueryInputPort.getProductsForAdmin(selectOption, pageRequest);
+    assertThat(productsForAdmin.getProducts().get(0).getProductPrice())
+        .isLessThan(productsForAdmin.getProducts().get(1).getProductPrice());
   }
 }

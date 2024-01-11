@@ -11,6 +11,7 @@ import kr.bb.product.domain.product.mapper.ProductCommand.MainPageProductItem;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductDetailLike;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductsForAdminItem;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreManagerSubscriptionProduct;
 import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProduct;
 import kr.bb.product.domain.product.mapper.ProductCommand.SubscriptionProductForCustomer;
@@ -148,4 +149,10 @@ public interface ProductMapper {
   })
   ProductDetail getProductDetail(
       ProductDetail productDetail, String storeName, Long reviewCnt, ProductDetailLike isLiked);
+
+  @Named("ADMIN")
+  ProductsForAdminItem getProductsAdminItem(Product product);
+
+  @IterableMapping(qualifiedByName = "ADMIN")
+  List<ProductsForAdminItem> getProductsAdmin(List<Product> content);
 }

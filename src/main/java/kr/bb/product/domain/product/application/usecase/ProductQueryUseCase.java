@@ -12,12 +12,12 @@ import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
 import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import java.util.List;
 import java.util.Map;
+import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand;
-import kr.bb.product.domain.product.mapper.ProductCommand.MainPageProductItems;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductsForAdmin;
 import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductList;
-import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import org.springframework.data.domain.Pageable;
 
 public interface ProductQueryUseCase {
@@ -86,4 +86,7 @@ public interface ProductQueryUseCase {
   List<StockChangeDto> getFlowerAmountGroupByStoreId(ProcessOrderDto processOrderDto);
 
   PresignedUrlData getPresignedUrl(String fileName);
+
+  ProductsForAdmin getProductsForAdmin(
+      ProductCommand.AdminSelectOption adminSelectOption, Pageable pageable);
 }

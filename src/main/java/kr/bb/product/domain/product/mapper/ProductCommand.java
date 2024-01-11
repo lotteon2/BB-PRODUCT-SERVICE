@@ -11,6 +11,7 @@ import bloomingblooms.domain.store.StorePolicy;
 import bloomingblooms.domain.wishlist.cart.CartProductItemInfo;
 import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
 import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 public class ProductCommand {
 
@@ -647,5 +649,34 @@ public class ProductCommand {
     private Long storeId;
     @Builder.Default private SortOption date = SortOption.NEW;
     @Builder.Default private SortOption salesAmount = SortOption.TOP_SALE;
+  }
+
+  @Getter
+  @Builder
+  @AllArgsConstructor
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  public static class ProductsForAdminItem {
+    private String productId;
+    private Long productPrice;
+    private String productThumbnail;
+    private Long productSaleAmount;
+    private Long storeId;
+    private LocalDateTime createdAt;
+  }
+
+  @Getter
+  @Builder
+  @AllArgsConstructor
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  public static class ProductsForAdmin {
+    private List<ProductsForAdminItem> products;
+    private long totalCnt;
+
+    public static ProductsForAdmin getData(Page<Product> productsForAdmin) {
+      return ProductsForAdmin.builder()
+          .products(ProductMapper.INSTANCE.getProductsAdmin(productsForAdmin.getContent()))
+          .totalCnt(productsForAdmin.getTotalElements())
+          .build();
+    }
   }
 }
