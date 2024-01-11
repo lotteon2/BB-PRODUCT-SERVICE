@@ -8,8 +8,10 @@ import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.AdminSelectOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.BestSellerTopTen;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductsForAdmin;
 import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductDetail;
@@ -339,5 +341,25 @@ public class ProductRestController {
   public CommonResponse<PresignedUrlData> getPresignedUrl(
       @RequestParam("file-name") String fileName) {
     return CommonResponse.success(productQueryUseCase.getPresignedUrl(fileName));
+  }
+
+  @GetMapping("admin/products")
+  public CommonResponse<ProductCommand.ProductsForAdmin> getProductsForAdmin(
+      @PageableDefault(
+              page = 0,
+              size = 10,
+              sort = {"createdAt"},
+              direction = Sort.Direction.DESC)
+          Pageable pageable,
+      @RequestParam("store-id") Optional<Long> storeId,
+      @RequestParam("date") Optional<SortOption> date,
+      @RequestParam("sales") Optional<SortOption> sales) {
+    Long storeIdParam = storeId.orElse(null);
+    SortOption dateParam = date.orElse(null);
+    SortOption salesParam = sales.orElse(null);
+    ProductsForAdmin productsForAdmin =
+        productQueryUseCase.getProductsForAdmin(
+            AdminSelectOption.getData(storeIdParam, dateParam, salesParam), pageable);
+    return CommonResponse.success(productsForAdmin);
   }
 }

@@ -649,6 +649,15 @@ public class ProductCommand {
     private Long storeId;
     @Builder.Default private SortOption date = SortOption.NEW;
     @Builder.Default private SortOption salesAmount = SortOption.TOP_SALE;
+
+    public static AdminSelectOption getData(
+        Long storeIdParam, SortOption dateParam, SortOption salesParam) {
+      return AdminSelectOption.builder()
+          .salesAmount(salesParam != null ? salesParam : SortOption.TOP_SALE)
+          .date(dateParam != null ? dateParam : SortOption.NEW)
+          .storeId(storeIdParam)
+          .build();
+    }
   }
 
   @Getter
