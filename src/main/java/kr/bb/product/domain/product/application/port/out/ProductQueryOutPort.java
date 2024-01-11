@@ -44,4 +44,7 @@ public interface ProductQueryOutPort {
   Map<Long, List<Product>> findProductsByProductsGroupByStoreId(List<String> productId);
 
   Map<Long, Double> findStoreAverageRating();
+
+  Page<Product> findProductsForAdmin(
+      ProductCommand.AdminSelectOption adminSelectOption, Pageable pageable);
 }

@@ -27,7 +27,7 @@ class SalesResumeCommandRepositoryTest {
   @DisplayName("재입고 신청 알림 저장")
   void save() {
     SalesResume build = SalesResume.builder().userId(1L).productId("123").isNotified(true).build();
-    salesResumeCommandOutPort.save(build);
+    salesResumeCommandOutPort.save(build, 1L);
     List<SalesResume> all = salesResumeJpaRepository.findAll();
     assertThat(all.size()).isEqualTo(1);
   }

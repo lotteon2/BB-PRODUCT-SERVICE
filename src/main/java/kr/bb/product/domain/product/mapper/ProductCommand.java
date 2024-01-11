@@ -161,8 +161,10 @@ public class ProductCommand {
 
   @Getter
   public enum SortOption {
-    SALE("productSaleAmount"),
+    TOP_SALE("productSaleAmount"),
+    BOTTOM_SALE("productSaleAmount"),
     NEW("createdAt"),
+    OLD("createdAt"),
     LOW("productPrice"),
     HIGH("productPrice"),
     REVIEW("reviewCount"),
@@ -635,5 +637,15 @@ public class ProductCommand {
     public static RepresentativeFlowerId getData(Long flowerId) {
       return RepresentativeFlowerId.builder().flowerId(flowerId).build();
     }
+  }
+
+  @Getter
+  @Builder
+  @AllArgsConstructor
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  public static class AdminSelectOption {
+    private Long storeId;
+    @Builder.Default private SortOption date = SortOption.NEW;
+    @Builder.Default private SortOption salesAmount = SortOption.TOP_SALE;
   }
 }

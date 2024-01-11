@@ -29,11 +29,9 @@ import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand;
 import kr.bb.product.domain.product.mapper.ProductCommand.BestSellerTopTen;
 import kr.bb.product.domain.product.mapper.ProductCommand.LanguageOfFlower;
-import kr.bb.product.domain.product.mapper.ProductCommand.MainPageProductItems;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductRegister;
-import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductDetail;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreProductList;
@@ -135,7 +133,7 @@ class ProductQueryInputPortTest extends TestEnv {
     PageRequest pageRequest = PageRequest.of(0, 5);
 
     ProductList productsByCategory =
-        productQueryInputPort.getProductsByCategory(1L, 1L, 1L, SortOption.SALE, pageRequest);
+        productQueryInputPort.getProductsByCategory(1L, 1L, 1L, SortOption.TOP_SALE, pageRequest);
     StoreProductList storeProducts =
         productQueryInputPort.getStoreProducts(1L, 1L, null, ProductSaleStatus.SALE, pageRequest);
     assertThat(storeProducts.getProducts().size()).isGreaterThan(0);
@@ -173,7 +171,7 @@ class ProductQueryInputPortTest extends TestEnv {
     PageRequest pageRequest = PageRequest.of(0, 5);
     MockingApi.setUpProductsLikes(mockCacheApi);
     ProductList productsByTag =
-        productQueryInputPort.getProductsByTag(1L, 1L, 1L, SortOption.SALE, pageRequest);
+        productQueryInputPort.getProductsByTag(1L, 1L, 1L, SortOption.TOP_SALE, pageRequest);
     assertThat(productsByTag.getProducts().size()).isEqualTo(5);
     assertThat(productsByTag.getProducts().size()).isEqualTo(5);
   }
@@ -185,7 +183,7 @@ class ProductQueryInputPortTest extends TestEnv {
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 5);
     ProductList productsByTag =
-        productQueryInputPort.getProductsByTag(null, 1L, 1L, SortOption.SALE, pageRequest);
+        productQueryInputPort.getProductsByTag(null, 1L, 1L, SortOption.TOP_SALE, pageRequest);
     assertThat(productsByTag.getProducts().size()).isEqualTo(5);
     assertThat(productsByTag.getProducts().size()).isEqualTo(5);
   }
@@ -197,7 +195,7 @@ class ProductQueryInputPortTest extends TestEnv {
     extracted();
     PageRequest pageRequest = PageRequest.of(0, 5);
     ProductList productsByTag =
-        productQueryInputPort.getProductsByTag(1L, 1L, SortOption.SALE, pageRequest);
+        productQueryInputPort.getProductsByTag(1L, 1L, SortOption.TOP_SALE, pageRequest);
     assertThat(productsByTag.getProducts().size()).isEqualTo(5);
     assertThat(productsByTag.getProducts().size()).isEqualTo(5);
   }
