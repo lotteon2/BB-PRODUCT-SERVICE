@@ -53,7 +53,7 @@ public class ReviewQueryInputPort implements ReviewQueryUseCase {
     Pageable pageRequest = getPageable(pageable, sortOption);
 
     List<Product> productByStoreId = productQueryOutPort.findProductByStoreId(storeId);
-    if (productByStoreId.isEmpty()) return null;
+    if (productByStoreId.isEmpty()) return ReviewCommand.StoreReviewList.getData();
     List<String> productId =
         productByStoreId.stream().map(Product::getProductId).collect(Collectors.toList());
 
