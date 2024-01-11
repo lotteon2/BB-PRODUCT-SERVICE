@@ -9,7 +9,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -18,10 +17,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Aspect
 @Component
 public class LoggingHandler {
-  private static final Logger logger = LoggerFactory.getLogger(LoggingHandler.class);
 
-  @Value("${spring.config.active.on-profile:local}")
-  private String activeProfile;
+  private static final Logger logger = LoggerFactory.getLogger(LoggingHandler.class);
 
   @Around("within(kr.bb.product.domain..*)")
   public Object logging(ProceedingJoinPoint pjp) throws Throwable {

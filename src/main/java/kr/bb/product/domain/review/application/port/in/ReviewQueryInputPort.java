@@ -1,6 +1,5 @@
 package kr.bb.product.domain.review.application.port.in;
 
-import bloomingblooms.errors.EntityNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,7 +53,7 @@ public class ReviewQueryInputPort implements ReviewQueryUseCase {
     Pageable pageRequest = getPageable(pageable, sortOption);
 
     List<Product> productByStoreId = productQueryOutPort.findProductByStoreId(storeId);
-    if (productByStoreId.isEmpty()) throw new EntityNotFoundException();
+    if (productByStoreId.isEmpty()) return null;
     List<String> productId =
         productByStoreId.stream().map(Product::getProductId).collect(Collectors.toList());
 
