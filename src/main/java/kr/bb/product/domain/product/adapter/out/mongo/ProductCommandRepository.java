@@ -93,4 +93,9 @@ public class ProductCommandRepository implements ProductCommandOutPort {
             .set("product_description_image", productRequestData.getProductDescriptionImage()),
         Product.class);
   }
+
+  @Override
+  public void deleteProductByAdmin(List<String> productId) {
+    mongoTemplate.remove(Query.query(Criteria.where("productId").in(productId)), Product.class);
+  }
 }
