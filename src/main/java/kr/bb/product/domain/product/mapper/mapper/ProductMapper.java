@@ -151,6 +151,8 @@ public interface ProductMapper {
       ProductDetail productDetail, String storeName, Long reviewCnt, ProductDetailLike isLiked);
 
   @Named("ADMIN")
+  @Mapping(target = "storeName", ignore = true)
+  @Mapping(target = "key", source = "productId")
   ProductsForAdminItem getProductsAdminItem(Product product);
 
   @IterableMapping(qualifiedByName = "ADMIN")

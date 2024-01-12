@@ -665,12 +665,29 @@ public class ProductCommand {
   @AllArgsConstructor
   @NoArgsConstructor(access = AccessLevel.PROTECTED)
   public static class ProductsForAdminItem {
-    private String productId;
+    private String key;
     private Long productPrice;
     private String productThumbnail;
     private Long productSaleAmount;
     private Long storeId;
+    private String storeName;
+    private Double averageRating;
+    private ProductSaleStatus productSaleStatus;
     private LocalDateTime createdAt;
+
+    public static ProductsForAdminItem getData(Product item, Map<Long, String> storeNameData) {
+      return ProductsForAdminItem.builder()
+          .productThumbnail(item.getProductThumbnail())
+          .key(item.getProductId())
+          .averageRating(item.getAverageRating())
+          .productSaleAmount(item.getProductSaleAmount())
+          .productSaleStatus(item.getProductSaleStatus())
+          .storeId(item.getStoreId())
+          .createdAt(item.getCreatedAt())
+          .storeName(storeNameData.get(item.getStoreId()))
+          .productPrice(item.getProductPrice())
+          .build();
+    }
   }
 
   @Getter
@@ -681,9 +698,13 @@ public class ProductCommand {
     private List<ProductsForAdminItem> products;
     private long totalCnt;
 
-    public static ProductsForAdmin getData(Page<Product> productsForAdmin) {
+    public static ProductsForAdmin getData(
+        Map<Long, String> storeNameData, Page<Product> productsForAdmin) {
       return ProductsForAdmin.builder()
-          .products(ProductMapper.INSTANCE.getProductsAdmin(productsForAdmin.getContent()))
+          .products(
+              productsForAdmin.getContent().stream()
+                  .map(item -> ProductsForAdminItem.getData(item, storeNameData))
+                  .collect(Collectors.toList()))
           .totalCnt(productsForAdmin.getTotalElements())
           .build();
     }

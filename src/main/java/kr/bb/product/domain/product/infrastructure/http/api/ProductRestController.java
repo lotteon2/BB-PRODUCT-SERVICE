@@ -363,8 +363,9 @@ public class ProductRestController {
             AdminSelectOption.getData(storeIdParam, dateParam, salesParam), pageable);
     return CommonResponse.success(productsForAdmin);
   }
+
   @PutMapping("admin/products")
-  public void deleteProductsByAdmin(@RequestBody List<String> productIds){
+  public void deleteProductsByAdmin(@RequestBody List<String> productIds) {
     productCommandUseCase.deleteProductsByAdmin(productIds);
   }
 }

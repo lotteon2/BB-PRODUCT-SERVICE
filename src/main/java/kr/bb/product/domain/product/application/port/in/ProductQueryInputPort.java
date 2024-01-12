@@ -358,9 +358,16 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   @Override
   public ProductsForAdmin getProductsForAdmin(
       AdminSelectOption adminSelectOption, Pageable pageable) {
-
-    return ProductsForAdmin.getData(
-            productQueryOutPort.findProductsForAdmin(adminSelectOption, pageable));
+    Page<Product> productsForAdmin =
+        productQueryOutPort.findProductsForAdmin(adminSelectOption, pageable);
+    Map<Long, String> storeNameData =
+        storeServiceClient
+            .getStoreNames(
+                productsForAdmin.getContent().stream()
+                    .map(Product::getStoreId)
+                    .collect(Collectors.toList()))
+            .getData();
+    return ProductsForAdmin.getData(storeNameData, productsForAdmin);
   }
 
   @Override
