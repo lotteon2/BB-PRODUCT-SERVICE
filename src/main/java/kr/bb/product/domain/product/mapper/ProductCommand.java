@@ -646,16 +646,16 @@ public class ProductCommand {
   @AllArgsConstructor
   @NoArgsConstructor(access = AccessLevel.PROTECTED)
   public static class AdminSelectOption {
-    private Long storeId;
+    private ProductSaleStatus status;
     @Builder.Default private SortOption date = SortOption.NEW;
     @Builder.Default private SortOption salesAmount = SortOption.TOP_SALE;
 
     public static AdminSelectOption getData(
-        Long storeIdParam, SortOption dateParam, SortOption salesParam) {
+        ProductSaleStatus statusParam, SortOption dateParam, SortOption salesParam) {
       return AdminSelectOption.builder()
           .salesAmount(salesParam != null ? salesParam : SortOption.TOP_SALE)
           .date(dateParam != null ? dateParam : SortOption.NEW)
-          .storeId(storeIdParam)
+          .status(statusParam)
           .build();
     }
   }
@@ -667,9 +667,8 @@ public class ProductCommand {
   public static class ProductsForAdminItem {
     private String key;
     private Long productPrice;
-    private String productThumbnail;
+    private String productName;
     private Long productSaleAmount;
-    private Long storeId;
     private String storeName;
     private Double averageRating;
     private ProductSaleStatus productSaleStatus;
@@ -677,12 +676,11 @@ public class ProductCommand {
 
     public static ProductsForAdminItem getData(Product item, Map<Long, String> storeNameData) {
       return ProductsForAdminItem.builder()
-          .productThumbnail(item.getProductThumbnail())
+          .productName(item.getProductName())
           .key(item.getProductId())
           .averageRating(item.getAverageRating())
           .productSaleAmount(item.getProductSaleAmount())
           .productSaleStatus(item.getProductSaleStatus())
-          .storeId(item.getStoreId())
           .createdAt(item.getCreatedAt())
           .storeName(storeNameData.get(item.getStoreId()))
           .productPrice(item.getProductPrice())

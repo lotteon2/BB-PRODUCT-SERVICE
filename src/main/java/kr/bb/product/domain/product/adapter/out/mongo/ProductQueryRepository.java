@@ -262,8 +262,9 @@ public class ProductQueryRepository implements ProductQueryOutPort {
   public Page<Product> findProductsForAdmin(
       ProductCommand.AdminSelectOption adminSelectOption, Pageable pageable) {
     Query query = new Query();
-    if (adminSelectOption.getStoreId() != null)
-      query.addCriteria(Criteria.where("store_id").is(adminSelectOption.getStoreId()));
+    query.addCriteria(Criteria.where("is_subscription").is(false));
+    if (adminSelectOption.getStatus() != null)
+      query.addCriteria(Criteria.where("product_sale_status").is(adminSelectOption.getStatus()));
 
     if (adminSelectOption.getDate().equals(SortOption.NEW))
       query.with(Sort.by(Order.desc(adminSelectOption.getDate().getSortOption())));

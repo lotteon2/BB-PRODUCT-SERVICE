@@ -352,15 +352,15 @@ public class ProductRestController {
               sort = {"createdAt"},
               direction = Sort.Direction.DESC)
           Pageable pageable,
-      @RequestParam("store-id") Optional<Long> storeId,
+      @RequestParam("status") Optional<ProductSaleStatus> status,
       @RequestParam("date") Optional<SortOption> date,
       @RequestParam("sales") Optional<SortOption> sales) {
-    Long storeIdParam = storeId.orElse(null);
+    ProductSaleStatus statusParam = status.orElse(null);
     SortOption dateParam = date.orElse(null);
     SortOption salesParam = sales.orElse(null);
     ProductsForAdmin productsForAdmin =
         productQueryUseCase.getProductsForAdmin(
-            AdminSelectOption.getData(storeIdParam, dateParam, salesParam), pageable);
+            AdminSelectOption.getData(statusParam, dateParam, salesParam), pageable);
     return CommonResponse.success(productsForAdmin);
   }
 
