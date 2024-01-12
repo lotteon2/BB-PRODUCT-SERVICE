@@ -71,8 +71,7 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
    */
   @Override
   @Transactional
-  public void updateProduct(
-      String productId, ProductCommand.ProductUpdate productRequestData) {
+  public void updateProduct(String productId, ProductCommand.ProductUpdate productRequestData) {
     List<Tag> tags = getTags(productRequestData.getProductTag());
 
     if (productRequestData.getProductSaleStatus().equals(ProductSaleStatus.DELETED)) {
@@ -83,7 +82,7 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
           productId, productRequestData.getProductName());
       productCommandOutPort.updateProductSaleStatus(productId, productRequestData, tags);
     } else {
-     productCommandOutPort.updateProductSaleStatus(productId, productRequestData, tags);
+      productCommandOutPort.updateProductSaleStatus(productId, productRequestData, tags);
     }
   }
 
@@ -142,5 +141,10 @@ public class ProductCommandInputPort implements ProductCommandUseCase {
   @Override
   public void saleCountUpdate(List<NewOrderEvent.ProductCount> newOrderEvent) {
     productCommandOutPort.updateProductSaleCount(newOrderEvent);
+  }
+
+  @Override
+  public void deleteProductsByAdmin(List<String> products) {
+    productCommandOutPort.deleteProductByAdmin(products);
   }
 }

@@ -3,6 +3,7 @@ package kr.bb.product.domain.product.application.usecase;
 import bloomingblooms.domain.order.NewOrderEvent.ProductCount;
 import bloomingblooms.domain.review.ReviewRegisterEvent;
 import java.util.List;
+import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.mapper.ProductCommand;
 
 public interface ProductCommandUseCase {
@@ -18,4 +19,6 @@ public interface ProductCommandUseCase {
   void updateProductReviewData(ReviewRegisterEvent reviewRegisterEvent);
 
   void saleCountUpdate(List<ProductCount> newOrderEvent);
+
+  void deleteProductsByAdmin(List<String> products);
 }

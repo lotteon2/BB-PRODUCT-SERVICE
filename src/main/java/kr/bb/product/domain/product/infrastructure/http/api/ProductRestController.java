@@ -2,6 +2,7 @@ package kr.bb.product.domain.product.infrastructure.http.api;
 
 import bloomingblooms.domain.aws.PresignedUrlData;
 import bloomingblooms.response.CommonResponse;
+import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
 import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
@@ -361,5 +362,9 @@ public class ProductRestController {
         productQueryUseCase.getProductsForAdmin(
             AdminSelectOption.getData(storeIdParam, dateParam, salesParam), pageable);
     return CommonResponse.success(productsForAdmin);
+  }
+  @PutMapping("admin/products")
+  public void deleteProductsByAdmin(@RequestBody List<String> productIds){
+    productCommandUseCase.deleteProductsByAdmin(productIds);
   }
 }

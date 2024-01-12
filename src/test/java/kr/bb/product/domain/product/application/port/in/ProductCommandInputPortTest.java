@@ -112,4 +112,17 @@ class ProductCommandInputPortTest {
     Product product = productMongoRepository.findByProductId("123").get();
     assertThat(product.getProductName()).isEqualTo(name.getProductName());
   }
+
+  @Test
+  @DisplayName("관리자 상품 선택 삭제")
+  void deleteProductsByAdmin() {
+    productMongoRepository.deleteAll();
+    Product product = Product.builder().productId("123").build();
+    Product product2 = Product.builder().productId("456").build();
+    productMongoRepository.save(product);
+    productMongoRepository.save(product2);
+    productCommandInputPort.deleteProductsByAdmin(List.of("123", "456"));
+    List<Product> all = productMongoRepository.findAll();
+    assertThat(all.size()).isEqualTo(0);
+  }
 }
