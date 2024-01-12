@@ -10,6 +10,7 @@ import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand;
 import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
+import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
@@ -254,6 +256,29 @@ public class ProductQueryRepository implements ProductQueryOutPort {
 
     return averageResults.stream()
         .collect(Collectors.toMap(AverageResult::get_id, AverageResult::getAverageRating));
+  }
+
+  @Override
+  public Page<Product> findProductsForAdmin(
+      ProductCommand.AdminSelectOption adminSelectOption, Pageable pageable) {
+    Query query = new Query();
+    if (adminSelectOption.getStoreId() != null)
+      query.addCriteria(Criteria.where("store_id").is(adminSelectOption.getStoreId()));
+
+    if (adminSelectOption.getDate().equals(SortOption.NEW))
+      query.with(Sort.by(Order.desc(adminSelectOption.getDate().getSortOption())));
+    else query.with(Sort.by(Order.asc(adminSelectOption.getDate().getSortOption())));
+
+    if (adminSelectOption.getSalesAmount().equals(SortOption.HIGH))
+      query.with(Sort.by(Order.desc(adminSelectOption.getSalesAmount().getSortOption())));
+    else query.with(Sort.by(Order.asc(adminSelectOption.getSalesAmount().getSortOption())));
+    query.with(pageable);
+
+    List<Product> products = mongoTemplate.find(query, Product.class);
+    return PageableExecutionUtils.getPage(
+        products,
+        pageable,
+        () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Product.class));
   }
 
   @Getter

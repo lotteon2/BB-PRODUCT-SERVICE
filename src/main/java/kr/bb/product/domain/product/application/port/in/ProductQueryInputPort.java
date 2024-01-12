@@ -29,6 +29,7 @@ import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
 import kr.bb.product.domain.product.infrastructure.client.WishlistServiceClient;
 import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.AdminSelectOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.BestSellerTopTen;
 import kr.bb.product.domain.product.mapper.ProductCommand.LanguageOfFlower;
 import kr.bb.product.domain.product.mapper.ProductCommand.MainPageProductItems;
@@ -36,6 +37,7 @@ import kr.bb.product.domain.product.mapper.ProductCommand.ProductDetail;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductDetailLike;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductListItem;
+import kr.bb.product.domain.product.mapper.ProductCommand.ProductsForAdmin;
 import kr.bb.product.domain.product.mapper.ProductCommand.RepresentativeFlowerId;
 import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
@@ -351,6 +353,21 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   @Override
   public PresignedUrlData getPresignedUrl(String fileName) {
     return PresignedUrlService.getPresignedUrl("product", fileName, amazonS3, bucket);
+  }
+
+  @Override
+  public ProductsForAdmin getProductsForAdmin(
+      AdminSelectOption adminSelectOption, Pageable pageable) {
+    Page<Product> productsForAdmin =
+        productQueryOutPort.findProductsForAdmin(adminSelectOption, pageable);
+    Map<Long, String> storeNameData =
+        storeServiceClient
+            .getStoreNames(
+                productsForAdmin.getContent().stream()
+                    .map(Product::getStoreId)
+                    .collect(Collectors.toList()))
+            .getData();
+    return ProductsForAdmin.getData(storeNameData, productsForAdmin);
   }
 
   @Override

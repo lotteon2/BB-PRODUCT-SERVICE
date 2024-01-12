@@ -20,4 +20,6 @@ public interface ProductCommandOutPort {
   void updateProductSaleStatus(String productId, ProductUpdate productRequestData);
 
   void updateProductSaleStatus(String productId, ProductUpdate productRequestData, List<Tag> tags);
+
+  void deleteProductByAdmin(List<String> productId);
 }

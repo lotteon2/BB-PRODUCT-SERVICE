@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import javax.persistence.EntityManager;
 import kr.bb.product.config.TestEnv;
 import kr.bb.product.domain.category.entity.Category;
@@ -14,8 +15,9 @@ import kr.bb.product.domain.flower.mapper.FlowerCommand.ProductFlowers;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
+import kr.bb.product.domain.product.mapper.ProductCommand.AdminSelectOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.RepresentativeFlowerId;
-import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
+import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
 import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.exception.errors.ProductNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -174,18 +176,6 @@ class ProductQueryRepositoryTest extends TestEnv {
     assertThat(subscriptionProductByStoreId.getProductName()).isEqualTo(build.getProductName());
   }
 
-//  @Test
-//  @DisplayName("메인 페이지 상품 조회 ")
-//  void findMainPageProductsByRating() {
-//    productMongoRepository.deleteAll();
-//    createProducts();
-//    List<Product> mainPageProducts =
-//        productQueryRepository.findMainPageProducts(SelectOption.RATING);
-//    assertThat(
-//            mainPageProducts.get(0).getAverageRating() > mainPageProducts.get(1).getAverageRating())
-//        .isTrue();
-//  }
-
   @Test
   @DisplayName("상품 정보 조회 요청 repo test")
   void findProductByProductIds() {
@@ -297,5 +287,60 @@ class ProductQueryRepositoryTest extends TestEnv {
     Map<Long, Double> storeAverageRating = productQueryOutPort.findStoreAverageRating();
 
     assertThat(storeAverageRating.keySet().size()).isEqualTo(3);
+  }
+
+  @Test
+  @DisplayName("관리자 상품 리스트 조회")
+  void findProductsForAdmin() throws InterruptedException {
+    productMongoRepository.deleteAll();
+    Random random = new Random();
+    for (int i = 0; i < 10; i++) {
+      Product product =
+          Product.builder()
+              .storeId(1L + i)
+              .productPrice(1000L + random.nextInt())
+              .createdAt(LocalDateTime.now())
+              .build();
+      Thread.sleep(100);
+      productMongoRepository.save(product);
+    } // 10개 상품 저장
+    AdminSelectOption selectOption = AdminSelectOption.builder().build(); // 전체, 최신순, 상품 가격 높은 순
+    PageRequest pageRequest = PageRequest.of(0, 7);
+    Page<Product> productsForAdmin =
+        productQueryOutPort.findProductsForAdmin(selectOption, pageRequest);
+    List<Product> content = productsForAdmin.getContent();
+    for (Product p : content) {
+      System.out.println(p.getProductPrice() + " :: " + p.getCreatedAt());
+    }
+    assertThat(content.get(0).getCreatedAt()).isAfter(content.get(1).getCreatedAt());
+  }
+
+  @Test
+  @DisplayName("관리자 상품 리스트 조회 가격 기준")
+  void findProductsForAdminPriceCheck() throws InterruptedException {
+    productMongoRepository.deleteAll();
+    Random random = new Random();
+    for (int i = 0; i < 10; i++) {
+      Product product =
+          Product.builder()
+              .storeId(1L + i)
+              .productPrice(1000L + random.nextInt())
+              .createdAt(LocalDateTime.now())
+              .build();
+      Thread.sleep(100);
+      productMongoRepository.save(product);
+    } // 10개 상품 저장
+    AdminSelectOption selectOption =
+        AdminSelectOption.builder()
+            .salesAmount(SortOption.BOTTOM_SALE)
+            .build(); // 전체, 최신순, 상품 가격 높은 순
+    PageRequest pageRequest = PageRequest.of(0, 7);
+    Page<Product> productsForAdmin =
+        productQueryOutPort.findProductsForAdmin(selectOption, pageRequest);
+    List<Product> content = productsForAdmin.getContent();
+    for (Product p : content) {
+      System.out.println(p.getProductPrice() + " :: " + p.getCreatedAt());
+    }
+    assertThat(content.get(0).getProductPrice()).isLessThan(content.get(1).getProductPrice());
   }
 }

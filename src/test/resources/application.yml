@@ -76,3 +76,5 @@ aws:
     endpoint: ""
   bucket:
     name: ""
+cache:
+  expire: 1

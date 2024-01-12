@@ -11,6 +11,7 @@ import bloomingblooms.domain.store.StorePolicy;
 import bloomingblooms.domain.wishlist.cart.CartProductItemInfo;
 import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
 import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 public class ProductCommand {
 
@@ -161,8 +163,10 @@ public class ProductCommand {
 
   @Getter
   public enum SortOption {
-    SALE("productSaleAmount"),
+    TOP_SALE("productSaleAmount"),
+    BOTTOM_SALE("productSaleAmount"),
     NEW("createdAt"),
+    OLD("createdAt"),
     LOW("productPrice"),
     HIGH("productPrice"),
     REVIEW("reviewCount"),
@@ -634,6 +638,75 @@ public class ProductCommand {
 
     public static RepresentativeFlowerId getData(Long flowerId) {
       return RepresentativeFlowerId.builder().flowerId(flowerId).build();
+    }
+  }
+
+  @Getter
+  @Builder
+  @AllArgsConstructor
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  public static class AdminSelectOption {
+    private Long storeId;
+    @Builder.Default private SortOption date = SortOption.NEW;
+    @Builder.Default private SortOption salesAmount = SortOption.TOP_SALE;
+
+    public static AdminSelectOption getData(
+        Long storeIdParam, SortOption dateParam, SortOption salesParam) {
+      return AdminSelectOption.builder()
+          .salesAmount(salesParam != null ? salesParam : SortOption.TOP_SALE)
+          .date(dateParam != null ? dateParam : SortOption.NEW)
+          .storeId(storeIdParam)
+          .build();
+    }
+  }
+
+  @Getter
+  @Builder
+  @AllArgsConstructor
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  public static class ProductsForAdminItem {
+    private String key;
+    private Long productPrice;
+    private String productThumbnail;
+    private Long productSaleAmount;
+    private Long storeId;
+    private String storeName;
+    private Double averageRating;
+    private ProductSaleStatus productSaleStatus;
+    private LocalDateTime createdAt;
+
+    public static ProductsForAdminItem getData(Product item, Map<Long, String> storeNameData) {
+      return ProductsForAdminItem.builder()
+          .productThumbnail(item.getProductThumbnail())
+          .key(item.getProductId())
+          .averageRating(item.getAverageRating())
+          .productSaleAmount(item.getProductSaleAmount())
+          .productSaleStatus(item.getProductSaleStatus())
+          .storeId(item.getStoreId())
+          .createdAt(item.getCreatedAt())
+          .storeName(storeNameData.get(item.getStoreId()))
+          .productPrice(item.getProductPrice())
+          .build();
+    }
+  }
+
+  @Getter
+  @Builder
+  @AllArgsConstructor
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  public static class ProductsForAdmin {
+    private List<ProductsForAdminItem> products;
+    private long totalCnt;
+
+    public static ProductsForAdmin getData(
+        Map<Long, String> storeNameData, Page<Product> productsForAdmin) {
+      return ProductsForAdmin.builder()
+          .products(
+              productsForAdmin.getContent().stream()
+                  .map(item -> ProductsForAdminItem.getData(item, storeNameData))
+                  .collect(Collectors.toList()))
+          .totalCnt(productsForAdmin.getTotalElements())
+          .build();
     }
   }
 }
