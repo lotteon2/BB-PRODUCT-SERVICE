@@ -228,7 +228,7 @@ public class ProductCommand {
     @NotNull private String productThumbnail;
     @NotNull private Long productPrice;
     private Long categoryId;
-    @NotNull private Long storeId;
+    private Long storeId;
     private List<Long> productTag;
     @NotNull private FlowerCommand.ProductFlowersRequestData representativeFlower;
     private List<ProductFlowersRequestData> flowers;
