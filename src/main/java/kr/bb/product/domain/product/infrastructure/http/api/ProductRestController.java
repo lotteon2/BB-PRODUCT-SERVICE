@@ -368,4 +368,16 @@ public class ProductRestController {
   public void deleteProductsByAdmin(@RequestBody List<String> productIds) {
     productCommandUseCase.deleteProductsByAdmin(productIds);
   }
+
+  @PostMapping("search")
+  public CommonResponse<ProductList> searchProducts(
+      @RequestBody String sentence,
+      @PageableDefault(
+              page = 0,
+              size = 10,
+              sort = {"createdAt"},
+              direction = Sort.Direction.DESC)
+          Pageable pageable) {
+    return CommonResponse.success(productQueryUseCase.searchByUser(sentence, pageable));
+  }
 }

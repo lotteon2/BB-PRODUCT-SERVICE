@@ -283,6 +283,21 @@ public class ProductQueryRepository implements ProductQueryOutPort {
         () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Product.class));
   }
 
+  @Override
+  public Page<Product> findProductsByFlowerId(Long flowerId, Pageable pageable) {
+    Query query =
+        Query.query(
+            Criteria.where("product_flowers.flowerId")
+                .is(flowerId)
+                .and("product_sale_status")
+                .is("SALE"));
+    List<Product> products = mongoTemplate.find(query, Product.class);
+    return PageableExecutionUtils.getPage(
+        products,
+        pageable,
+        () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Product.class));
+  }
+
   @Getter
   @AllArgsConstructor
   @Builder

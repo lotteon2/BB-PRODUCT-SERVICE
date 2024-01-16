@@ -8,6 +8,7 @@ import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
+import bloomingblooms.domain.store.StoreAverageDto;
 import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
 import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import java.util.List;
@@ -81,7 +82,7 @@ public interface ProductQueryUseCase {
 
   List<LikedProductInfoResponse> getProductInformationForLikes(List<String> productIds);
 
-  Map<Long, Double> getStoreAverageRating();
+  StoreAverageDto getStoreAverageRating();
 
   List<StockChangeDto> getFlowerAmountGroupByStoreId(ProcessOrderDto processOrderDto);
 
@@ -89,4 +90,6 @@ public interface ProductQueryUseCase {
 
   ProductsForAdmin getProductsForAdmin(
       ProductCommand.AdminSelectOption adminSelectOption, Pageable pageable);
+
+  ProductList searchByUser(String sentence, Pageable pageable);
 }

@@ -9,11 +9,13 @@ import bloomingblooms.domain.product.ProductInfoDto;
 import bloomingblooms.domain.product.ProductInformation;
 import bloomingblooms.domain.product.ProductThumbnail;
 import bloomingblooms.domain.product.StoreSubscriptionProductId;
+import bloomingblooms.domain.store.StoreAverageDto;
 import bloomingblooms.domain.store.StorePolicy;
 import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
 import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import bloomingblooms.errors.EntityNotFoundException;
 import com.amazonaws.services.s3.AmazonS3;
+import io.github.flashvayne.chatgpt.service.ChatgptService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +77,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   private final FlowerQueryOutPort flowerQueryOutPort;
   private final ReviewQueryOutPort reviewQueryOutPort;
   private final AmazonS3 amazonS3;
+  private final ChatgptService chatgptService;
 
   @Value("${aws.bucket.name}")
   private String bucket;
@@ -337,8 +340,8 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   }
 
   @Override
-  public Map<Long, Double> getStoreAverageRating() {
-    return productQueryOutPort.findStoreAverageRating();
+  public StoreAverageDto getStoreAverageRating() {
+    return StoreAverageDto.builder().average(productQueryOutPort.findStoreAverageRating()).build();
   }
 
   @Override
@@ -368,6 +371,27 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
                     .collect(Collectors.toList()))
             .getData();
     return ProductsForAdmin.getData(storeNameData, productsForAdmin);
+  }
+
+  @Override
+  public ProductList searchByUser(String sentence, Pageable pageable) {
+    String prompt = getPrompt(sentence);
+    String response = chatgptService.sendMessage(prompt);
+    Page<Product> products =
+        productQueryOutPort.findProductsByFlowerId(Long.parseLong(response.trim()), pageable);
+    List<ProductListItem> product = getProduct(products);
+    return ProductList.getData(product, products.getTotalElements());
+  }
+
+  private String getPrompt(String sentence) {
+    return "- Please choose one of several flowers. Types include "
+        + "\n"
+        + "red rose:1, white rose:2, orange rose:3, pink rose:4, blue rose:5, purple rose:6, yellow rose:7, lisianthus:8, hydrangea:9, lavender:10, chrysanthemum:11, sunflower:12, carnation:13, gerbera:14, freesia:15, tulip:16, ranunculus:17, gypsophila:18, statis:19, daisy:20, peony:21, delphinium:22 \n"
+        + "- The format is flowername:flowerid and only one flowerId is responded\n"
+        + "- Just choose the flower whose language is most related to this sentence\n"
+        + sentence
+        + "\n"
+        + "respond just flowerId exclude flowerName";
   }
 
   @Override
