@@ -371,6 +371,7 @@ public class ProductRestController {
 
   @PostMapping("search")
   public CommonResponse<ProductList> searchProducts(
+      @RequestHeader Optional<Long> userId,
       @RequestBody String sentence,
       @PageableDefault(
               page = 0,
@@ -378,6 +379,9 @@ public class ProductRestController {
               sort = {"createdAt"},
               direction = Sort.Direction.DESC)
           Pageable pageable) {
-    return CommonResponse.success(productQueryUseCase.searchByUser(sentence, pageable));
+    if (userId.isPresent())
+      return CommonResponse.success(
+          productQueryUseCase.searchByUser(userId.get(), sentence, pageable));
+    else return CommonResponse.success(productQueryUseCase.searchByUser(sentence, pageable));
   }
 }

@@ -346,7 +346,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
   @Override
   public List<StockChangeDto> getFlowerAmountGroupByStoreId(ProcessOrderDto processOrderDto) {
-
+    log.info(processOrderDto.getProducts().get(0).toString());
     Map<Long, List<Product>> productsByProductsGroupByStoreId =
         productQueryOutPort.findProductsByProductsGroupByStoreId(
             new ArrayList<>(processOrderDto.getProducts().keySet()));
@@ -383,13 +383,27 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     return ProductList.getData(product, products.getTotalElements());
   }
 
+  @Override
+  public ProductList searchByUser(Long userId, String sentence, Pageable pageable) {
+    String prompt = getPrompt(sentence);
+    String response = chatgptService.sendMessage(prompt);
+    Page<Product> products =
+        productQueryOutPort.findProductsByFlowerId(Long.parseLong(response.trim()), pageable);
+    List<ProductListItem> product = getProduct(products);
+    List<String> ids = getProductIdsFromProducts(products.getContent());
+    List<String> data = getProductsIsLiked(userId, ids);
+    return ProductList.getData(product, data, products.getTotalElements());
+  }
+
   private String getPrompt(String sentence) {
     return "- Please choose one of several flowers. Types include "
         + "\n"
         + "red rose:1, white rose:2, orange rose:3, pink rose:4, blue rose:5, purple rose:6, yellow rose:7, lisianthus:8, hydrangea:9, lavender:10, chrysanthemum:11, sunflower:12, carnation:13, gerbera:14, freesia:15, tulip:16, ranunculus:17, gypsophila:18, statis:19, daisy:20, peony:21, delphinium:22 \n"
         + "- The format is flowername:flowerid and only one flowerId is responded\n"
         + "- Just choose the flower whose language is most related to this sentence\n"
+        + "\""
         + sentence
+        + "\""
         + "\n"
         + "respond just flowerId exclude flowerName";
   }

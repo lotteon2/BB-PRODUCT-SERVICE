@@ -92,4 +92,6 @@ public interface ProductQueryUseCase {
       ProductCommand.AdminSelectOption adminSelectOption, Pageable pageable);
 
   ProductList searchByUser(String sentence, Pageable pageable);
+
+  ProductList searchByUser(Long userId, String sentence, Pageable pageable);
 }
