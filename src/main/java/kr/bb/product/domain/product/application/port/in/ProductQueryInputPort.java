@@ -405,7 +405,8 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
         + sentence
         + "\""
         + "\n"
-        + "respond just flowerId exclude flowerName";
+        + "- respond just flowerId exclude flowerName"
+        + "- response data must be only number";
   }
 
   @Override
