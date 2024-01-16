@@ -134,6 +134,7 @@ public class ProductCommand {
       Map<Long, Long> map = new HashMap<>();
       List<StockDto> list = new ArrayList<>();
       for (Product p : productsByProductsGroupByStoreId.get(key)) {
+        if (p.getProductFlowers().isEmpty()) continue;
         p.getProductFlowers()
             .forEach(
                 item ->
