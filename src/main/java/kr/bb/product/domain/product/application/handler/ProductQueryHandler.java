@@ -2,6 +2,7 @@ package kr.bb.product.domain.product.application.handler;
 
 import bloomingblooms.domain.notification.order.OrderType;
 import bloomingblooms.domain.order.ProcessOrderDto;
+import bloomingblooms.domain.store.StoreAverageDto;
 import bloomingblooms.response.CommonResponse.Result;
 import java.util.Map;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
@@ -18,7 +19,7 @@ public class ProductQueryHandler {
   private static final String ORDER_CREATE = "order-create";
   private final ProductQueryUseCase productQueryUseCase;
   private final StoreServiceClient storeServiceClient;
-  private final ProductKafkaProcessor<Map<Long, Double>> mapProductKafkaProcessor;
+  private final ProductKafkaProcessor<StoreAverageDto> mapProductKafkaProcessor;
   private final ProductKafkaProcessor<ProcessOrderDto> processOrderDtoProductKafkaProcessor;
 
   public void getStoreAverageRating() {
