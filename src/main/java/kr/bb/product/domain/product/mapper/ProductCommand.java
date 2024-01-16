@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.validation.constraints.NotNull;
 import kr.bb.product.domain.category.entity.CategoryCommand;
 import kr.bb.product.domain.category.entity.CategoryCommand.CategoryDetail;
 import kr.bb.product.domain.flower.entity.Flower;
@@ -221,16 +222,15 @@ public class ProductCommand {
   @Builder
   @Getter
   public static class ProductRegister {
-
-    private String productName;
-    private String productSummary;
-    private String productDescriptionImage;
-    private String productThumbnail;
-    private Long productPrice;
+    @NotNull private String productName;
+    @NotNull private String productSummary;
+    @NotNull private String productDescriptionImage;
+    @NotNull private String productThumbnail;
+    @NotNull private Long productPrice;
     private Long categoryId;
-    private Long storeId;
+    @NotNull private Long storeId;
     private List<Long> productTag;
-    private FlowerCommand.ProductFlowersRequestData representativeFlower;
+    @NotNull private FlowerCommand.ProductFlowersRequestData representativeFlower;
     private List<ProductFlowersRequestData> flowers;
 
     public void setStoreId(Long storeId) {
