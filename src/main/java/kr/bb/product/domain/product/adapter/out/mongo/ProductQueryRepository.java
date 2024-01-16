@@ -237,10 +237,12 @@ public class ProductQueryRepository implements ProductQueryOutPort {
 
   @Override
   public Map<Long, Double> findStoreAverageRating() {
+    AggregationOperation matchReviewsGreaterThanOne =
+        Aggregation.match(Criteria.where("reviewCount").gt(1));
     AggregationOperation groupByStoreId =
         Aggregation.group("storeId").avg("averageRating").as("averageRating");
     TypedAggregation<Product> aggregation =
-        Aggregation.newAggregation(Product.class, groupByStoreId);
+        Aggregation.newAggregation(Product.class, matchReviewsGreaterThanOne, groupByStoreId);
 
     // Execute the aggregation
     AggregationResults<AverageResult> aggregate =
