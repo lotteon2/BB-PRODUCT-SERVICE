@@ -89,7 +89,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
     return PageRequest.of(
         pageable.getPageNumber(),
         pageable.getPageSize(),
-        Sort.by(Direction.DESC, "product_sale_status")
+        Sort.by(Direction.DESC, "productSaleStatus")
             .and(Sort.by(direction, sortOption.getSortOption())));
   }
 
@@ -346,10 +346,6 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
   @Override
   public List<StockChangeDto> getFlowerAmountGroupByStoreId(ProcessOrderDto processOrderDto) {
-    processOrderDto
-        .getProducts()
-        .keySet()
-        .forEach(key -> log.info("!!!!!!!!! {}", processOrderDto.getProducts().get(key)));
     Map<Long, List<Product>> productsByProductsGroupByStoreId =
         productQueryOutPort.findProductsByProductsGroupByStoreId(
             new ArrayList<>(processOrderDto.getProducts().keySet()));

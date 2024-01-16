@@ -166,6 +166,7 @@ public class ProductCommand {
   @Getter
   public enum SortOption {
     TOP_SALE("productSaleAmount"),
+    SALE("productSaleAmount"),
     BOTTOM_SALE("productSaleAmount"),
     NEW("createdAt"),
     OLD("createdAt"),
