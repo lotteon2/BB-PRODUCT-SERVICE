@@ -47,4 +47,6 @@ public interface ProductQueryOutPort {
 
   Page<Product> findProductsForAdmin(
       ProductCommand.AdminSelectOption adminSelectOption, Pageable pageable);
+
+  Page<Product> findProductsByFlowerId(Long flowerId, Pageable pageable);
 }

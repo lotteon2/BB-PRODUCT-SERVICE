@@ -89,4 +89,6 @@ public interface ProductQueryUseCase {
 
   ProductsForAdmin getProductsForAdmin(
       ProductCommand.AdminSelectOption adminSelectOption, Pageable pageable);
+
+  ProductList searchByUser(String sentence, Pageable pageable);
 }

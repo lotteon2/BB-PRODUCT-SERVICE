@@ -14,6 +14,7 @@ import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
 import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import bloomingblooms.errors.EntityNotFoundException;
 import com.amazonaws.services.s3.AmazonS3;
+import io.github.flashvayne.chatgpt.service.ChatgptService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   private final FlowerQueryOutPort flowerQueryOutPort;
   private final ReviewQueryOutPort reviewQueryOutPort;
   private final AmazonS3 amazonS3;
+  private final ChatgptService chatgptService;
 
   @Value("${aws.bucket.name}")
   private String bucket;
@@ -368,6 +370,24 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
                     .collect(Collectors.toList()))
             .getData();
     return ProductsForAdmin.getData(storeNameData, productsForAdmin);
+  }
+
+  @Override
+  public ProductList searchByUser(String sentence, Pageable pageable) {
+    String prompt = getPrompt(sentence);
+    String response = chatgptService.sendMessage(prompt);
+    Page<Product> products =
+        productQueryOutPort.findProductsByFlowerId(Long.parseLong(response), pageable);
+    List<ProductListItem> product = getProduct(products);
+    return ProductList.getData(product, products.getTotalElements());
+  }
+
+  private String getPrompt(String sentence) {
+    return "- Please choose one of several flowers. Types include roses:1, chrysanthemums:2, and hydrangeas:3.\n"
+        + "- The format is flowername:flowerid and only one flowerId is responded\n"
+        + "- Just choose the flower whose language is most related to this sentence"
+        + sentence
+        + "respond just flowerId exclude flowerName";
   }
 
   @Override

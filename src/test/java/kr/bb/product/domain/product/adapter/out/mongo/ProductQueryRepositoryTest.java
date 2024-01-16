@@ -343,4 +343,24 @@ class ProductQueryRepositoryTest extends TestEnv {
     }
     assertThat(content.get(0).getProductPrice()).isLessThan(content.get(1).getProductPrice());
   }
+
+  @Test
+  @DisplayName("꽃 id 기준 상품 조회")
+  void findProductsByFlowerId() {
+    productMongoRepository.deleteAll();
+    for (int i = 0; i < 10; i++) {
+      ProductFlowers flowers =
+          ProductFlowers.builder().flowerId(1L).flowerCount(1L + 10).flowerName("i" + i).build();
+      Product product =
+          Product.builder()
+              .storeId(1L)
+              .productFlowers(List.of(flowers))
+              .createdAt(LocalDateTime.now())
+              .build();
+      productMongoRepository.save(product);
+    } // 10개 상품 저장
+    PageRequest pageRequest = PageRequest.of(0, 7);
+    Page<Product> productsByFlowerId = productQueryOutPort.findProductsByFlowerId(1L, pageRequest);
+    assertThat(productsByFlowerId.getContent().size()).isEqualTo(10);
+  }
 }
