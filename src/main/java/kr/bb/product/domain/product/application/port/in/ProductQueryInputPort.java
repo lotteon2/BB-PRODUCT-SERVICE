@@ -346,7 +346,10 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
   @Override
   public List<StockChangeDto> getFlowerAmountGroupByStoreId(ProcessOrderDto processOrderDto) {
-    log.info(processOrderDto.getProducts().get(0).toString());
+    processOrderDto
+        .getProducts()
+        .keySet()
+        .forEach(key -> log.info("!!!!!!!!! {}", processOrderDto.getProducts().get(key)));
     Map<Long, List<Product>> productsByProductsGroupByStoreId =
         productQueryOutPort.findProductsByProductsGroupByStoreId(
             new ArrayList<>(processOrderDto.getProducts().keySet()));
