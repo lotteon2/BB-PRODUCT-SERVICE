@@ -374,24 +374,27 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
   @Override
   public ProductList searchByUser(String sentence, Pageable pageable) {
-    String prompt = getPrompt(sentence);
-    String response = chatgptService.sendMessage(prompt);
-    Page<Product> products =
-        productQueryOutPort.findProductsByFlowerId(Long.parseLong(response.trim()), pageable);
+    Long flowerId = getFlowerId(sentence);
+    Page<Product> products = productQueryOutPort.findProductsByFlowerId(flowerId, pageable);
     List<ProductListItem> product = getProduct(products);
     return ProductList.getData(product, products.getTotalElements());
   }
 
   @Override
   public ProductList searchByUser(Long userId, String sentence, Pageable pageable) {
-    String prompt = getPrompt(sentence);
-    String response = chatgptService.sendMessage(prompt);
-    Page<Product> products =
-        productQueryOutPort.findProductsByFlowerId(Long.parseLong(response.trim()), pageable);
+    Long flowerId = getFlowerId(sentence);
+    Page<Product> products = productQueryOutPort.findProductsByFlowerId(flowerId, pageable);
     List<ProductListItem> product = getProduct(products);
     List<String> ids = getProductIdsFromProducts(products.getContent());
     List<String> data = getProductsIsLiked(userId, ids);
     return ProductList.getData(product, data, products.getTotalElements());
+  }
+
+  @NotNull
+  private Long getFlowerId(String sentence) {
+    String prompt = getPrompt(sentence);
+    String response = chatgptService.sendMessage(prompt);
+    return Long.valueOf(response.split(":")[1]);
   }
 
   private String getPrompt(String sentence) {
@@ -404,8 +407,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
         + sentence
         + "\""
         + "\n"
-        + "- respond just flowerId exclude flowerName"
-        + "- response data must be only number";
+        + "- response must be number like 'red rose:1'";
   }
 
   @Override
