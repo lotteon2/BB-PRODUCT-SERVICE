@@ -1,7 +1,5 @@
 package kr.bb.product.domain.product.application.port.in;
 
-import bloomingblooms.domain.aws.PresignedUrlData;
-import bloomingblooms.domain.aws.PresignedUrlService;
 import bloomingblooms.domain.flower.StockChangeDto;
 import bloomingblooms.domain.order.ProcessOrderDto;
 import bloomingblooms.domain.product.IsProductPriceValid;
@@ -24,6 +22,8 @@ import kr.bb.product.domain.flower.adapter.out.jpa.FlowerJpaRepository;
 import kr.bb.product.domain.flower.application.port.out.FlowerQueryOutPort;
 import kr.bb.product.domain.flower.entity.Flower;
 import kr.bb.product.domain.flower.mapper.FlowerCommand;
+import kr.bb.product.domain.presigendurl.PresignedUrlData;
+import kr.bb.product.domain.presigendurl.PresignedUrlService;
 import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.Product;
