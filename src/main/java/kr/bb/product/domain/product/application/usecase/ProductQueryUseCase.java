@@ -1,6 +1,5 @@
 package kr.bb.product.domain.product.application.usecase;
 
-import bloomingblooms.domain.aws.PresignedUrlData;
 import bloomingblooms.domain.flower.StockChangeDto;
 import bloomingblooms.domain.order.ProcessOrderDto;
 import bloomingblooms.domain.product.IsProductPriceValid;
@@ -13,6 +12,7 @@ import bloomingblooms.domain.wishlist.cart.GetUserCartItemsResponse;
 import bloomingblooms.domain.wishlist.likes.LikedProductInfoResponse;
 import java.util.List;
 import java.util.Map;
+import kr.bb.product.domain.presigendurl.PresignedUrlData;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;

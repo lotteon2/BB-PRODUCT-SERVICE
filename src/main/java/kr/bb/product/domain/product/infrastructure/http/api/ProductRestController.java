@@ -1,10 +1,10 @@
 package kr.bb.product.domain.product.infrastructure.http.api;
 
-import bloomingblooms.domain.aws.PresignedUrlData;
 import bloomingblooms.response.CommonResponse;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
+import kr.bb.product.domain.presigendurl.PresignedUrlData;
 import kr.bb.product.domain.product.application.usecase.ProductCommandUseCase;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
