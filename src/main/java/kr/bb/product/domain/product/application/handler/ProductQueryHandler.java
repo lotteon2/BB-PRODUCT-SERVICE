@@ -4,7 +4,6 @@ import bloomingblooms.domain.notification.order.OrderType;
 import bloomingblooms.domain.order.ProcessOrderDto;
 import bloomingblooms.domain.store.StoreAverageDto;
 import bloomingblooms.response.CommonResponse.Result;
-import java.util.Map;
 import kr.bb.product.domain.product.application.usecase.ProductQueryUseCase;
 import kr.bb.product.domain.product.infrastructure.client.StoreServiceClient;
 import kr.bb.product.domain.product.infrastructure.event.ProductKafkaProcessor;
@@ -38,6 +37,9 @@ public class ProductQueryHandler {
     if (result.equals(Result.SUCCESS))
       // order create request kafka
       processOrderDtoProductKafkaProcessor.send(ORDER_CREATE, processOrderDto);
+    else
+      // stock exception -> rollback to coupon
+      processOrderDtoProductKafkaProcessor.send(STOCK_DECREASE_ROLLBACK, processOrderDto);
   }
 
   public void getFlowerStockRollback(ProcessOrderDto processOrderDto) {
