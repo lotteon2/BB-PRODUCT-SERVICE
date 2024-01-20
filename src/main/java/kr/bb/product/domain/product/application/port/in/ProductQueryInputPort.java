@@ -394,7 +394,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   private Long getFlowerId(String sentence) {
     String prompt = getPrompt(sentence);
     String response = chatgptService.sendMessage(prompt);
-    return Long.valueOf(response.split(":")[1]);
+    return Long.valueOf(response.split(":")[1].trim());
   }
 
   private String getPrompt(String sentence) {
