@@ -265,7 +265,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
       ProductCommand.AdminSelectOption adminSelectOption, Pageable pageable) {
     Query query = new Query();
     query.addCriteria(Criteria.where("is_subscription").is(false));
-    if (adminSelectOption.getSalesAmount().equals(SortOption.HIGH))
+    if (adminSelectOption.getSalesAmount().equals(SortOption.TOP_SALE))
       query.with(Sort.by(Order.desc(adminSelectOption.getSalesAmount().getSortOption())));
     else query.with(Sort.by(Order.asc(adminSelectOption.getSalesAmount().getSortOption())));
 
