@@ -392,9 +392,11 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
   @NotNull
   private Long getFlowerId(String sentence) {
+    String regex = "[^0-9]";
     String prompt = getPrompt(sentence);
     String response = chatgptService.sendMessage(prompt);
-    return Long.valueOf(response.split(":")[1].trim());
+
+    return Long.valueOf(response.replaceAll(regex, ""));
   }
 
   private String getPrompt(String sentence) {

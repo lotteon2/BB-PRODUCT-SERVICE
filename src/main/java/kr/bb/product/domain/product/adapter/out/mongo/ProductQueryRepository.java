@@ -295,6 +295,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
                 .is(flowerId)
                 .and("product_sale_status")
                 .is("SALE"));
+    query.with(Sort.by(Order.desc("createdAt")));
     query.with(pageable);
     List<Product> products = mongoTemplate.find(query, Product.class);
     return PageableExecutionUtils.getPage(
