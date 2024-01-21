@@ -58,7 +58,10 @@ public class ProductCommand {
   public static StoreSubscriptionProductId getStoreSubscriptionProductIdData(
       Product subscriptionProductByStoreId) {
     return StoreSubscriptionProductId.builder()
-        .subscriptionProductId(subscriptionProductByStoreId.getProductId())
+        .subscriptionProductId(
+            subscriptionProductByStoreId.getProductId() == null
+                ? null
+                : subscriptionProductByStoreId.getProductId())
         .build();
   }
 

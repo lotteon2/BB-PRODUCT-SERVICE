@@ -172,7 +172,7 @@ class ProductQueryRepositoryTest extends TestEnv {
     Product build = Product.builder().productName("name").isSubscription(true).storeId(1L).build();
     productMongoRepository.save(build);
     Product subscriptionProductByStoreId =
-        productMongoRepository.findSubscriptionProductByStoreId(1L);
+        productMongoRepository.findSubscriptionProductByStoreId(1L).orElse(null);
     assertThat(subscriptionProductByStoreId.getProductName()).isEqualTo(build.getProductName());
   }
 
@@ -362,5 +362,14 @@ class ProductQueryRepositoryTest extends TestEnv {
     PageRequest pageRequest = PageRequest.of(0, 7);
     Page<Product> productsByFlowerId = productQueryOutPort.findProductsByFlowerId(1L, pageRequest);
     assertThat(productsByFlowerId.getContent().size()).isEqualTo(10);
+  }
+
+  @Test
+  @DisplayName("구독 상품 없을 경우 null")
+  void testFindSubscriptionProductByStoreId() {
+    productMongoRepository.deleteAll();
+    Product subscriptionProductByStoreId =
+        productQueryOutPort.findSubscriptionProductByStoreId(10L);
+    assertThat(subscriptionProductByStoreId.getProductId()).isNull();
   }
 }

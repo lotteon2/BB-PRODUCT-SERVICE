@@ -143,7 +143,9 @@ public class ProductQueryRepository implements ProductQueryOutPort {
    */
   @Override
   public Product findSubscriptionProductByStoreId(Long storeId) {
-    return productMongoRepository.findSubscriptionProductByStoreId(storeId);
+    return productMongoRepository
+        .findSubscriptionProductByStoreId(storeId)
+        .orElse(Product.builder().build());
   }
 
   @Override

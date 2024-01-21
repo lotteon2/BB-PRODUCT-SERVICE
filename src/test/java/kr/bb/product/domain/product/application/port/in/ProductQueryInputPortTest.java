@@ -480,4 +480,12 @@ class ProductQueryInputPortTest extends TestEnv {
     assertThat(productsForAdmin.getProducts().get(0).getProductPrice())
         .isLessThan(productsForAdmin.getProducts().get(1).getProductPrice());
   }
+
+  @Test
+  @DisplayName("구독 상품 없는 경우 null 처리 ")
+  void testGetSubscriptionProductByStoreId() {
+    StoreSubscriptionProductId storeSubscriptionProductId =
+        productQueryInputPort.getStoreSubscriptionProductId(10L);
+    assertThat(storeSubscriptionProductId.getSubscriptionProductId()).isNull();
+  }
 }

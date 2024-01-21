@@ -17,5 +17,5 @@ public interface ProductMongoRepository extends MongoRepository<Product, String>
   Product findProductByStoreIdAndProductId(Long storeId, String productId);
 
   @Query("{'store_id':  ?0, 'is_subscription':  true}")
-  Product findSubscriptionProductByStoreId(Long storeId);
+  Optional<Product> findSubscriptionProductByStoreId(Long storeId);
 }
