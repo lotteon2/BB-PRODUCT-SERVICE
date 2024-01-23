@@ -41,6 +41,7 @@ import kr.bb.product.domain.product.mapper.ProductCommand.ProductList;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductListItem;
 import kr.bb.product.domain.product.mapper.ProductCommand.ProductsForAdmin;
 import kr.bb.product.domain.product.mapper.ProductCommand.RepresentativeFlowerId;
+import kr.bb.product.domain.product.mapper.ProductCommand.SearchData;
 import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.StoreManagerSubscriptionProduct;
@@ -374,7 +375,7 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
   @Override
   public ProductList searchByUser(String sentence, Pageable pageable) {
-    Long flowerId = getFlowerId(sentence);
+    SearchData flowerId = getFlowerId(sentence);
     Page<Product> products = productQueryOutPort.findProductsByFlowerId(flowerId, pageable);
     List<ProductListItem> product = getProduct(products);
     return ProductList.getData(product, products.getTotalElements());
@@ -382,8 +383,9 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
 
   @Override
   public ProductList searchByUser(Long userId, String sentence, Pageable pageable) {
-    Long flowerId = getFlowerId(sentence);
-    Page<Product> products = productQueryOutPort.findProductsByFlowerId(flowerId, pageable);
+    ProductCommand.SearchData searchData = getFlowerId(sentence);
+
+    Page<Product> products = productQueryOutPort.findProductsByFlowerId(searchData, pageable);
     List<ProductListItem> product = getProduct(products);
     List<String> ids = getProductIdsFromProducts(products.getContent());
     List<String> data = getProductsIsLiked(userId, ids);
@@ -391,25 +393,45 @@ public class ProductQueryInputPort implements ProductQueryUseCase {
   }
 
   @NotNull
-  private Long getFlowerId(String sentence) {
+  private ProductCommand.SearchData getFlowerId(String sentence) {
     String regex = "[^0-9]";
     String prompt = getPrompt(sentence);
-    String response = chatgptService.sendMessage(prompt);
+    String response = chatgptService.sendMessage(prompt).trim();
+    log.info("::::" + response + "::::");
+    String[] split = response.split(":");
+    Long flowerId = Long.valueOf(split[0].replaceAll(regex, ""));
+    String sort = "";
+    Long money = null;
+    Long category = null;
+    for (int i = 1; i < split.length; i++) {
+      if (split[i].contains("category")) {
+        category = Long.valueOf(split[i].replaceAll(regex, ""));
+      } else {
+        String[] strings = split[i].split("-");
+        sort = strings[0];
+        money = Long.valueOf(strings[1]);
+      }
+    }
 
-    return Long.valueOf(response.replaceAll(regex, ""));
+    return ProductCommand.SearchData.MakeSearchData(flowerId, sort, money, category);
   }
 
   private String getPrompt(String sentence) {
     return "- Please choose one of several flowers. Types include "
         + "\n"
-        + "red rose:1, white rose:2, orange rose:3, pink rose:4, blue rose:5, purple rose:6, yellow rose:7, lisianthus:8, hydrangea:9, lavender:10, chrysanthemum:11, sunflower:12, carnation:13, gerbera:14, freesia:15, tulip:16, ranunculus:17, gypsophila:18, statis:19, daisy:20, peony:21, delphinium:22 \n"
+        + "- red rose-1, white rose-2, orange rose-3, pink rose-4, blue rose-5, purple rose-6, yellow rose-7, lisianthus-8, hydrangea-9, lavender-10, chrysanthemum-11, sunflower-12, carnation-13, gerbera-14, freesia-15, tulip-16, ranunculus-17, gypsophila-18, statis-19, daisy-20, peony-21, delphinium-22\n"
         + "- The format is flowername:flowerid and only one flowerId is responded\n"
         + "- Just choose the flower whose language is most related to this sentence\n"
+        + "sentence:"
         + "\""
         + sentence
         + "\""
         + "\n"
-        + "- response must be number like 'red rose:1'";
+        + "- if sentence contains about money add response"
+        + "- if sentence contains about money sorting conditions add response gt or lt or gte or lte"
+        + "- if sentence contains if \"꽃다발\" add response category-1. if \"꽃바구니\" add response category-2, if \"꽃상자\" add response category-3, if \"화환\" add response category-4 "
+        + "- no explanation just strict response format "
+        + "- response format must be like 'red rose-1:gt-50000:category-1'";
   }
 
   @Override

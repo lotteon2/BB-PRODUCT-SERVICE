@@ -9,6 +9,7 @@ import kr.bb.product.domain.product.application.port.out.ProductQueryOutPort;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.SearchData;
 import kr.bb.product.domain.product.mapper.ProductCommand.SelectOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
 import lombok.AccessLevel;
@@ -288,13 +289,28 @@ public class ProductQueryRepository implements ProductQueryOutPort {
   }
 
   @Override
-  public Page<Product> findProductsByFlowerId(Long flowerId, Pageable pageable) {
+  public Page<Product> findProductsByFlowerId(SearchData searchData, Pageable pageable) {
     Query query =
         Query.query(
             Criteria.where("product_flowers.flowerId")
-                .is(flowerId)
+                .is(searchData.getFlowerId())
                 .and("product_sale_status")
                 .is("SALE"));
+
+    if (searchData.getSort() != null) {
+      if ("gt".equals(searchData.getSort()))
+        query.addCriteria(Criteria.where("productPrice").gt(searchData.getMoney()));
+      if ("gte".equals(searchData.getSort()))
+        query.addCriteria(Criteria.where("productPrice").gte(searchData.getMoney()));
+      if ("lt".equals(searchData.getSort()))
+        query.addCriteria(Criteria.where("productPrice").lt(searchData.getMoney()));
+      if ("lte".equals(searchData.getSort()))
+        query.addCriteria(Criteria.where("productPrice").lte(searchData.getMoney()));
+    }
+
+    if (searchData.getCategory() != null)
+      query.addCriteria(Criteria.where("category.categoryId").is(searchData.getCategory()));
+
     query.with(Sort.by(Order.desc("createdAt")));
     query.with(pageable);
     List<Product> products = mongoTemplate.find(query, Product.class);

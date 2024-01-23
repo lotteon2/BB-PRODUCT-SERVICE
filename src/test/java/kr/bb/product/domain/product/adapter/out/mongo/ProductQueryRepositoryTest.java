@@ -17,6 +17,7 @@ import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand.AdminSelectOption;
 import kr.bb.product.domain.product.mapper.ProductCommand.RepresentativeFlowerId;
+import kr.bb.product.domain.product.mapper.ProductCommand.SearchData;
 import kr.bb.product.domain.product.mapper.ProductCommand.SortOption;
 import kr.bb.product.domain.tag.entity.Tag;
 import kr.bb.product.exception.errors.ProductNotFoundException;
@@ -360,7 +361,8 @@ class ProductQueryRepositoryTest extends TestEnv {
       productMongoRepository.save(product);
     } // 10개 상품 저장
     PageRequest pageRequest = PageRequest.of(0, 7);
-    Page<Product> productsByFlowerId = productQueryOutPort.findProductsByFlowerId(1L, pageRequest);
+    Page<Product> productsByFlowerId =
+        productQueryOutPort.findProductsByFlowerId(SearchData.builder().build(), pageRequest);
     assertThat(productsByFlowerId.getContent().size()).isEqualTo(10);
   }
 

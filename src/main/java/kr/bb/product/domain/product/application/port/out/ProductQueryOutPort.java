@@ -6,6 +6,7 @@ import java.util.Map;
 import kr.bb.product.domain.product.entity.Product;
 import kr.bb.product.domain.product.entity.ProductSaleStatus;
 import kr.bb.product.domain.product.mapper.ProductCommand;
+import kr.bb.product.domain.product.mapper.ProductCommand.SearchData;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -48,5 +49,5 @@ public interface ProductQueryOutPort {
   Page<Product> findProductsForAdmin(
       ProductCommand.AdminSelectOption adminSelectOption, Pageable pageable);
 
-  Page<Product> findProductsByFlowerId(Long flowerId, Pageable pageable);
+  Page<Product> findProductsByFlowerId(SearchData flowerId, Pageable pageable);
 }

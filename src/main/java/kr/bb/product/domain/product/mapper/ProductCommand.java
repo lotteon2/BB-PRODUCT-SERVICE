@@ -712,4 +712,24 @@ public class ProductCommand {
           .build();
     }
   }
+
+  @Getter
+  @Builder
+  @AllArgsConstructor
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  public static class SearchData {
+    private Long flowerId;
+    private String sort;
+    private Long money;
+    private Long category;
+
+    public static SearchData MakeSearchData(Long flowerId, String sort, Long money, Long category) {
+      return SearchData.builder()
+          .flowerId(flowerId)
+          .sort(sort)
+          .money(money)
+          .category(category)
+          .build();
+    }
+  }
 }
