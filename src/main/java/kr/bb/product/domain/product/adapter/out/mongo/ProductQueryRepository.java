@@ -311,6 +311,7 @@ public class ProductQueryRepository implements ProductQueryOutPort {
     if (searchData.getCategory() != null)
       query.addCriteria(Criteria.where("category.categoryId").is(searchData.getCategory()));
 
+    query.with(Sort.by(Order.asc("productPrice")));
     query.with(Sort.by(Order.desc("createdAt")));
     query.with(pageable);
     List<Product> products = mongoTemplate.find(query, Product.class);
